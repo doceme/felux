@@ -1,51 +1,47 @@
-package com.lifecity.felux.dmx;
+package com.lifecity.felux.light;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.graphics.Color;
+import android.util.SparseArray;
 
 /**
  * Helper class for providing sample content for user interfaces created by
  * Android template wizards.
  * <p>
  */
-public class DmxLights {
+public class Lights {
 
     /**
      * An array of DMX lights
      */
-    public static List<DmxLight> LIGHTS = new ArrayList<DmxLight>();
+    public static List<Light> LIGHTS = new ArrayList<Light>();
 
     /**
      * A map of DMX lights, by address.
      */
-    public static Map<Byte, DmxLight> LIGHT_MAP = new HashMap<Byte, DmxLight>();
+    //public static SparseArray<Light> LIGHT_MAP = new SparseArray<Light>();
 
     static {
-        addItem(new DmxColorLight((byte)1, "Screen"));
-        addItem(new DmxColorLight((byte)5, "Side"));
-        addItem(new DmxColorLight((byte)9, "Ceiling"));
-        addItem(new DmxLight((byte)13, "Stage"));
-    }
-
-    private static void addItem(DmxLight light) {
-        LIGHTS.add(light);
-        LIGHT_MAP.put(light.address, light);
+        LIGHTS.add(new DmxColorLight(1, "Screen"));
+        LIGHTS.add(new DmxColorLight(5, "Side"));
+        LIGHTS.add(new DmxColorLight(9, "Ceiling"));
+        LIGHTS.add(new DmxLight(13, "Stage"));
     }
 
     /**
-     * DMX basic light class
+     * Basic light class
      */
-    public static class DmxLight {
-        public byte address;
+    public static class Light {
         public String name;
         protected byte value;
 
-        public DmxLight(byte address, String name) {
-            this.address = address;
+        public Light(String name) {
+            this.name = name;
+        }
+
+        public Light(String name, int position) {
             this.name = name;
         }
 
@@ -64,19 +60,26 @@ public class DmxLights {
     }
 
     /**
+     * DMX basic light class
+     */
+    public static class DmxLight extends Light {
+        public int address;
+
+        public DmxLight(int address, String name) {
+            super(name);
+            this.address = address;
+        }
+    }
+
+    /**
      * DMX color light class
      */
     public static class DmxColorLight extends DmxLight {
         protected int color;
 
-        public DmxColorLight(byte address, String name) {
+        public DmxColorLight(int address, String name) {
             super(address, name);
             this.color = Color.WHITE;
-        }
-
-        public DmxColorLight(byte address, String name, int color) {
-            super(address, name);
-            this.color = color;
         }
 
         public int getColor() {

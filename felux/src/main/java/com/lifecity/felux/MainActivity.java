@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.lifecity.felux.dmx.DmxLights;
+import com.lifecity.felux.light.Lights;
 import com.lifecity.felux.scene.Scenes;
 
 
@@ -87,24 +87,8 @@ public class MainActivity extends FragmentActivity implements LightListCallbacks
                 actionBar.setSelectedNavigationItem(savedInstanceState.getInt(ACTIVE_TAB));
                 //sceneListFragment.setActivatedPosition(savedInstanceState.getInt(ACTIVE_SCENE));
                 //lightListFragment.setActivatedPosition(savedInstanceState.getInt(ACTIVE_LIGHT));
-            } else {
-                /*
-                sceneListFragment = new SceneListFragment();
-                lightListFragment = new LightListFragment();
-                sceneDetailFragment = new SceneDetailFragment();
-                lightDetailFragment = new LightDetailFragment();
-
-                FragmentTransaction ft = mFragmentManager.beginTransaction();
-                ft.add(R.id.fragment_primary, sceneListFragment);
-                ft.add(R.id.fragment_secondary, sceneDetailFragment);
-                ft.commit();
-
-                sceneListFragment.setActivateOnItemClick(true);
-                lightListFragment.setActivateOnItemClick(true);
-                */
             }
         }
-        // TODO: If exposing deep links into your app, handle intents here.
     }
 
     @Override
@@ -121,17 +105,12 @@ public class MainActivity extends FragmentActivity implements LightListCallbacks
      */
     @Override
     public void onSceneSelected(Scenes.Scene scene) {
-        /*
-        FragmentTransaction ft = mFragmentManager.beginTransaction();
-        if (mTwoPane) {
-            ft.replace(R.id.fragment_secondary, ((SceneDetailFragment) mFragmentManager
-                    .findFragmentById(R.id.scene_detail)));
-        } else {
-            ft.replace(R.id.fragment_primary, ((SceneDetailFragment) mFragmentManager
-                    .findFragmentById(R.id.scene_detail)));
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        sceneDetailFragment = (SceneDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
+        if (sceneDetailFragment != null) {
+            sceneDetailFragment.setScene(scene);
         }
-        ft.commit();
-        */
     }
 
     /**
@@ -139,26 +118,16 @@ public class MainActivity extends FragmentActivity implements LightListCallbacks
      * indicating that the item with the given index was selected.
      */
     @Override
-    public void onLightSelected(DmxLights.DmxLight light) {
-        /*
-        FragmentTransaction ft = mFragmentManager.beginTransaction();
-        if (mTwoPane) {
-            ft.replace(R.id.fragment_secondary, ((LightDetailFragment) mFragmentManager
-                    .findFragmentById(R.id.light_detail)));
-        } else {
-            ft.replace(R.id.fragment_primary, ((LightDetailFragment) mFragmentManager
-                    .findFragmentById(R.id.light_detail)));
+    public void onLightSelected(Lights.Light light) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        lightDetailFragment = (LightDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
+        if (lightDetailFragment != null) {
+            lightDetailFragment.setLight(light);
         }
-        ft.commit();
-        */
     }
 
     private class TabListener implements ActionBar.TabListener {
-        private static final String SCENE_LIST_TAG = "scene_list";
-        private static final String SCENE_DETAIL_TAG = "scene_detail";
-        private static final String LIGHT_LIST_TAG = "light_list";
-        private static final String LIGHT_DETAIL_TAG = "light_detail";
-
         private FragmentActivity activity;
         private SceneListFragment sceneListFragment;
         private LightListFragment lightListFragment;
@@ -173,19 +142,19 @@ public class MainActivity extends FragmentActivity implements LightListCallbacks
 
             FragmentManager fm = activity.getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            sceneListFragment = (SceneListFragment) fm.findFragmentByTag(SCENE_LIST_TAG);
+            sceneListFragment = (SceneListFragment) fm.findFragmentByTag(SceneListFragment.TAG);
             if (sceneListFragment != null && !sceneListFragment.isDetached()) {
                 ft.detach(sceneListFragment);
             }
-            lightListFragment = (LightListFragment) fm.findFragmentByTag(LIGHT_LIST_TAG);
+            lightListFragment = (LightListFragment) fm.findFragmentByTag(LightListFragment.TAG);
             if (lightListFragment != null && !lightListFragment.isDetached()) {
                 ft.detach(lightListFragment);
             }
-            sceneDetailFragment = (SceneDetailFragment) fm.findFragmentByTag(SCENE_DETAIL_TAG);
+            sceneDetailFragment = (SceneDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
             if (sceneDetailFragment != null && !sceneDetailFragment.isDetached()) {
                 ft.detach(sceneDetailFragment);
             }
-            lightDetailFragment = (LightDetailFragment) fm.findFragmentByTag(LIGHT_DETAIL_TAG);
+            lightDetailFragment = (LightDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
             if (lightDetailFragment != null && !lightDetailFragment.isDetached()) {
                 ft.detach(lightDetailFragment);
             }
@@ -200,26 +169,26 @@ public class MainActivity extends FragmentActivity implements LightListCallbacks
             if (tabType == TabType.SCENE) {
                 if (sceneListFragment == null) {
                     sceneListFragment = new SceneListFragment();
-                    ft.replace(R.id.fragment_primary, sceneListFragment, SCENE_LIST_TAG);
+                    ft.replace(R.id.fragment_primary, sceneListFragment, SceneListFragment.TAG);
                 } else {
                     ft.attach(sceneListFragment);
                 }
                 if (sceneDetailFragment == null) {
                     sceneDetailFragment = new SceneDetailFragment();
-                    ft.replace(R.id.fragment_secondary, sceneDetailFragment, SCENE_DETAIL_TAG);
+                    ft.replace(R.id.fragment_secondary, sceneDetailFragment, SceneDetailFragment.TAG);
                 } else {
                     ft.attach(sceneDetailFragment);
                 }
             } else if (tabType == TabType.LIGHT) {
                 if (lightListFragment == null) {
                     lightListFragment = new LightListFragment();
-                    ft.replace(R.id.fragment_primary, lightListFragment, LIGHT_LIST_TAG);
+                    ft.replace(R.id.fragment_primary, lightListFragment, LightListFragment.TAG);
                 } else {
                     ft.attach(lightListFragment);
                 }
                 if (lightDetailFragment == null) {
                     lightDetailFragment = new LightDetailFragment();
-                    ft.replace(R.id.fragment_secondary, lightDetailFragment, LIGHT_DETAIL_TAG);
+                    ft.replace(R.id.fragment_secondary, lightDetailFragment, LightDetailFragment.TAG);
                 } else {
                     ft.attach(lightDetailFragment);
                 }

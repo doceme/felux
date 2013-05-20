@@ -3,13 +3,11 @@ package com.lifecity.felux;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.lifecity.felux.dmx.DmxLights;
+import com.lifecity.felux.light.Lights;
 
 /**
  * A list fragment representing a list of Lights. This fragment
@@ -21,13 +19,14 @@ import com.lifecity.felux.dmx.DmxLights;
  * interface.
  */
 public class LightListFragment extends ListFragment {
-    private ArrayAdapter<DmxLights.DmxLight> adapter;
+    private ArrayAdapter<Lights.Light> adapter;
 
     /**
      * The serialization (saved instance state) Bundle key representing the
      * activated item position. Only used on tablets.
      */
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    public static final String TAG = "light_list_tag";
 
     /**
      * The fragment's current callback object, which is notified of list item
@@ -42,13 +41,11 @@ public class LightListFragment extends ListFragment {
 
     private static class EmptyListCallbacks implements LightListCallbacks {
         @Override
-        public void onLightSelected(DmxLights.DmxLight light) {
+        public void onLightSelected(Lights.Light light) {
         }
     }
 
     /**
-     * A dummy implementation of the {@link Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
      */
     private static LightListCallbacks sEmptyLightListCallbacks = new EmptyListCallbacks();
 
@@ -63,14 +60,16 @@ public class LightListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        adapter = new ArrayAdapter<DmxLights.DmxLight>(
+        adapter = new ArrayAdapter<Lights.Light>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                DmxLights.LIGHTS
+                Lights.LIGHTS
         );
         // TODO: replace with a real list adapter.
         setListAdapter(adapter);
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -88,10 +87,12 @@ public class LightListFragment extends ListFragment {
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         } else {
-            if (DmxLights.LIGHTS.size() > 0) {
+            if (Lights.LIGHTS.size() > 0) {
                 setActivatedPosition(0);
             }
         }
+
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -117,10 +118,10 @@ public class LightListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
-
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mListCallbacks.onLightSelected(DmxLights.LIGHTS.get(position));
+        mListCallbacks.onLightSelected(Lights.LIGHTS.get(position));
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -147,15 +148,106 @@ public class LightListFragment extends ListFragment {
     public void setActivatedPosition(int position) {
         if (position == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);
+            mListCallbacks.onLightSelected(null);
         } else {
             getListView().setItemChecked(position, true);
+            mListCallbacks.onLightSelected(Lights.LIGHTS.get(position));
         }
 
+        getActivity().invalidateOptionsMenu();
         mActivatedPosition = position;
     }
 
-    public void addLight(DmxLights.DmxLight light) {
-        DmxLights.LIGHTS.add(light);
+    public void addLight(Lights.Light light) {
+        Lights.LIGHTS.add(light);
         adapter.notifyDataSetChanged();
+        setActivatedPosition(Lights.LIGHTS.size() - 1);
     }
+
+    public void removeLight(Lights.Light light) {
+        int oldPosition = selectedPosition();
+        Lights.LIGHTS.remove(light);
+        adapter.notifyDataSetChanged();
+        setActivatedPosition(oldPosition - 1);
+    }
+
+    public void moveLight(Lights.Light light, boolean down) {
+        int oldPosition = selectedPosition();
+        int newPosition;
+        if (down) {
+            if (oldPosition < (Lights.LIGHTS.size() - 1)) {
+                newPosition = oldPosition + 1;
+            }  else {
+                return;
+            }
+        } else {
+            if (oldPosition > 0) {
+                newPosition = oldPosition - 1;
+            } else {
+                return;
+            }
+        }
+
+        Lights.Light temp = Lights.LIGHTS.get(newPosition);
+        Lights.LIGHTS.set(newPosition, light);
+        Lights.LIGHTS.set(oldPosition, temp);
+        adapter.notifyDataSetChanged();
+        setActivatedPosition(newPosition);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_light_menu, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        int position = selectedPosition();
+        MenuItem upItem = menu.findItem(R.id.moveup_light);
+        MenuItem downItem = menu.findItem(R.id.movedown_light);
+
+        if (position >= 0 && Lights.LIGHTS.size() > 0) {
+            if (upItem != null) {
+                upItem.setVisible(position > 0);
+            }
+            if (downItem != null) {
+                downItem.setVisible(position < (Lights.LIGHTS.size() - 1));
+            }
+        } else {
+            if (upItem != null) {
+                upItem.setVisible(false);
+            }
+            if (downItem != null) {
+                downItem.setVisible(false);
+            }
+        }
+    }
+
+    public int selectedPosition() {
+        return getListView().getCheckedItemPosition();
+    }
+
+    public Lights.Light selectedLight() {
+        return Lights.LIGHTS.get(selectedPosition());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+        case R.id.moveup_light:
+            moveLight(selectedLight(), false);
+            return true;
+        case R.id.movedown_light:
+            moveLight(selectedLight(), true);
+            return true;
+        case R.id.add_light:
+            addLight(new Lights.DmxLight(0, "Light " + Integer.toString(Lights.LIGHTS.size() + 1)));
+            return true;
+        case R.id.remove_light:
+            removeLight(selectedLight());
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+    }
+  }
 }

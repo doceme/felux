@@ -19,6 +19,7 @@ public class SceneDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_INDEX = "scene_index";
+    public static final String TAG = "scene_detail_tag";
 
     /**
      * The dummy content this fragment is presenting.
@@ -36,6 +37,7 @@ public class SceneDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
         Bundle arguments = getArguments();
         if (arguments != null && arguments.containsKey(ARG_INDEX)) {
             // Load the dummy content specified by the fragment
@@ -43,22 +45,41 @@ public class SceneDetailFragment extends Fragment {
             // to load content from a content provider.
             mScene = Scenes.SCENE_MAP.get(arguments.getInt(ARG_INDEX));
         }
+        */
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_scene_detail, container, false);
+        return inflater.inflate(R.layout.fragment_scene_detail, container, false);
+    }
 
-        // Show the dummy content as text in a TextView.
-        if (mScene != null) {
-            ((TextView) rootView.findViewById(R.id.scene_detail)).setText(mScene.name);
-        }
-
-        return rootView;
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        updateSceneView();
     }
 
     public Scenes.Scene getScene() {
         return mScene;
+    }
+
+    public void setScene(Scenes.Scene scene) {
+        mScene = scene;
+        updateSceneView();
+    }
+
+    public void updateSceneView() {
+        View rootView = getView();
+        if (rootView != null) {
+            TextView textView = (TextView)rootView.findViewById(R.id.scene_detail);
+            if (textView != null) {
+                if (mScene != null) {
+                    textView.setText(mScene.name);
+                } else {
+                    textView.setText("");
+                }
+            }
+        }
     }
 }

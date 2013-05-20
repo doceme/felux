@@ -18,20 +18,20 @@ import com.lifecity.felux.scene.Scenes;
  */
 public class SceneListFragment extends ListFragment {
     private ArrayAdapter<Scenes.Scene> adapter;
-    private MenuItem menuAdd;
-    private MenuItem menuRemove;
+    private Menu menu;
 
     /**
      * The serialization (saved instance state) Bundle key representing the
      * activated item position. Only used on tablets.
      */
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    public static final String TAG = "scene_list_tag";
 
     /**
      * The fragment's current callback object, which is notified of list item
      * clicks.
      */
-    private SceneListCallbacks mCallbacks = sEmptySceneListCallbacks;
+    private SceneListCallbacks mListCallbacks = sEmptySceneListCallbacks;
 
     /**
      * The current activated item position. Only used on tablets.
@@ -90,6 +90,8 @@ public class SceneListFragment extends ListFragment {
                 setActivatedPosition(0);
             }
         }
+
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -101,7 +103,7 @@ public class SceneListFragment extends ListFragment {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
 
-        mCallbacks = (SceneListCallbacks) activity;
+        mListCallbacks = (SceneListCallbacks) activity;
     }
 
     @Override
@@ -109,7 +111,7 @@ public class SceneListFragment extends ListFragment {
         super.onDetach();
 
         // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sEmptySceneListCallbacks;
+        mListCallbacks = sEmptySceneListCallbacks;
     }
 
     @Override
@@ -117,7 +119,8 @@ public class SceneListFragment extends ListFragment {
         super.onListItemClick(listView, view, position, id);
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onSceneSelected(Scenes.SCENES.get(position));
+        mListCallbacks.onSceneSelected(Scenes.SCENES.get(position));
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -144,36 +147,120 @@ public class SceneListFragment extends ListFragment {
     public void setActivatedPosition(int position) {
         if (position == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);
+            mListCallbacks.onSceneSelected(null);
         } else {
             getListView().setItemChecked(position, true);
+            mListCallbacks.onSceneSelected(Scenes.SCENES.get(position));
         }
 
+        if (menu != null) {
+            MenuItem item;
+            if (position == 0) {
+                item = menu.findItem(R.id.moveup_scene);
+                if (item != null) {
+                    item.setVisible(false);
+                }
+            } else if (position == (Scenes.SCENES.size() - 1)) {
+                item = menu.findItem(R.id.movedown_scene);
+                if (item != null) {
+                    item.setVisible(false);
+                }
+            }
+        }
+
+        getActivity().invalidateOptionsMenu();
         mActivatedPosition = position;
     }
 
     public void addScene(Scenes.Scene scene) {
         Scenes.SCENES.add(scene);
         adapter.notifyDataSetChanged();
-        setActivatedPosition(getListView().getCount() - 1);
+        setActivatedPosition(Scenes.SCENES.size() - 1);
     }
 
     public void removeScene(Scenes.Scene scene) {
+        int oldPosition = selectedPosition();
         Scenes.SCENES.remove(scene);
         adapter.notifyDataSetChanged();
+        setActivatedPosition(oldPosition - 1);
     }
 
+    public void moveScene(Scenes.Scene scene, boolean down) {
+        int oldPosition = selectedPosition();
+        int newPosition;
+
+        if (down) {
+            if (oldPosition < (Scenes.SCENES.size() - 1)) {
+                newPosition = oldPosition + 1;
+            }  else {
+                return;
+            }
+        } else {
+            if (oldPosition > 0) {
+                newPosition = oldPosition - 1;
+            } else {
+                return;
+            }
+        }
+
+        Scenes.Scene temp = Scenes.SCENES.get(newPosition);
+        Scenes.SCENES.set(newPosition, scene);
+        Scenes.SCENES.set(oldPosition, temp);
+        adapter.notifyDataSetChanged();
+        setActivatedPosition(newPosition);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        this.menu = menu;
         inflater.inflate(R.menu.fragment_scene_menu, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        int position = selectedPosition();
+        MenuItem upItem = menu.findItem(R.id.moveup_scene);
+        MenuItem downItem = menu.findItem(R.id.movedown_scene);
+
+        if (position >= 0 && Scenes.SCENES.size() > 0) {
+            if (upItem != null) {
+                upItem.setVisible(position > 0);
+            }
+            if (downItem != null) {
+                downItem.setVisible(position < (Scenes.SCENES.size() - 1));
+            }
+        } else {
+            if (upItem != null) {
+                upItem.setVisible(false);
+            }
+            if (downItem != null) {
+                downItem.setVisible(false);
+            }
+        }
+    }
+
+    public int selectedPosition() {
+        return getListView().getCheckedItemPosition();
+    }
+
+    public Scenes.Scene selectedScene() {
+        return Scenes.SCENES.get(selectedPosition());
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
+        case R.id.moveup_scene:
+            moveScene(selectedScene(), false);
+            return true;
+        case R.id.movedown_scene:
+            moveScene(selectedScene(), true);
+            return true;
         case R.id.add_scene:
-            addScene(new Scenes.Scene("Untitled"));
+            addScene(new Scenes.Scene("Scene " + Integer.toString(Scenes.SCENES.size() + 1)));
             return true;
         case R.id.remove_scene:
-            removeScene(Scenes.SCENES.get(getListView().getCheckedItemPosition()));
+            removeScene(selectedScene());
             return true;
         default:
             return super.onOptionsItemSelected(item);

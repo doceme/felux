@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.lifecity.felux.dmx.DmxLights;
+import com.lifecity.felux.light.Lights;
 
 /**
  * A fragment representing a single Light detail screen.
@@ -19,11 +19,12 @@ public class LightDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_DMX_ADDR = "dmx_address";
+    public static final String TAG = "light_detail_tag";
 
     /**
      * The dummy content this fragment is presenting.
      */
-    private DmxLights.DmxLight mLight;
+    private Lights.Light mLight;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -36,29 +37,49 @@ public class LightDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
         Bundle arguments = getArguments();
         if (arguments != null && arguments.containsKey(ARG_DMX_ADDR)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mLight = DmxLights.LIGHT_MAP.get(arguments.getInt(ARG_DMX_ADDR));
+            mLight = Lights.LIGHT_MAP.get(arguments.getInt(ARG_DMX_ADDR));
         }
+        */
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_light_detail, container, false);
-
-        // Show the dummy content as text in a TextView.
-        if (mLight != null) {
-            ((TextView) rootView.findViewById(R.id.light_detail)).setText(mLight.name);
-        }
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_light_detail, container, false);
     }
 
-    public DmxLights.DmxLight getLight() {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        updateLightView();
+    }
+
+    public Lights.Light getLight() {
         return mLight;
+    }
+
+    public void setLight(Lights.Light light) {
+        mLight = light;
+        updateLightView();
+    }
+
+    public void updateLightView() {
+        View rootView = getView();
+        if (rootView != null) {
+            TextView textView = (TextView)rootView.findViewById(R.id.light_detail);
+            if (textView != null) {
+                if (mLight != null) {
+                    textView.setText(mLight.name);
+                } else {
+                    textView.setText("");
+                }
+            }
+        }
     }
 }
