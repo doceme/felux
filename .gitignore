@@ -1,0 +1,14 @@
+*.iml
+*.iws
+*.ipr
+.idea/
+.gradle/
+local.properties
+*/build/
+*/libs/
+*.swp
+build.gradle
+settings.gradle
+gradle/
+gradlew
+gradlew.bat
