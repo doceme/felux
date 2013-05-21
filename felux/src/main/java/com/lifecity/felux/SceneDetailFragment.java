@@ -2,6 +2,7 @@ package com.lifecity.felux;
 
 import android.view.View;
 import android.widget.TextView;
+import com.lifecity.felux.scenes.Scene;
 
 /**
  * A fragment representing a single Scene detail screen.

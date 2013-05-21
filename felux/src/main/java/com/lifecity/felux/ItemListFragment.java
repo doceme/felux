@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import com.lifecity.felux.items.Item;
 
 import java.util.ArrayList;
 import java.util.List;

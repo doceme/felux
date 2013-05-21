@@ -1,4 +1,6 @@
-package com.lifecity.felux;
+package com.lifecity.felux.scenes;
+
+import com.lifecity.felux.items.Item;
 
 /**
  * Scene class

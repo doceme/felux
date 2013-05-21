@@ -1,6 +1,7 @@
 package com.lifecity.felux;
 
 import android.view.*;
+import com.lifecity.felux.scenes.Scene;
 
 /**
  *

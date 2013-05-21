@@ -1,4 +1,6 @@
-package com.lifecity.felux;
+package com.lifecity.felux.lights;
+
+import com.lifecity.felux.items.Item;
 
 /**
  * Basic light class

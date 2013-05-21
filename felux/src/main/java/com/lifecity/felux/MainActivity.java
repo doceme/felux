@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import com.lifecity.felux.items.Item;
+import com.lifecity.felux.lights.Light;
+import com.lifecity.felux.scenes.Scene;
 
 
 /**

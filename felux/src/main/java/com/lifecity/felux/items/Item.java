@@ -1,4 +1,4 @@
-package com.lifecity.felux;
+package com.lifecity.felux.items;
 
 /**
  * Basic item class
