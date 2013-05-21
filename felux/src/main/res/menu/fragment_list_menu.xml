@@ -2,28 +2,28 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/moveup_light"
+        android:id="@+id/moveup"
         android:title="Move Up"
         android:icon="@android:drawable/arrow_up_float"
         android:showAsAction="ifRoom"
         android:orderInCategory="1">
     </item>
     <item
-        android:id="@+id/movedown_light"
+        android:id="@+id/movedown"
         android:title="Move Down"
         android:icon="@android:drawable/arrow_down_float"
         android:showAsAction="ifRoom"
         android:orderInCategory="2">
     </item>
     <item
-        android:id="@+id/remove_light"
+        android:id="@+id/remove"
         android:title="Remove"
         android:icon="@android:drawable/ic_menu_delete"
         android:showAsAction="ifRoom"
         android:orderInCategory="3">
     </item>
     <item
-        android:id="@+id/add_light"
+        android:id="@+id/add"
         android:title="Add"
         android:icon="@android:drawable/ic_menu_add"
         android:showAsAction="ifRoom"

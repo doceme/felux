@@ -1,14 +1,10 @@
 package com.lifecity.felux;
 
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.lifecity.felux.light.Lights;
-import com.lifecity.felux.scene.Scenes;
 
 
 /**
@@ -25,7 +21,7 @@ import com.lifecity.felux.scene.Scenes;
  * This activity also implements the required
  * to listen for item selections.
  */
-public class MainActivity extends FragmentActivity implements LightListCallbacks, SceneListCallbacks {
+public class MainActivity extends FragmentActivity implements ItemListCallbacks<Item> {
     public static final String ACTIVE_TAB = "active_tab";
     public static final String ACTIVE_LIGHT = "active_light";
     public static final String ACTIVE_SCENE = "active_scene";
@@ -100,30 +96,25 @@ public class MainActivity extends FragmentActivity implements LightListCallbacks
     }
 
     /**
-     * Callback method from {@link SceneListCallbacks}
+     * Callback method from {@link ItemListCallbacks}
      * indicating that the item with the given index was selected.
      */
     @Override
-    public void onSceneSelected(Scenes.Scene scene) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        sceneDetailFragment = (SceneDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
-        if (sceneDetailFragment != null) {
-            sceneDetailFragment.setScene(scene);
+    public void onItemSelected(Item item) {
+        String tag;
+        if (item instanceof Scene) {
+            tag = SceneDetailFragment.TAG;
+        } else if (item instanceof Light) {
+            tag = LightDetailFragment.TAG;
+        } else {
+            throw new IllegalStateException("Invalid selected item");
         }
-    }
 
-    /**
-     * Callback method from {@link SceneListCallbacks}
-     * indicating that the item with the given index was selected.
-     */
-    @Override
-    public void onLightSelected(Lights.Light light) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        lightDetailFragment = (LightDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
-        if (lightDetailFragment != null) {
-            lightDetailFragment.setLight(light);
+        ItemDetailFragment itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(tag);
+        if (itemDetailFragment != null) {
+            itemDetailFragment.setItem(item);
         }
     }
 
@@ -169,26 +160,26 @@ public class MainActivity extends FragmentActivity implements LightListCallbacks
             if (tabType == TabType.SCENE) {
                 if (sceneListFragment == null) {
                     sceneListFragment = new SceneListFragment();
-                    ft.replace(R.id.fragment_primary, sceneListFragment, SceneListFragment.TAG);
+                    ft.add(R.id.fragment_primary, sceneListFragment, SceneListFragment.TAG);
                 } else {
                     ft.attach(sceneListFragment);
                 }
                 if (sceneDetailFragment == null) {
                     sceneDetailFragment = new SceneDetailFragment();
-                    ft.replace(R.id.fragment_secondary, sceneDetailFragment, SceneDetailFragment.TAG);
+                    ft.add(R.id.fragment_secondary, sceneDetailFragment, SceneDetailFragment.TAG);
                 } else {
                     ft.attach(sceneDetailFragment);
                 }
             } else if (tabType == TabType.LIGHT) {
                 if (lightListFragment == null) {
                     lightListFragment = new LightListFragment();
-                    ft.replace(R.id.fragment_primary, lightListFragment, LightListFragment.TAG);
+                    ft.add(R.id.fragment_primary, lightListFragment, LightListFragment.TAG);
                 } else {
                     ft.attach(lightListFragment);
                 }
                 if (lightDetailFragment == null) {
                     lightDetailFragment = new LightDetailFragment();
-                    ft.replace(R.id.fragment_secondary, lightDetailFragment, LightDetailFragment.TAG);
+                    ft.add(R.id.fragment_secondary, lightDetailFragment, LightDetailFragment.TAG);
                 } else {
                     ft.attach(lightDetailFragment);
                 }
