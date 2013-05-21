@@ -9,5 +9,12 @@
     </string>
     <string name="title_light_list" >Lights
     </string>
+    <string name="light_types_label">Select a light type</string>
+    <string name="light_detail_name_label">Name:</string>
+    <string name="light_detail_type_label">Type:</string>
+    <string-array name="light_types">
+        <item>Color DMX</item>
+        <item>Basic DMX</item>
+    </string-array>
 
 </resources>

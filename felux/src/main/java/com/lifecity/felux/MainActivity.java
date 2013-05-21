@@ -121,6 +121,25 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         }
     }
 
+    @Override
+    public void onItemAdded(Item item) {
+        String tag;
+        if (item instanceof Scene) {
+            tag = SceneDetailFragment.TAG;
+        } else if (item instanceof Light) {
+            tag = LightDetailFragment.TAG;
+        } else {
+            throw new IllegalStateException("Invalid selected item");
+        }
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ItemDetailFragment itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(tag);
+        if (itemDetailFragment != null) {
+            itemDetailFragment.itemAdded(item);
+        }
+    }
+
     private class TabListener implements ActionBar.TabListener {
         private FragmentActivity activity;
         private SceneListFragment sceneListFragment;
@@ -164,27 +183,27 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 if (sceneListFragment == null) {
                     sceneListFragment = new SceneListFragment();
                     ft.add(R.id.fragment_primary, sceneListFragment, SceneListFragment.TAG);
+                    if (sceneDetailFragment == null) {
+                        sceneDetailFragment = new SceneDetailFragment(sceneListFragment);
+                        ft.add(R.id.fragment_secondary, sceneDetailFragment, SceneDetailFragment.TAG);
+                    } else {
+                        ft.attach(sceneDetailFragment);
+                    }
                 } else {
                     ft.attach(sceneListFragment);
-                }
-                if (sceneDetailFragment == null) {
-                    sceneDetailFragment = new SceneDetailFragment();
-                    ft.add(R.id.fragment_secondary, sceneDetailFragment, SceneDetailFragment.TAG);
-                } else {
-                    ft.attach(sceneDetailFragment);
                 }
             } else if (tabType == TabType.LIGHT) {
                 if (lightListFragment == null) {
                     lightListFragment = new LightListFragment();
                     ft.add(R.id.fragment_primary, lightListFragment, LightListFragment.TAG);
+                    if (lightDetailFragment == null) {
+                        lightDetailFragment = new LightDetailFragment(lightListFragment);
+                        ft.add(R.id.fragment_secondary, lightDetailFragment, LightDetailFragment.TAG);
+                    } else {
+                        ft.attach(lightDetailFragment);
+                    }
                 } else {
                     ft.attach(lightListFragment);
-                }
-                if (lightDetailFragment == null) {
-                    lightDetailFragment = new LightDetailFragment();
-                    ft.add(R.id.fragment_secondary, lightDetailFragment, LightDetailFragment.TAG);
-                } else {
-                    ft.attach(lightDetailFragment);
                 }
             }
 

@@ -1,6 +1,7 @@
 package com.lifecity.felux;
 
 import android.view.*;
+import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;

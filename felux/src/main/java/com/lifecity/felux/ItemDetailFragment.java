@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.lifecity.felux.items.Item;
 
 /**
  * A fragment representing a single Scene detail screen.
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 abstract class ItemDetailFragment<T> extends Fragment {
     public String TAG;
     protected int layout;
+    protected ItemDetailCallbacks<Item> detailCallbacks;
 
     /**
      * The dummy content this fragment is presenting.
@@ -23,8 +25,9 @@ abstract class ItemDetailFragment<T> extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ItemDetailFragment(int layout) {
+    public ItemDetailFragment(int layout, ItemDetailCallbacks<Item> detailCallbacks) {
         this.layout = layout;
+        this.detailCallbacks = detailCallbacks;
     }
 
     @Override
@@ -51,6 +54,9 @@ abstract class ItemDetailFragment<T> extends Fragment {
     public void setItem(T item) {
         this.item = item;
         updateItemView();
+    }
+
+    public void itemAdded(T item) {
     }
 
     abstract public void updateItemView();

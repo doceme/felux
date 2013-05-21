@@ -14,7 +14,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class ItemListFragment<T> extends ListFragment {
+public abstract class ItemListFragment<T> extends ListFragment implements ItemDetailCallbacks<Item> {
     protected ArrayAdapter<T> adapter;
     protected List<T> items = new ArrayList<T>();
 
@@ -38,6 +38,8 @@ public abstract class ItemListFragment<T> extends ListFragment {
     protected static class EmptyItemListCallbacks implements ItemListCallbacks<Item> {
         @Override
         public void onItemSelected(Item item) {
+        }
+        public void onItemAdded(Item item) {
         }
     }
 
@@ -133,6 +135,7 @@ public abstract class ItemListFragment<T> extends ListFragment {
         items.add(item);
         adapter.notifyDataSetChanged();
         setActivatedPosition(items.size() - 1);
+        itemListCallbacks.onItemAdded(item);
     }
 
     public void removeItem(T item) {
@@ -224,4 +227,9 @@ public abstract class ItemListFragment<T> extends ListFragment {
             return super.onOptionsItemSelected(item);
     }
   }
+
+    @Override
+    public void onItemNameChanged(Item item) {
+        adapter.notifyDataSetChanged();
+    }
 }

@@ -2,6 +2,7 @@ package com.lifecity.felux;
 
 import android.view.View;
 import android.widget.TextView;
+import com.lifecity.felux.items.Item;
 import com.lifecity.felux.scenes.Scene;
 
 /**
@@ -15,8 +16,8 @@ public class SceneDetailFragment extends ItemDetailFragment<Scene> {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public SceneDetailFragment() {
-        super(R.layout.fragment_scene_detail);
+    public SceneDetailFragment(ItemDetailCallbacks<Item> detailCallbacks) {
+        super(R.layout.fragment_scene_detail, detailCallbacks);
     }
 
     public void updateItemView() {
