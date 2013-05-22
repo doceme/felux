@@ -26,10 +26,67 @@
                   android:text="@string/light_detail_type_label" android:id="@+id/light_detail_type_label"
                   android:layout_column="0" android:layout_marginRight="5dp"
                   android:textAlignment="center"/>
-        <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/light_detail_type_spinner" android:layout_column="3"
-                android:focusable="true" android:spinnerMode="dialog" android:prompt="@string/light_types_label"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/light_detail_type_text"
+            android:layout_column="3"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/light_detail_addr_label"
+            android:id="@+id/light_detail_addr_label"
+            android:layout_column="0"
+            android:layout_marginRight="5dp"
+            android:textAlignment="center"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/light_detail_addr_edit"
+            android:layout_column="3"
+            android:numeric="integer"
+            android:autoText="false"
+            android:editable="true"
+            />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/light_detail_end_addr_label"
+            android:id="@+id/light_detail_end_addr_label"
+            android:layout_column="0"
+            android:layout_marginRight="5dp"
+            android:textAlignment="center"
+            android:visibility="invisible"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/light_detail_end_addr_edit"
+            android:layout_column="3"
+            android:numeric="integer"
+            android:autoText="false"
+            android:editable="true"
+            android:visibility="invisible"/>
     </TableRow>
 </TableLayout>

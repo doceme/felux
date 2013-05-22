@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.lifecity.felux.items.Item;
+import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
 
 /**
@@ -18,6 +19,11 @@ import com.lifecity.felux.lights.Light;
 public class LightDetailFragment extends ItemDetailFragment<Light> {
     public static final String TAG = "light_detail_tag";
     private EditText nameEdit;
+    private EditText addrEdit;
+    private TextView typeText;
+    private TextView addrLabel;
+    private TextView endAddrLabel;
+    private EditText endAddrEdit;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -55,19 +61,30 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
             }
         });
 
-        Spinner lightType = (Spinner)getView().findViewById(R.id.light_detail_type_spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getView().getContext(), R.array.light_types, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        lightType.setAdapter(adapter);
+        typeText = (TextView)getView().findViewById(R.id.light_detail_type_text);
+        addrLabel = (TextView)getView().findViewById(R.id.light_detail_addr_label);
+        endAddrLabel = (TextView)getView().findViewById(R.id.light_detail_end_addr_label);
+        addrEdit = (EditText)getView().findViewById(R.id.light_detail_addr_edit);
+        endAddrEdit = (EditText)getView().findViewById(R.id.light_detail_end_addr_edit);
+
+        typeText.setText("");
+        addrEdit.setText("");
+        endAddrEdit.setText("");
+        endAddrEdit.setVisibility(View.INVISIBLE);
+        endAddrLabel.setVisibility(View.INVISIBLE);
+
         super.onViewCreated(view, savedInstanceState);
     }
 
     public void updateItemView() {
         if (nameEdit != null) {
             nameEdit.setText(item != null ? item.name : "");
+        }
+        if (typeText != null) {
+            if (item == null) {
+                typeText.setText("");
+            } else {
+            }
         }
     }
 }
