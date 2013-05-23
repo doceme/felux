@@ -54,7 +54,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
         mFragmentManager = getSupportFragmentManager();
@@ -62,10 +63,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         //ActionBar actionBar = getActionBar();
         //actionBar.setDisplayOptions(actionBar.getDisplayOptions() & ~ActionBar.DISPLAY_SHOW_TITLE);
         final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
-                ActionBar.DISPLAY_HOME_AS_UP |
-                ActionBar.DISPLAY_SHOW_TITLE
-        );
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME);
         if (findViewById(R.id.fragment_secondary) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-large and
