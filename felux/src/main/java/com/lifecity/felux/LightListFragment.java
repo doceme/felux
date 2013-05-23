@@ -1,9 +1,6 @@
 package com.lifecity.felux;
 
-import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.*;
-import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
@@ -34,7 +31,7 @@ public class LightListFragment extends ItemListFragment<Light> {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-        case R.id.add:
+        case R.id.item_add:
             //addItem(new DmxLight("Light " + Integer.toString(items.size() + 1)));
             AddLightDialogFragment dialog = new AddLightDialogFragment(new AddLightDialogFragment.AddLightDialogListener() {
                 @Override

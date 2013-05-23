@@ -18,6 +18,8 @@ import java.util.List;
 public abstract class ItemListFragment<T> extends ListFragment implements ItemDetailCallbacks<Item> {
     protected ArrayAdapter<T> adapter;
     protected List<T> items = new ArrayList<T>();
+    protected ActionMode actionMode;
+    protected ActionMode.Callback actionModeCallback;
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -190,10 +192,12 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         int position = selectedPosition();
-        MenuItem upItem = menu.findItem(R.id.moveup);
-        MenuItem downItem = menu.findItem(R.id.movedown);
-        MenuItem removeItem = menu.findItem(R.id.remove);
+        MenuItem upItem = menu.findItem(R.id.item_moveup);
+        MenuItem downItem = menu.findItem(R.id.item_movedown);
+        MenuItem editItem = menu.findItem(R.id.item_edit);
+        MenuItem removeItem = menu.findItem(R.id.item_remove);
 
+        editItem.setVisible(items.size() > 0);
         removeItem.setVisible(items.size() > 0);
 
         if (position >= 0 && items.size() > 0) {
@@ -224,16 +228,13 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-        case R.id.moveup:
+        case R.id.item_moveup:
             moveItem(selectedItem(), false);
             return true;
-        case R.id.movedown:
+        case R.id.item_movedown:
             moveItem(selectedItem(), true);
             return true;
-        case R.id.add:
-            getActivity().invalidateOptionsMenu();
-            return true;
-        case R.id.remove:
+        case R.id.item_remove:
             ConfirmDialogFragment dialog = new ConfirmDialogFragment("Delete", "Are you sure you want to delete this?", new ConfirmDialogFragment.ConfirmDialogListener() {
                 @Override
                 public void onConfirm() {
@@ -242,6 +243,14 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
                 }
             });
             dialog.show(getActivity().getSupportFragmentManager(), "confirm_remove_dialog_tag");
+            return true;
+        case R.id.item_edit:
+            if (actionModeCallback != null) {
+                actionMode = getActivity().startActionMode(actionModeCallback);
+            }
+            return true;
+        case R.id.item_add:
+            getActivity().invalidateOptionsMenu();
             return true;
         default:
             return super.onOptionsItemSelected(item);

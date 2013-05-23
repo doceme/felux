@@ -20,7 +20,7 @@ public class SceneListFragment extends ItemListFragment<Scene> {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
-        case R.id.add:
+        case R.id.item_add:
             addItem(new Scene("Scene " + Integer.toString(items.size() + 1)));
             return true;
         default:

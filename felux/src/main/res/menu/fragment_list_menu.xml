@@ -2,31 +2,38 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/moveup"
+        android:id="@+id/item_moveup"
         android:title="Move Up"
         android:icon="@android:drawable/arrow_up_float"
         android:showAsAction="ifRoom"
         android:orderInCategory="1">
     </item>
     <item
-        android:id="@+id/movedown"
+        android:id="@+id/item_movedown"
         android:title="Move Down"
         android:icon="@android:drawable/arrow_down_float"
         android:showAsAction="ifRoom"
         android:orderInCategory="2">
     </item>
     <item
-        android:id="@+id/remove"
+        android:id="@+id/item_remove"
         android:title="Remove"
         android:icon="@android:drawable/ic_menu_delete"
         android:showAsAction="ifRoom"
         android:orderInCategory="3">
     </item>
     <item
-        android:id="@+id/add"
+        android:id="@+id/item_edit"
+        android:title="Edit"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="4">
+    </item>
+    <item
+        android:id="@+id/item_add"
         android:title="Add"
         android:icon="@android:drawable/ic_menu_add"
         android:showAsAction="ifRoom"
-        android:orderInCategory="4">
+        android:orderInCategory="5">
     </item>
 </menu>
