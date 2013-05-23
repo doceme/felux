@@ -6,10 +6,27 @@ import com.lifecity.felux.lights.Light;
  * DMX basic light class
  */
 public class DmxLight extends Light {
-    public int address;
+    protected int address;
 
-    public DmxLight(int address, String name) {
+    public DmxLight() {
+        super();
+    }
+
+    public DmxLight(String name) {
+        super(name);
+    }
+
+    public DmxLight(String name, int address) {
         super(name);
         this.address = address;
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
+    public DmxLight setAddress(int address) {
+        this.address = address;
+        return this;
     }
 }

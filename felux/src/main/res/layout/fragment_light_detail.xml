@@ -59,7 +59,7 @@
             android:numeric="integer"
             android:autoText="false"
             android:editable="true"
-            />
+            android:selectAllOnFocus="true"/>
 
     </TableRow>
 
@@ -87,6 +87,6 @@
             android:numeric="integer"
             android:autoText="false"
             android:editable="true"
-            android:visibility="invisible"/>
+            android:visibility="invisible" android:selectAllOnFocus="true"/>
     </TableRow>
 </TableLayout>

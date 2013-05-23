@@ -9,16 +9,21 @@
     </string>
     <string name="title_light_list" >Lights
     </string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="light_types_label">Select a light type</string>
     <string name="light_detail_name_label">Name:</string>
     <string name="light_detail_type_label">Type:</string>
     <string name="light_detail_addr_label">Address:</string>
     <string name="light_detail_start_addr_label">Start Address:</string>
     <string name="light_detail_end_addr_label">End Address:</string>
+    <string name="light_type_basic">Basic</string>
+    <string name="light_type_group">Group</string>
+    <string name="light_type_color">Color</string>
     <string-array name="light_types">
-        <item>Basic DMX</item>
-        <item>Group DMX</item>
-        <item>Color DMX</item>
+        <item>@string/light_type_basic</item>
+        <item>@string/light_type_group</item>
+        <item>@string/light_type_color</item>
     </string-array>
 
 </resources>

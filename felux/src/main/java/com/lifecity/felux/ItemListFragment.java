@@ -43,6 +43,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         }
     }
 
+    public T getItemAt(int index) {
+        return items.get(index);
+    }
+
     /**
      */
     protected static ItemListCallbacks emptyItemListCallbacks = new EmptyItemListCallbacks();

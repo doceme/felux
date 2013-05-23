@@ -8,13 +8,23 @@ import android.graphics.Color;
 public class DmxColorLight extends DmxLight {
     protected int color;
 
-    public DmxColorLight(int address, String name) {
-        super(address, name);
+    public DmxColorLight() {
+        super();
         this.color = Color.WHITE;
     }
 
-    public DmxColorLight(int address, String name, int color) {
-        super(address, name);
+    public DmxColorLight(String name) {
+        super(name);
+        this.color = Color.WHITE;
+    }
+
+    public DmxColorLight(String name, int address) {
+        super(name, address);
+        this.color = Color.WHITE;
+    }
+
+    public DmxColorLight(String name, int address, int color) {
+        super(name, address);
         this.color = color;
     }
 
@@ -22,7 +32,8 @@ public class DmxColorLight extends DmxLight {
         return this.color;
     }
 
-    public void setColor(int color) {
+    public DmxColorLight setColor(int color) {
         this.color = color;
+        return this;
     }
 }

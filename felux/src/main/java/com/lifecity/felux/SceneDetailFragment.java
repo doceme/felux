@@ -26,7 +26,7 @@ public class SceneDetailFragment extends ItemDetailFragment<Scene> {
             TextView textView = (TextView)rootView.findViewById(R.id.scene_detail);
             if (textView != null) {
                 if (item != null) {
-                    textView.setText(item.name);
+                    textView.setText(item.getName());
                 } else {
                     textView.setText("");
                 }

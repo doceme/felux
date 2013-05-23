@@ -1,5 +1,7 @@
 package com.lifecity.felux;
 
+import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.*;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
@@ -15,7 +17,7 @@ import com.lifecity.felux.lights.Light;
  * <p>
  * interface.
  */
-public class LightListFragment extends ItemListFragment<Light> {
+public class LightListFragment extends ItemListFragment<Light> implements AddLightDialogFragment.AddLightDialogListener {
     public static String TAG = "light_list_tag";
 
     /**
@@ -23,20 +25,35 @@ public class LightListFragment extends ItemListFragment<Light> {
      * fragment (e.g. upon screen orientation changes).
      */
     public LightListFragment() {
-        items.add(new DmxColorLight(1, "Screen"));
-        items.add(new DmxColorLight(5, "Side"));
-        items.add(new DmxColorLight(9, "Ceiling"));
-        items.add(new DmxLight(13, "Stage"));
+        items.add(new DmxColorLight("Screen", 1));
+        items.add(new DmxColorLight("Side", 5));
+        items.add(new DmxColorLight("Ceiling", 9));
+        items.add(new DmxLight("Stage", 13));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
         case R.id.add:
-            addItem(new DmxLight(0, "Light " + Integer.toString(items.size() + 1)));
+            //addItem(new DmxLight("Light " + Integer.toString(items.size() + 1)));
+            AddLightDialogFragment dialog = new AddLightDialogFragment(this);
+            dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
             return true;
         default:
             return super.onOptionsItemSelected(item);
     }
   }
+
+    @Override
+    public void onTypeSelected(Light light) {
+        if (light != null) {
+            light.setName("Light " + Integer.toString(items.size() + 1));
+            addItem(light);
+        }
+    }
+
+    @Override
+    public void onCanceled() {
+
+    }
 }

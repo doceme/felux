@@ -197,7 +197,9 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                         ft.attach(sceneDetailFragment);
                     }
                 } else {
+                    //int position = sceneListFragment.getListView().getCheckedItemPosition();
                     ft.attach(sceneListFragment);
+                    ft.attach(sceneDetailFragment);
                 }
             } else if (tabType == TabType.LIGHT) {
                 if (lightListFragment == null) {
@@ -211,6 +213,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                     }
                 } else {
                     ft.attach(lightListFragment);
+                    ft.attach(lightDetailFragment);
                 }
             }
 
