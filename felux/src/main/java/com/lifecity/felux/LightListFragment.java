@@ -17,7 +17,7 @@ import com.lifecity.felux.lights.Light;
  * <p>
  * interface.
  */
-public class LightListFragment extends ItemListFragment<Light> implements AddLightDialogFragment.AddLightDialogListener {
+public class LightListFragment extends ItemListFragment<Light> {
     public static String TAG = "light_list_tag";
 
     /**
@@ -36,24 +36,24 @@ public class LightListFragment extends ItemListFragment<Light> implements AddLig
     switch (item.getItemId()) {
         case R.id.add:
             //addItem(new DmxLight("Light " + Integer.toString(items.size() + 1)));
-            AddLightDialogFragment dialog = new AddLightDialogFragment(this);
+            AddLightDialogFragment dialog = new AddLightDialogFragment(new AddLightDialogFragment.AddLightDialogListener() {
+                @Override
+                public void onTypeSelected(Light light) {
+                    if (light != null) {
+                        light.setName("Light " + Integer.toString(items.size() + 1));
+                        addItem(light);
+                    }
+                }
+
+                @Override
+                public void onCanceled() {
+
+                }
+            });
             dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
-            return true;
+            return super.onOptionsItemSelected(item);
         default:
             return super.onOptionsItemSelected(item);
     }
   }
-
-    @Override
-    public void onTypeSelected(Light light) {
-        if (light != null) {
-            light.setName("Light " + Integer.toString(items.size() + 1));
-            addItem(light);
-        }
-    }
-
-    @Override
-    public void onCanceled() {
-
-    }
 }

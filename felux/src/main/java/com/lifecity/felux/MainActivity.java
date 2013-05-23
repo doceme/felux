@@ -34,6 +34,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     private LightListFragment lightListFragment;
     private SceneDetailFragment sceneDetailFragment;
     private LightDetailFragment lightDetailFragment;
+    private int lightListPosition = -1;
+    private int sceneListPosition = -1;
 
     public enum TabType {
         SCENE,
@@ -108,25 +110,44 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
      * indicating that the item with the given index was selected.
      */
     @Override
-    public void onItemSelected(Item item) {
-        String tag;
+    @SuppressWarnings("unchecked")
+    public void onItemSelected(int position, Item item) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ItemDetailFragment itemDetailFragment = null;
+
         if (item instanceof Scene) {
-            tag = SceneDetailFragment.TAG;
+            sceneListPosition = position;
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
         } else if (item instanceof Light) {
-            tag = LightDetailFragment.TAG;
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
+            lightListPosition = position;
+        } else if (item == null) {
+            int tabPosition = getActionBar().getSelectedNavigationIndex();
+            if (tabPosition == 0) {
+                if (sceneDetailFragment == null) {
+                    sceneDetailFragment = (SceneDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
+                }
+                itemDetailFragment = sceneDetailFragment;
+            } else if (tabPosition == 1) {
+                if (lightDetailFragment == null) {
+                    lightDetailFragment = (LightDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
+                }
+                itemDetailFragment = lightDetailFragment;
+            } else {
+                throw new IllegalStateException("Invalid selected tab");
+            }
         } else {
             throw new IllegalStateException("Invalid selected item");
         }
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ItemDetailFragment itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(tag);
         if (itemDetailFragment != null) {
             itemDetailFragment.setItem(item);
         }
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onItemAdded(Item item) {
         String tag;
         if (item instanceof Scene) {
@@ -187,6 +208,9 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             if (tabType == TabType.SCENE) {
                 if (sceneListFragment == null) {
                     sceneListFragment = new SceneListFragment();
+                    if (sceneListFragment.items.size() > 0) {
+                        sceneListPosition = 0;
+                    }
                     ft.add(R.id.fragment_primary, sceneListFragment, SceneListFragment.TAG);
                     if (sceneDetailFragment == null) {
                         sceneDetailFragment = new SceneDetailFragment(sceneListFragment);
@@ -195,23 +219,35 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                         ft.attach(sceneDetailFragment);
                     }
                 } else {
-                    //int position = sceneListFragment.getListView().getCheckedItemPosition();
                     ft.attach(sceneListFragment);
                     ft.attach(sceneDetailFragment);
+                }
+                if (sceneListPosition >= 0 && sceneListFragment.items.size() > 0) {
+                    sceneDetailFragment.setItem(sceneListFragment.items.get(sceneListPosition));
                 }
             } else if (tabType == TabType.LIGHT) {
                 if (lightListFragment == null) {
                     lightListFragment = new LightListFragment();
+                    if (lightListFragment.items.size() > 0) {
+                        lightListPosition = 0;
+                    }
                     ft.add(R.id.fragment_primary, lightListFragment, LightListFragment.TAG);
                     if (lightDetailFragment == null) {
                         lightDetailFragment = new LightDetailFragment(lightListFragment);
+                        if (lightListFragment.items.size() > 0) {
+                            lightDetailFragment.setItem(lightListFragment.items.get(0));
+                        }
                         ft.add(R.id.fragment_secondary, lightDetailFragment, LightDetailFragment.TAG);
                     } else {
                         ft.attach(lightDetailFragment);
                     }
                 } else {
                     ft.attach(lightListFragment);
+                    lightDetailFragment.setItem(lightListFragment.items.get(lightListPosition));
                     ft.attach(lightDetailFragment);
+                }
+                if (lightListPosition >= 0 && lightListFragment.items.size() > 0) {
+                    lightDetailFragment.setItem(lightListFragment.items.get(lightListPosition));
                 }
             }
 

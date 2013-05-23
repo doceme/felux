@@ -3,6 +3,7 @@ package com.lifecity.felux;
 import android.app.Activity;
 import android.support.v4.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -37,7 +38,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
 
     protected static class EmptyItemListCallbacks implements ItemListCallbacks<Item> {
         @Override
-        public void onItemSelected(Item item) {
+        public void onItemSelected(int position, Item item) {
         }
         public void onItemAdded(Item item) {
         }
@@ -82,12 +83,12 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        ListView listView = getListView();
+
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         // Restore the previously serialized activated item position.
-        if (savedInstanceState == null) {
-            if (items.size() > 0) {
-                setActivatedPosition(0);
-            }
+        if (listView.getCheckedItemPosition() < 0) {
+            listView.setItemChecked(0, true);
         }
 
         getActivity().invalidateOptionsMenu();
@@ -106,11 +107,18 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(this.getClass().getSimpleName(), "onPause");
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
 
         // Reset the active callbacks interface to the dummy implementation.
         itemListCallbacks = emptyItemListCallbacks;
+        Log.i(this.getClass().getSimpleName(), "onDetach");
     }
 
     @Override
@@ -118,17 +126,17 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         super.onListItemClick(listView, view, position, id);
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        itemListCallbacks.onItemSelected(items.get(position));
+        itemListCallbacks.onItemSelected(0, items.get(position));
         getActivity().invalidateOptionsMenu();
     }
 
     public void setActivatedPosition(int position) {
         if (position == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);
-            itemListCallbacks.onItemSelected(null);
+            itemListCallbacks.onItemSelected(-1, null);
         } else {
             getListView().setItemChecked(position, true);
-            itemListCallbacks.onItemSelected(items.get(position));
+            itemListCallbacks.onItemSelected(position, items.get(position));
         }
 
         getActivity().invalidateOptionsMenu();
@@ -184,6 +192,9 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         int position = selectedPosition();
         MenuItem upItem = menu.findItem(R.id.moveup);
         MenuItem downItem = menu.findItem(R.id.movedown);
+        MenuItem removeItem = menu.findItem(R.id.remove);
+
+        removeItem.setVisible(items.size() > 0);
 
         if (position >= 0 && items.size() > 0) {
             if (upItem != null) {
@@ -219,13 +230,18 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         case R.id.movedown:
             moveItem(selectedItem(), true);
             return true;
-            /*
         case R.id.add:
-            addItem(new T("Scene " + Integer.toString(items.size() + 1)));
+            getActivity().invalidateOptionsMenu();
             return true;
-            */
         case R.id.remove:
-            removeItem(selectedItem());
+            ConfirmDialogFragment dialog = new ConfirmDialogFragment("Delete", "Are you sure you want to delete this?", new ConfirmDialogFragment.ConfirmDialogListener() {
+                @Override
+                public void onConfirm() {
+                    removeItem(selectedItem());
+                    getActivity().invalidateOptionsMenu();
+                }
+            });
+            dialog.show(getActivity().getSupportFragmentManager(), "confirm_remove_dialog_tag");
             return true;
         default:
             return super.onOptionsItemSelected(item);

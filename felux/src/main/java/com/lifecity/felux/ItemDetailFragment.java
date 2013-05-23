@@ -1,7 +1,9 @@
 package com.lifecity.felux;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +33,9 @@ abstract class ItemDetailFragment<T> extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        updateItemView();
     }
 
     @Override
@@ -41,19 +44,15 @@ abstract class ItemDetailFragment<T> extends Fragment {
         return inflater.inflate(layout, container, false);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        updateItemView();
-    }
-
     public T getItem() {
         return item;
     }
 
     public void setItem(T item) {
+        Log.i(this.getClass().getSimpleName(), "setItem");
         this.item = item;
-        updateItemView();
+        if (getView() != null)
+            updateItemView();
     }
 
     public void itemAdded(T item) {
