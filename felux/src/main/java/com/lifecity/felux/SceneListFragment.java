@@ -1,6 +1,7 @@
 package com.lifecity.felux;
 
 import android.view.MenuItem;
+import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.Scene;
 
 /**
@@ -14,15 +15,29 @@ public class SceneListFragment extends ItemListFragment<Scene> {
      * fragment (e.g. upon screen orientation changes).
      */
     public SceneListFragment() {
-        items.add(new Scene("Scene 1"));
+        items.add(new LightScene("Scene 1"));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
         case R.id.item_add:
-            addItem(new Scene("Scene " + Integer.toString(items.size() + 1)));
-            return true;
+            AddSceneDialogFragment dialog = new AddSceneDialogFragment(new AddSceneDialogFragment.AddSceneDialogListener() {
+                @Override
+                public void onTypeSelected(Scene scene) {
+                    if (scene != null) {
+                        scene.setName("Scene " + Integer.toString(items.size() + 1));
+                        addItem(scene);
+                    }
+                }
+
+                @Override
+                public void onCanceled() {
+
+                }
+            });
+            dialog.show(getActivity().getSupportFragmentManager(), "add_scene_dialog_tag");
+            return super.onOptionsItemSelected(item);
         default:
             return super.onOptionsItemSelected(item);
     }

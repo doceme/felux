@@ -5,7 +5,7 @@ import com.lifecity.felux.items.Item;
 /**
  * Basic light class
  */
-public class Light extends Item {
+public abstract class Light extends Item {
     protected byte value;
 
     public Light() {

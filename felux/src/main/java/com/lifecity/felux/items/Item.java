@@ -7,7 +7,6 @@ public abstract class Item {
     protected String name;
 
     public Item() {
-        this.name = name;
     }
 
     public Item(String name) {

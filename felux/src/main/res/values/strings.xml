@@ -25,5 +25,19 @@
         <item>@string/light_type_group</item>
         <item>@string/light_type_color</item>
     </string-array>
+    <string name="scene_types_label">Select a scene type</string>
+    <string name="scene_lights_select_prompt">Select the lights for this scene</string>
+    <string name="scene_detail_lights_label">Lights:</string>
+    <string name="scene_detail_delay_label">Delay:</string>
+    <string name="scene_detail_note_label">Note:</string>
+    <string name="scene_detail_velocity_label">Velocity:</string>
+    <string name="scene_type_light">Light</string>
+    <string name="scene_type_delay">Delay</string>
+    <string name="scene_type_midi">Midi</string>
+    <string-array name="scene_types">
+        <item>@string/scene_type_light</item>
+        <item>@string/scene_type_delay</item>
+        <item>@string/scene_type_midi</item>
+    </string-array>
 
 </resources>

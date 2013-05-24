@@ -32,7 +32,6 @@ public class LightListFragment extends ItemListFragment<Light> {
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
         case R.id.item_add:
-            //addItem(new DmxLight("Light " + Integer.toString(items.size() + 1)));
             AddLightDialogFragment dialog = new AddLightDialogFragment(new AddLightDialogFragment.AddLightDialogListener() {
                 @Override
                 public void onTypeSelected(Light light) {

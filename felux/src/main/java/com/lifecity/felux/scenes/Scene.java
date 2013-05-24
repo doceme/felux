@@ -5,7 +5,11 @@ import com.lifecity.felux.items.Item;
 /**
  * Scene class
  */
-public class Scene extends Item {
+public abstract class Scene extends Item {
+    public Scene() {
+        super();
+    }
+
     public Scene(String name) {
         super(name);
     }
