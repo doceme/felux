@@ -1,7 +1,5 @@
 package com.lifecity.felux.lights;
 
-import com.lifecity.felux.lights.Light;
-
 /**
  * DMX basic light class
  */

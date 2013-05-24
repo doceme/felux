@@ -4,35 +4,35 @@
     <item
         android:id="@+id/item_moveup"
         android:title="Move Up"
-        android:icon="@android:drawable/arrow_up_float"
+        android:icon="@drawable/navigation_collapse"
         android:showAsAction="ifRoom"
         android:orderInCategory="1">
     </item>
     <item
         android:id="@+id/item_movedown"
         android:title="Move Down"
-        android:icon="@android:drawable/arrow_down_float"
+        android:icon="@drawable/navigation_expand"
         android:showAsAction="ifRoom"
         android:orderInCategory="2">
     </item>
     <item
         android:id="@+id/item_remove"
         android:title="Remove"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:icon="@drawable/content_discard"
         android:showAsAction="ifRoom"
         android:orderInCategory="3">
     </item>
     <item
         android:id="@+id/item_edit"
         android:title="Edit"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/content_edit"
         android:showAsAction="ifRoom"
         android:orderInCategory="4">
     </item>
     <item
         android:id="@+id/item_add"
         android:title="Add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/content_new"
         android:showAsAction="ifRoom"
         android:orderInCategory="5">
     </item>

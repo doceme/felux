@@ -1,6 +1,6 @@
 package com.lifecity.felux;
 
-import android.view.*;
+import android.view.MenuItem;
 import com.lifecity.felux.scenes.Scene;
 
 /**

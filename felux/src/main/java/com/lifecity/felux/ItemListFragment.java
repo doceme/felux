@@ -1,8 +1,8 @@
 package com.lifecity.felux;
 
 import android.app.Activity;
-import android.support.v4.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.*;
 import android.widget.ArrayAdapter;
@@ -42,7 +42,19 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         @Override
         public void onItemSelected(int position, Item item) {
         }
+
+        @Override
         public void onItemAdded(Item item) {
+        }
+
+        @Override
+        public void onItemBeginEdit(Item item) {
+
+        }
+
+        @Override
+        public void onItemEndEdit(Item item) {
+
         }
     }
 
@@ -245,9 +257,29 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
             dialog.show(getActivity().getSupportFragmentManager(), "confirm_remove_dialog_tag");
             return true;
         case R.id.item_edit:
-            if (actionModeCallback != null) {
-                actionMode = getActivity().startActionMode(actionModeCallback);
-            }
+            actionMode = getActivity().startActionMode(new ActionMode.Callback() {
+                @Override
+                public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                    itemListCallbacks.onItemBeginEdit(selectedItem());
+                    return true;
+                }
+
+                @Override
+                public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                    return false;
+                }
+
+                @Override
+                public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                    return false;
+                }
+
+                @Override
+                public void onDestroyActionMode(ActionMode actionMode) {
+                    itemListCallbacks.onItemEndEdit(selectedItem());
+                    actionMode = null;
+                }
+            });
             return true;
         case R.id.item_add:
             getActivity().invalidateOptionsMenu();

@@ -1,12 +1,9 @@
 package com.lifecity.felux;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import com.lifecity.felux.items.Item;
 
 /**
@@ -55,7 +52,13 @@ abstract class ItemDetailFragment<T> extends Fragment {
             updateItemView();
     }
 
-    public void itemAdded(T item) {
+    public void onItemAdded(T item) {
+    }
+
+    public void onItemBeginEdit() {
+    }
+
+    public void onItemEndEdit() {
     }
 
     abstract public void updateItemView();

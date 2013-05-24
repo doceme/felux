@@ -138,7 +138,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 throw new IllegalStateException("Invalid selected tab");
             }
         } else {
-            throw new IllegalStateException("Invalid selected item");
+            throw new IllegalStateException("Invalid item");
         }
 
         if (itemDetailFragment != null) {
@@ -149,20 +149,60 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     @Override
     @SuppressWarnings("unchecked")
     public void onItemAdded(Item item) {
-        String tag;
-        if (item instanceof Scene) {
-            tag = SceneDetailFragment.TAG;
-        } else if (item instanceof Light) {
-            tag = LightDetailFragment.TAG;
-        } else {
-            throw new IllegalStateException("Invalid selected item");
-        }
-
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ItemDetailFragment itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(tag);
+        ItemDetailFragment itemDetailFragment = null;
+
+        if (item instanceof Scene) {
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
+        } else if (item instanceof Light) {
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
+        } else {
+            throw new IllegalStateException("Invalid item");
+        }
+
         if (itemDetailFragment != null) {
-            itemDetailFragment.itemAdded(item);
+            itemDetailFragment.onItemAdded(item);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onItemBeginEdit(Item item) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ItemDetailFragment itemDetailFragment = null;
+
+        if (item instanceof Scene) {
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
+        } else if (item instanceof Light) {
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
+        } else {
+            throw new IllegalStateException("Invalid item");
+        }
+
+        if (itemDetailFragment != null) {
+            itemDetailFragment.onItemBeginEdit();
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onItemEndEdit(Item item) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ItemDetailFragment itemDetailFragment = null;
+
+        if (item instanceof Scene) {
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
+        } else if (item instanceof Light) {
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
+        } else {
+            throw new IllegalStateException("Invalid item");
+        }
+
+        if (itemDetailFragment != null) {
+            itemDetailFragment.onItemEndEdit();
         }
     }
 

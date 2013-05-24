@@ -6,4 +6,6 @@ public interface ItemListCallbacks<T> {
      */
     public void onItemSelected(int position, T item);
     public void onItemAdded(T item);
+    public void onItemBeginEdit(T item);
+    public void onItemEndEdit(T item);
 }

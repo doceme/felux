@@ -16,8 +16,8 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/light_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
-                android:editable="true" android:layout_column="3" android:focusable="true"
-                android:focusableInTouchMode="true"/>
+                android:editable="false" android:layout_column="3"
+                />
     </TableRow>
     <TableRow
             android:layout_width="fill_parent"
@@ -58,7 +58,7 @@
             android:layout_column="3"
             android:numeric="integer"
             android:autoText="false"
-            android:editable="true"
+            android:editable="false"
             android:selectAllOnFocus="true"/>
 
     </TableRow>
@@ -86,7 +86,7 @@
             android:layout_column="3"
             android:numeric="integer"
             android:autoText="false"
-            android:editable="true"
+            android:editable="false"
             android:visibility="invisible" android:selectAllOnFocus="true"/>
     </TableRow>
 </TableLayout>

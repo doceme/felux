@@ -6,9 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
@@ -37,14 +35,47 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
         super(R.layout.fragment_light_detail, detailCallbacks);
     }
 
-    @Override
-    public void itemAdded(Light light) {
-        super.itemAdded(light);
-        nameEdit.setText(light.getName());
+    private void setControlsEnabled(boolean enabled) {
+        if (!enabled) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (nameEdit.hasFocus()) {
+                nameEdit.clearFocus();
+                nameEdit.dispatchWindowFocusChanged(false);
+                imm.hideSoftInputFromWindow(nameEdit.getWindowToken(), 0);
+            } else if (addrEdit.hasFocus()) {
+                addrEdit.clearFocus();
+                addrEdit.dispatchWindowFocusChanged(false);
+                imm.hideSoftInputFromWindow(addrEdit.getWindowToken(), 0);
+            } else if (endAddrEdit.hasFocus()) {
+                endAddrEdit.clearFocus();
+                endAddrEdit.dispatchWindowFocusChanged(false);
+                imm.hideSoftInputFromWindow(endAddrEdit.getWindowToken(), 0);
+            }
+        }
+
+        nameEdit.setFocusable(enabled);
+        nameEdit.setFocusableInTouchMode(enabled);
+        addrEdit.setFocusable(enabled);
+        addrEdit.setFocusableInTouchMode(enabled);
+        endAddrEdit.setFocusable(enabled);
+        endAddrEdit.setFocusableInTouchMode(enabled);
+
+    }
+
+    private void beginEdit() {
         nameEdit.requestFocus();
         nameEdit.dispatchWindowFocusChanged(true);
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(nameEdit, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    @Override
+    public void onItemAdded(Light light) {
+        super.onItemAdded(light);
+        nameEdit.setText(light.getName());
+        setControlsEnabled(true);
+        beginEdit();
         updateItemView(false);
     }
 
@@ -61,7 +92,6 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!editable.toString().isEmpty()) {
-                    item.setName(editable.toString());
                     detailCallbacks.onItemNameChanged(item);
                 }
             }
@@ -73,47 +103,47 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
         addrEdit = (EditText)getView().findViewById(R.id.light_detail_addr_edit);
         endAddrEdit = (EditText)getView().findViewById(R.id.light_detail_end_addr_edit);
 
-        addrEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!editable.toString().isEmpty()) {
-                    DmxLight light = (DmxLight)item;
-                    light.setAddress(Integer.valueOf(editable.toString()));
-                }
-            }
-        });
-
-        endAddrEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (item instanceof DmxGroupLight && !editable.toString().isEmpty()) {
-                    DmxGroupLight light = (DmxGroupLight)item;
-                    light.setEndAddress(Integer.valueOf(editable.toString()));
-                }
-            }
-        });
-
         typeText.setText("");
         addrEdit.setText("");
         endAddrEdit.setText("");
         endAddrEdit.setVisibility(View.INVISIBLE);
         endAddrLabel.setVisibility(View.INVISIBLE);
+        setControlsEnabled(false);
 
         super.onViewCreated(view, savedInstanceState);
     }
 
     public void updateItemView() {
         updateItemView(true);
+    }
+
+    @Override
+    public void onItemBeginEdit() {
+        setControlsEnabled(true);
+        beginEdit();
+    }
+
+    @Override
+    public void onItemEndEdit() {
+        super.onItemEndEdit();
+        if (!nameEdit.getText().toString().isEmpty()) {
+            item.setName(nameEdit.getText().toString());
+        }
+        if (item instanceof DmxLight && !addrEdit.toString().isEmpty()) {
+            DmxLight light = (DmxLight)item;
+            try {
+                int addr = Integer.valueOf(addrEdit.getText().toString());
+                light.setAddress(addr);
+            } catch (NumberFormatException e) {}
+        }
+        if (item instanceof DmxGroupLight && !endAddrEdit.toString().isEmpty()) {
+            DmxGroupLight light = (DmxGroupLight)item;
+            try {
+                int addr = Integer.valueOf(endAddrEdit.getText().toString());
+                light.setEndAddress(addr);
+            } catch (NumberFormatException e) {}
+        }
+        setControlsEnabled(false);
     }
 
     public void updateItemView(boolean updateValues) {
