@@ -58,6 +58,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         }
     }
 
+    public int getNumItems() {
+        return items.size();
+    }
+
     public T getItemAt(int index) {
         return items.get(index);
     }
@@ -94,15 +98,19 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
 
-        ListView listView = getListView();
-
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         // Restore the previously serialized activated item position.
-        if (listView.getCheckedItemPosition() < 0) {
-            listView.setItemChecked(0, true);
+        ListView listView = getListView();
+        int position = listView.getCheckedItemPosition();
+        if (position < 0 && items.size() > 0) {
+            position = 0;
+            listView.setItemChecked(position, true);
+        }
+
+        if (position >= 0) {
+            itemListCallbacks.onItemSelected(position, items.get(position));
         }
 
         getActivity().invalidateOptionsMenu();
@@ -162,6 +170,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         adapter.notifyDataSetChanged();
         setActivatedPosition(items.size() - 1);
         itemListCallbacks.onItemAdded(item);
+        startActionMode();
     }
 
     public void removeItem(T item) {
@@ -237,6 +246,32 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         return items.get(selectedPosition());
     }
 
+    private void startActionMode() {
+        actionMode = getActivity().startActionMode(new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                itemListCallbacks.onItemBeginEdit(selectedItem());
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+                itemListCallbacks.onItemEndEdit(selectedItem());
+                actionMode = null;
+            }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
@@ -257,29 +292,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
             dialog.show(getActivity().getSupportFragmentManager(), "confirm_remove_dialog_tag");
             return true;
         case R.id.item_edit:
-            actionMode = getActivity().startActionMode(new ActionMode.Callback() {
-                @Override
-                public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                    itemListCallbacks.onItemBeginEdit(selectedItem());
-                    return true;
-                }
-
-                @Override
-                public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-                    return false;
-                }
-
-                @Override
-                public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                    return false;
-                }
-
-                @Override
-                public void onDestroyActionMode(ActionMode actionMode) {
-                    itemListCallbacks.onItemEndEdit(selectedItem());
-                    actionMode = null;
-                }
-            });
+            startActionMode();
             return true;
         case R.id.item_add:
             getActivity().invalidateOptionsMenu();

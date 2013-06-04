@@ -2,13 +2,19 @@ package com.lifecity.felux;
 
 import android.app.ActionBar;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.*;
 import android.view.WindowManager;
 import com.lifecity.felux.items.Item;
-import com.lifecity.felux.lights.Light;
-import com.lifecity.felux.scenes.Scene;
+import com.lifecity.felux.lights.DmxColorLight;
+import com.lifecity.felux.lights.DmxGroupLight;
+import com.lifecity.felux.lights.DmxLight;
+import com.lifecity.felux.scenes.DelayScene;
+import com.lifecity.felux.scenes.LightScene;
+import com.lifecity.felux.scenes.MidiScene;
+
+import java.lang.reflect.Constructor;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -26,20 +32,26 @@ import com.lifecity.felux.scenes.Scene;
  * to listen for item selections.
  */
 public class MainActivity extends FragmentActivity implements ItemListCallbacks<Item> {
+    /*
     public static final String ACTIVE_TAB = "active_tab";
     public static final String ACTIVE_LIGHT = "active_light";
     public static final String ACTIVE_SCENE = "active_scene";
+    */
     private FragmentManager mFragmentManager;
-    private SceneListFragment sceneListFragment;
-    private LightListFragment lightListFragment;
-    private SceneDetailFragment sceneDetailFragment;
-    private LightDetailFragment lightDetailFragment;
-    private int lightListPosition = -1;
-    private int sceneListPosition = -1;
 
-    public enum TabType {
-        SCENE,
-        LIGHT
+    private static Map<String, String> itemToDetailFragment = new LinkedHashMap<String, String>();
+    //private static Map<String, Integer> listPositions = new LinkedHashMap<String, Integer>();
+
+    static {
+        //Map<String, String> detailFragments = new LinkedHashMap<String, String>();
+        itemToDetailFragment.put(LightScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DelayScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DmxLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DmxGroupLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DmxColorLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
+        //itemToDetailFragment = Collections.unmodifiableMap(detailFragments);
     }
 
     /**
@@ -61,6 +73,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         );
 
         mFragmentManager = getSupportFragmentManager();
+        //listPositions.put(SceneListFragment.class.getCanonicalName(), -1);
+        //listPositions.put(LightListFragment.class.getCanonicalName(), -1);
 
         //ActionBar actionBar = getActionBar();
         //actionBar.setDisplayOptions(actionBar.getDisplayOptions() & ~ActionBar.DISPLAY_SHOW_TITLE);
@@ -78,33 +92,79 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             actionBar.addTab(actionBar
                     .newTab()
                     .setText(R.string.title_scene_list)
+                    .setTag(SceneListFragment.class.getCanonicalName())
                     .setTabListener(
-                            new TabListener(this, TabType.SCENE)
+                            new TabListener(this)
                     ));
 
             actionBar.addTab(actionBar
                     .newTab()
                     .setText(R.string.title_light_list)
+                    .setTag(LightListFragment.class.getCanonicalName())
                     .setTabListener(
-                            new TabListener(this, TabType.LIGHT)
+                            new TabListener(this)
                     ));
 
+            /*
             if (savedInstanceState != null) {
                 actionBar.setSelectedNavigationItem(savedInstanceState.getInt(ACTIVE_TAB));
-                //sceneListFragment.setActivatedPosition(savedInstanceState.getInt(ACTIVE_SCENE));
-                //lightListFragment.setActivatedPosition(savedInstanceState.getInt(ACTIVE_LIGHT));
             }
+            */
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(ACTIVE_TAB, getActionBar().getSelectedNavigationIndex());
-        //outState.putInt(ACTIVE_LIGHT, lightListFragment.getSelectedItemPosition());
-        //outState.putInt(ACTIVE_SCENE, sceneListFragment.getSelectedItemPosition());
+        //outState.putInt(ACTIVE_TAB, getActionBar().getSelectedNavigationIndex());
         super.onSaveInstanceState(outState);
     }
 
+    private ItemDetailFragment getItemFragment(Item item) {
+        FragmentManager fm = mFragmentManager;
+        FragmentTransaction ft = fm.beginTransaction();
+        ItemDetailFragment itemDetailFragment = null;
+        String tag = null;
+
+        ItemDetailFragment oldDetailFragment = (ItemDetailFragment) fm.findFragmentById(R.id.fragment_secondary);
+
+        if (item instanceof Item) {
+            tag = itemToDetailFragment.get(item.getClass().getCanonicalName());
+            if (tag == null) {
+                throw new IllegalStateException("Invalid item");
+            }
+        }
+
+        if (tag != null && !tag.isEmpty()) {
+            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(tag);
+            if (itemDetailFragment != oldDetailFragment) {
+                ft.detach(oldDetailFragment);
+            }
+            if (itemDetailFragment == null) {
+                try {
+                    ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
+                    itemDetailFragment = (ItemDetailFragment)Class.forName(tag).newInstance();
+                    itemDetailFragment.setDetailCallbacks(listFragment);
+                    ft.add(R.id.fragment_secondary, itemDetailFragment, tag);
+                } catch (Exception ex) {
+                    throw new IllegalStateException("Invalid item");
+                }
+            } else {
+                if (itemDetailFragment != oldDetailFragment) {
+                    ft.attach(itemDetailFragment);
+                }
+            }
+
+            if (itemDetailFragment == null) {
+                throw new IllegalStateException("Invalid item");
+            }
+        } else {
+            throw new IllegalStateException("Invalid item");
+        }
+
+        ft.commit();
+
+        return itemDetailFragment;
+    }
     /**
      * Callback method from {@link ItemListCallbacks}
      * indicating that the item with the given index was selected.
@@ -112,183 +172,56 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     @Override
     @SuppressWarnings("unchecked")
     public void onItemSelected(int position, Item item) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ItemDetailFragment itemDetailFragment = null;
-
-        if (item instanceof Scene) {
-            sceneListPosition = position;
-            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
-        } else if (item instanceof Light) {
-            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
-            lightListPosition = position;
-        } else if (item == null) {
-            int tabPosition = getActionBar().getSelectedNavigationIndex();
-            if (tabPosition == 0) {
-                if (sceneDetailFragment == null) {
-                    sceneDetailFragment = (SceneDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
-                }
-                itemDetailFragment = sceneDetailFragment;
-            } else if (tabPosition == 1) {
-                if (lightDetailFragment == null) {
-                    lightDetailFragment = (LightDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
-                }
-                itemDetailFragment = lightDetailFragment;
-            } else {
-                throw new IllegalStateException("Invalid selected tab");
-            }
-        } else {
-            throw new IllegalStateException("Invalid item");
-        }
-
-        if (itemDetailFragment != null) {
-            itemDetailFragment.setItem(item);
-        }
+        getItemFragment(item).setItem(item);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onItemAdded(Item item) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ItemDetailFragment itemDetailFragment = null;
-
-        if (item instanceof Scene) {
-            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
-        } else if (item instanceof Light) {
-            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
-        } else {
-            throw new IllegalStateException("Invalid item");
-        }
-
-        if (itemDetailFragment != null) {
-            itemDetailFragment.onItemAdded(item);
-        }
+        getItemFragment(item).onItemAdded(item);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onItemBeginEdit(Item item) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ItemDetailFragment itemDetailFragment = null;
-
-        if (item instanceof Scene) {
-            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
-        } else if (item instanceof Light) {
-            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
-        } else {
-            throw new IllegalStateException("Invalid item");
-        }
-
-        if (itemDetailFragment != null) {
-            itemDetailFragment.onItemBeginEdit();
-        }
+        getItemFragment(item).onItemBeginEdit();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onItemEndEdit(Item item) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ItemDetailFragment itemDetailFragment = null;
-
-        if (item instanceof Scene) {
-            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
-        } else if (item instanceof Light) {
-            itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
-        } else {
-            throw new IllegalStateException("Invalid item");
-        }
-
-        if (itemDetailFragment != null) {
-            itemDetailFragment.onItemEndEdit();
-        }
+        getItemFragment(item).onItemEndEdit();
     }
 
     private class TabListener implements ActionBar.TabListener {
         private FragmentActivity activity;
-        private SceneListFragment sceneListFragment;
-        private LightListFragment lightListFragment;
-        private SceneDetailFragment sceneDetailFragment;
-        private LightDetailFragment lightDetailFragment;
 
-        private TabType tabType;
-
-        public TabListener(FragmentActivity activity, TabType type) {
+        public TabListener(FragmentActivity activity) {
             this.activity = activity;
-            this.tabType = type;
-
-            FragmentManager fm = activity.getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            sceneListFragment = (SceneListFragment) fm.findFragmentByTag(SceneListFragment.TAG);
-            if (sceneListFragment != null && !sceneListFragment.isDetached()) {
-                ft.detach(sceneListFragment);
-            }
-            lightListFragment = (LightListFragment) fm.findFragmentByTag(LightListFragment.TAG);
-            if (lightListFragment != null && !lightListFragment.isDetached()) {
-                ft.detach(lightListFragment);
-            }
-            sceneDetailFragment = (SceneDetailFragment) fm.findFragmentByTag(SceneDetailFragment.TAG);
-            if (sceneDetailFragment != null && !sceneDetailFragment.isDetached()) {
-                ft.detach(sceneDetailFragment);
-            }
-            lightDetailFragment = (LightDetailFragment) fm.findFragmentByTag(LightDetailFragment.TAG);
-            if (lightDetailFragment != null && !lightDetailFragment.isDetached()) {
-                ft.detach(lightDetailFragment);
-            }
-            ft.commit();
-
         }
         public void onTabSelected(ActionBar.Tab tab,
                                   android.app.FragmentTransaction unused) {
             FragmentManager fm = activity.getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
+            String listTag = tab.getTag().toString();
+            ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(listTag);
 
-            if (tabType == TabType.SCENE) {
-                if (sceneListFragment == null) {
-                    sceneListFragment = new SceneListFragment();
-                    if (sceneListFragment.items.size() > 0) {
-                        sceneListPosition = 0;
+            if (listFragment instanceof ItemListFragment) {
+                ft.attach(listFragment);
+            } else if (listFragment == null) {
+                try {
+                    listFragment = (ItemListFragment)Class.forName(listTag).newInstance();
+                    /*
+                    if (listFragment.getNumItems() > 0) {
+                        listPositions.put(listTag, 0);
                     }
-                    ft.add(R.id.fragment_primary, sceneListFragment, SceneListFragment.TAG);
-                    if (sceneDetailFragment == null) {
-                        sceneDetailFragment = new SceneDetailFragment(sceneListFragment);
-                        ft.add(R.id.fragment_secondary, sceneDetailFragment, SceneDetailFragment.TAG);
-                    } else {
-                        ft.attach(sceneDetailFragment);
-                    }
-                } else {
-                    ft.attach(sceneListFragment);
-                    ft.attach(sceneDetailFragment);
+                    */
+                    ft.add(R.id.fragment_primary, listFragment, listTag);
+                } catch (Exception ex) {
+                    throw new IllegalStateException("Invalid tab");
                 }
-                if (sceneListPosition >= 0 && sceneListFragment.items.size() > 0) {
-                    sceneDetailFragment.setItem(sceneListFragment.items.get(sceneListPosition));
-                }
-            } else if (tabType == TabType.LIGHT) {
-                if (lightListFragment == null) {
-                    lightListFragment = new LightListFragment();
-                    if (lightListFragment.items.size() > 0) {
-                        lightListPosition = 0;
-                    }
-                    ft.add(R.id.fragment_primary, lightListFragment, LightListFragment.TAG);
-                    if (lightDetailFragment == null) {
-                        lightDetailFragment = new LightDetailFragment(lightListFragment);
-                        if (lightListFragment.items.size() > 0) {
-                            lightDetailFragment.setItem(lightListFragment.items.get(0));
-                        }
-                        ft.add(R.id.fragment_secondary, lightDetailFragment, LightDetailFragment.TAG);
-                    } else {
-                        ft.attach(lightDetailFragment);
-                    }
-                } else {
-                    ft.attach(lightListFragment);
-                    lightDetailFragment.setItem(lightListFragment.items.get(lightListPosition));
-                    ft.attach(lightDetailFragment);
-                }
-                if (lightListPosition >= 0 && lightListFragment.items.size() > 0) {
-                    lightDetailFragment.setItem(lightListFragment.items.get(lightListPosition));
-                }
+            } else {
+                throw new IllegalStateException("Invalid tab");
             }
 
             ft.commit();
@@ -296,22 +229,15 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
         public void onTabUnselected(ActionBar.Tab tab,
                                     android.app.FragmentTransaction unused) {
-            FragmentTransaction ft = mFragmentManager.beginTransaction();
+            FragmentManager fm = activity.getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            String listTag = tab.getTag().toString();
+            ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(listTag);
 
-            if (tabType == TabType.SCENE) {
-                if (sceneListFragment != null) {
-                    ft.detach(sceneListFragment);
-                }
-                if (sceneDetailFragment != null) {
-                    ft.detach(sceneDetailFragment);
-                }
-            } else if (tabType == TabType.LIGHT) {
-                if (lightListFragment != null) {
-                    ft.detach(lightListFragment);
-                }
-                if (lightDetailFragment != null) {
-                    ft.detach(lightDetailFragment);
-                }
+            if (listFragment instanceof ItemListFragment) {
+                ft.detach(listFragment);
+            } else {
+                throw new IllegalStateException("Invalid tab");
             }
 
             ft.commit();

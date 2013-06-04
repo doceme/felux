@@ -19,7 +19,6 @@ import com.lifecity.felux.lights.Light;
  * on handsets.
  */
 public class LightDetailFragment extends ItemDetailFragment<Light> {
-    public static final String TAG = "light_detail_tag";
     private EditText nameEdit;
     private EditText addrEdit;
     private TextView typeText;
@@ -31,8 +30,8 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public LightDetailFragment(ItemDetailCallbacks<Item> detailCallbacks) {
-        super(R.layout.fragment_light_detail, detailCallbacks);
+    public LightDetailFragment() {
+        super(R.layout.fragment_light_detail);
     }
 
     private void setControlsEnabled(boolean enabled) {
@@ -128,6 +127,7 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
         super.onItemEndEdit();
         if (!nameEdit.getText().toString().isEmpty()) {
             item.setName(nameEdit.getText().toString());
+            detailCallbacks.onItemNameChanged(item);
         }
         if (item instanceof DmxLight && !addrEdit.toString().isEmpty()) {
             DmxLight light = (DmxLight)item;

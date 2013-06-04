@@ -11,7 +11,6 @@ import com.lifecity.felux.items.Item;
  * on handsets.
  */
 abstract class ItemDetailFragment<T> extends Fragment {
-    public String TAG;
     protected int layout;
     protected ItemDetailCallbacks<Item> detailCallbacks;
 
@@ -20,13 +19,12 @@ abstract class ItemDetailFragment<T> extends Fragment {
      */
     protected T item;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public ItemDetailFragment(int layout, ItemDetailCallbacks<Item> detailCallbacks) {
+    public ItemDetailFragment(int layout) {
         this.layout = layout;
-        this.detailCallbacks = detailCallbacks;
+    }
+
+    public void setDetailCallbacks(ItemDetailCallbacks<Item> callbacks) {
+        this.detailCallbacks = callbacks;
     }
 
     @Override

@@ -16,13 +16,14 @@ public class SceneDetailFragment extends ItemDetailFragment<Scene> {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public SceneDetailFragment(ItemDetailCallbacks<Item> detailCallbacks) {
-        super(R.layout.fragment_scene_detail, detailCallbacks);
+    public SceneDetailFragment() {
+        super(R.layout.fragment_scene_detail);
     }
 
     public void updateItemView() {
         View rootView = getView();
         if (rootView != null) {
+            /*
             TextView textView = (TextView)rootView.findViewById(R.id.scene_detail);
             if (textView != null) {
                 if (item != null) {
@@ -31,6 +32,7 @@ public class SceneDetailFragment extends ItemDetailFragment<Scene> {
                     textView.setText("");
                 }
             }
+            */
         }
     }
 }

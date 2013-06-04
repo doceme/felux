@@ -33,7 +33,7 @@ public class AddSceneDialogFragment extends DialogFragment {
                             scene = new LightScene();
                         } else if (which == 1) {
                             scene = new DelayScene();
-                        } else if (which == 1) {
+                        } else if (which == 2) {
                             scene = new MidiScene();
                         } else {
                             throw new IllegalStateException("Invalid scene type");
