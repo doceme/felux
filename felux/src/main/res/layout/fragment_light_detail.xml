@@ -8,7 +8,7 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/light_detail_name_label"
+                android:text="@string/detail_name_label"
                 android:id="@+id/light_detail_name_label" android:layout_column="0"
                 android:layout_marginRight="5dp"/>
         <EditText

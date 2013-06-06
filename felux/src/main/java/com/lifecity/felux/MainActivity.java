@@ -44,7 +44,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     static {
         //Map<String, String> detailFragments = new LinkedHashMap<String, String>();
-        itemToDetailFragment.put(LightScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(LightScene.class.getCanonicalName(), LightSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DelayScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());

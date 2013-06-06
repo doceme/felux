@@ -8,8 +8,6 @@ import com.lifecity.felux.scenes.Scene;
  *
  */
 public class SceneListFragment extends ItemListFragment<Scene> {
-    public static final String TAG = "scene_list_tag";
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).

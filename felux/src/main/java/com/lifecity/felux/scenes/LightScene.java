@@ -33,4 +33,8 @@ public class LightScene extends Scene {
     public Light getLightAt(int position) {
         return lights.get(position);
     }
+
+    public List<Light> getLights() {
+        return lights;
+    }
 }
