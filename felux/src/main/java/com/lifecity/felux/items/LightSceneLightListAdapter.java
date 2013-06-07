@@ -67,10 +67,9 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
 
         if (light instanceof DmxColorLight) {
             DmxColorLight dmxColorLight = (DmxColorLight)light;
-            int colors[] = {dmxColorLight.getColor(), dmxColorLight.getColor()};
             GradientDrawable gd = new GradientDrawable();
             gd.setShape(GradientDrawable.RECTANGLE);
-            gd.setColor(Color.GREEN);
+            gd.setColor(dmxColorLight.getColor());
             //gd.setStroke(5, Color.WHITE);
             gd.setCornerRadius(5.0f);
             holder.value.setBackground(gd);
@@ -78,4 +77,6 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
 
         return row;
     }
+
+
 }

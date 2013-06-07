@@ -13,6 +13,7 @@ import com.lifecity.felux.items.Item;
 abstract class ItemDetailFragment<T> extends Fragment {
     protected int layout;
     protected ItemDetailCallbacks<Item> detailCallbacks;
+    protected FeluxManager manager;
 
     /**
      * The dummy content this fragment is presenting.
@@ -25,6 +26,10 @@ abstract class ItemDetailFragment<T> extends Fragment {
 
     public void setDetailCallbacks(ItemDetailCallbacks<Item> callbacks) {
         this.detailCallbacks = callbacks;
+    }
+
+    public void setFeluxManager(FeluxManager manager) {
+        this.manager = manager;
     }
 
     @Override

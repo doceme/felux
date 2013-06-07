@@ -13,7 +13,10 @@ public class SceneListFragment extends ItemListFragment<Scene> {
      * fragment (e.g. upon screen orientation changes).
      */
     public SceneListFragment() {
-        items.add(new LightScene("Scene 1"));
+    }
+
+    public void setFeluxManager(FeluxManager manager) {
+        this.items = manager.getScenes();
     }
 
     @Override

@@ -15,17 +15,15 @@ import com.lifecity.felux.lights.Light;
  * interface.
  */
 public class LightListFragment extends ItemListFragment<Light> {
-    public static String TAG = "light_list_tag";
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public LightListFragment() {
-        items.add(new DmxColorLight("Screen", 1));
-        items.add(new DmxColorLight("Side", 5));
-        items.add(new DmxColorLight("Ceiling", 9));
-        items.add(new DmxLight("Stage", 13));
+    }
+
+    public void setFeluxManager(FeluxManager manager) {
+        this.items = manager.getLights();
     }
 
     @Override

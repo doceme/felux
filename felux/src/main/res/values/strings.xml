@@ -35,6 +35,7 @@
     <string name="scene_type_delay">Delay</string>
     <string name="scene_type_midi">Midi</string>
     <string name="light_scene_detail_lights_label">Lights:</string>
+    <string name="light_colorpicker_title">Pick a color</string>
     <string-array name="scene_types">
         <item>@string/scene_type_light</item>
         <item>@string/scene_type_delay</item>

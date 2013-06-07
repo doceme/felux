@@ -17,9 +17,10 @@ import java.util.List;
  */
 public abstract class ItemListFragment<T> extends ListFragment implements ItemDetailCallbacks<Item> {
     protected ArrayAdapter<T> adapter;
-    protected List<T> items = new ArrayList<T>();
+    protected List<T> items;
     protected ActionMode actionMode;
     protected ActionMode.Callback actionModeCallback;
+    protected FeluxManager manager;
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -76,6 +77,8 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
      */
     public ItemListFragment() {
     }
+
+    public abstract void setFeluxManager(FeluxManager manager);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
