@@ -6,34 +6,32 @@ import android.graphics.Color;
  * DMX color light class
  */
 public class DmxColorLight extends DmxLight {
-    protected int color;
-
     public DmxColorLight() {
         super();
-        this.color = Color.WHITE;
+        this.value = Color.WHITE;
     }
 
     public DmxColorLight(String name) {
         super(name);
-        this.color = Color.WHITE;
+        this.value = Color.WHITE;
     }
 
     public DmxColorLight(String name, int address) {
         super(name, address);
-        this.color = Color.WHITE;
+        this.value = Color.WHITE;
     }
 
     public DmxColorLight(String name, int address, int color) {
         super(name, address);
-        this.color = color;
+        this.value = color;
     }
 
     public int getColor() {
-        return this.color;
+        return this.value;
     }
 
     public DmxColorLight setColor(int color) {
-        this.color = color;
+        this.value = color;
         return this;
     }
 }

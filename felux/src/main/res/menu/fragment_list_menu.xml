@@ -23,13 +23,6 @@
         android:orderInCategory="3">
     </item>
     <item
-        android:id="@+id/item_edit"
-        android:title="Edit"
-        android:icon="@drawable/content_edit"
-        android:showAsAction="ifRoom"
-        android:orderInCategory="4">
-    </item>
-    <item
         android:id="@+id/item_add"
         android:title="Add"
         android:icon="@drawable/content_new"

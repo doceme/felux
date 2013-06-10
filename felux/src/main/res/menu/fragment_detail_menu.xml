@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_edit"
+        android:title="Edit"
+        android:icon="@drawable/content_edit"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="4">
+    </item>
+</menu>

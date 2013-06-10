@@ -2,8 +2,8 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
               android:paddingTop="10dp"
               android:paddingBottom="10dp">
 
@@ -13,25 +13,28 @@
             android:id="@+id/light_scene_light_list_row_checkbox"
             android:layout_gravity="center_vertical"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false"
+            android:visibility="gone"/>
 
     <ImageView
             android:layout_width="33dp"
             android:layout_height="fill_parent"
-            android:id="@+id/light_scene_light_list_row_value"
+            android:id="@+id/light_scene_light_list_row_color"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false"
+            android:contentDescription="@string/light_scene_list_row_color_desc"/>
 
     <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/light_scene_light_list_row_name"
             android:layout_gravity="center_vertical"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginLeft="10dp"
-            android:layout_weight="1"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false"
+            android:layout_weight="1"/>
+
 </LinearLayout>

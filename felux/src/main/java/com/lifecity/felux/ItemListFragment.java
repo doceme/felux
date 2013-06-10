@@ -173,7 +173,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         adapter.notifyDataSetChanged();
         setActivatedPosition(items.size() - 1);
         itemListCallbacks.onItemAdded(item);
-        startActionMode();
+        //startActionMode();
     }
 
     public void removeItem(T item) {
@@ -218,10 +218,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         int position = selectedPosition();
         MenuItem upItem = menu.findItem(R.id.item_moveup);
         MenuItem downItem = menu.findItem(R.id.item_movedown);
-        MenuItem editItem = menu.findItem(R.id.item_edit);
+        //MenuItem editItem = menu.findItem(R.id.item_edit);
         MenuItem removeItem = menu.findItem(R.id.item_remove);
 
-        editItem.setVisible(items.size() > 0);
+        //editItem.setVisible(items.size() > 0);
         removeItem.setVisible(items.size() > 0);
 
         if (position >= 0 && items.size() > 0) {
@@ -249,10 +249,13 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         return items.get(selectedPosition());
     }
 
+    /*
     private void startActionMode() {
         actionMode = getActivity().startActionMode(new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                MenuInflater inflater = actionMode.getMenuInflater();
+                inflater.inflate(R.menu.fragment_light_scene_menu, menu);
                 itemListCallbacks.onItemBeginEdit(selectedItem());
                 return true;
             }
@@ -274,6 +277,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
             }
         });
     }
+    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -294,9 +298,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
             });
             dialog.show(getActivity().getSupportFragmentManager(), "confirm_remove_dialog_tag");
             return true;
-        case R.id.item_edit:
+        /*case R.id.item_edit:
             startActionMode();
             return true;
+            */
         case R.id.item_add:
             getActivity().invalidateOptionsMenu();
             return true;

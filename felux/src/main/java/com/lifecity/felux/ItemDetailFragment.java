@@ -4,15 +4,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
+import android.widget.Toast;
+
 import com.lifecity.felux.items.Item;
 
 /**
  * A fragment representing a single Scene detail screen.
  * on handsets.
  */
-abstract class ItemDetailFragment<T> extends Fragment {
+abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Callback {
     protected int layout;
     protected ItemDetailCallbacks<Item> detailCallbacks;
+    //protected ActionMode actionMode;
     protected FeluxManager manager;
 
     /**
@@ -30,6 +33,12 @@ abstract class ItemDetailFragment<T> extends Fragment {
 
     public void setFeluxManager(FeluxManager manager) {
         this.manager = manager;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -53,6 +62,52 @@ abstract class ItemDetailFragment<T> extends Fragment {
         this.item = item;
         if (getView() != null)
             updateItemView();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_detail_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_edit:
+                startActionMode();
+                return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void startActionMode() {
+        //actionMode = getActivity().startActionMode(this);
+        getActivity().startActionMode(this);
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        /*
+        MenuInflater inflater = actionMode.getMenuInflater();
+        inflater.inflate(R.menu.fragment_light_scene_menu, menu);
+        onItemBeginEdit();
+        return true;
+        */
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
     }
 
     public void onItemAdded(T item) {

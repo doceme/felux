@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ActionMode;
+import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -117,14 +119,15 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
     }
 
     @Override
-    public void onItemBeginEdit() {
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         setControlsEnabled(true);
         beginEdit();
+        return true;
     }
 
     @Override
-    public void onItemEndEdit() {
-        super.onItemEndEdit();
+    public void onDestroyActionMode(ActionMode actionMode) {
+        //super.onItemEndEdit();
         if (!nameEdit.getText().toString().isEmpty()) {
             item.setName(nameEdit.getText().toString());
             detailCallbacks.onItemNameChanged(item);
@@ -144,6 +147,7 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
             } catch (NumberFormatException e) {}
         }
         setControlsEnabled(false);
+        super.onDestroyActionMode(actionMode);
     }
 
     public void updateItemView(boolean updateValues) {

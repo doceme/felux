@@ -1,4 +1,4 @@
-package com.lifecity.felux.items;
+package com.lifecity.felux;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.lifecity.felux.R;
 import com.lifecity.felux.lights.DmxColorLight;
+import com.lifecity.felux.lights.DmxGroupLight;
+import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
 
 import java.util.List;
@@ -30,7 +32,7 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
 
     static class LightHolder {
         CheckBox enable;
-        ImageView value;
+        ImageView color;
         TextView name;
     }
 
@@ -53,7 +55,7 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
 
             holder = new LightHolder();
             holder.enable = (CheckBox)row.findViewById(R.id.light_scene_light_list_row_checkbox);
-            holder.value = (ImageView)row.findViewById(R.id.light_scene_light_list_row_value);
+            holder.color = (ImageView)row.findViewById(R.id.light_scene_light_list_row_color);
             holder.name = (TextView)row.findViewById(R.id.light_scene_light_list_row_name);
 
             row.setTag(holder);
@@ -70,9 +72,12 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
             GradientDrawable gd = new GradientDrawable();
             gd.setShape(GradientDrawable.RECTANGLE);
             gd.setColor(dmxColorLight.getColor());
-            //gd.setStroke(5, Color.WHITE);
+            //gd.setStroke(3, Color.WHITE);
             gd.setCornerRadius(5.0f);
-            holder.value.setBackground(gd);
+            holder.color.setVisibility(View.VISIBLE);
+            holder.color.setBackground(gd);
+        } else {
+            holder.color.setVisibility(View.GONE);
         }
 
         return row;

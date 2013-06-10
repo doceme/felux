@@ -8,8 +8,12 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
 import com.lifecity.felux.colorpicker.ColorPicker;
 import com.lifecity.felux.colorpicker.SVBar;
+import com.lifecity.felux.lights.Light;
 
 /**
  * Created by scaudle on 6/7/13.
@@ -68,6 +72,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
                     listener.onCanceled();
                 }
             }
+
         });
 
         return builder.create();

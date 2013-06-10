@@ -1,6 +1,7 @@
 package com.lifecity.felux;
 
 import android.app.ActionBar;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.*;
 import android.view.WindowManager;
@@ -77,9 +78,9 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         );
 
         List<Light> lights = feluxManager.getLights();
-        lights.add(new DmxColorLight("Screen", 1));
-        lights.add(new DmxColorLight("Side", 5));
-        lights.add(new DmxColorLight("Ceiling", 9));
+        lights.add(new DmxColorLight("Screen", 1, Color.RED));
+        lights.add(new DmxColorLight("Side", 5, Color.BLUE));
+        lights.add(new DmxColorLight("Ceiling", 9, Color.GREEN));
         lights.add(new DmxLight("Stage", 13));
 
         List<Scene> scenes = feluxManager.getScenes();

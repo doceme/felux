@@ -1,21 +1,22 @@
 package com.lifecity.felux;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.lifecity.felux.items.Item;
-import com.lifecity.felux.items.LightSceneLightListAdapter;
+import android.widget.Toast;
+
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.Light;
 import com.lifecity.felux.scenes.LightScene;
-import com.lifecity.felux.scenes.Scene;
-
-import java.util.List;
 
 /**
  * A fragment representing a single Scene detail screen.
@@ -80,5 +81,29 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     @Override
     public void onCanceled() {
 
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        MenuInflater inflater = actionMode.getMenuInflater();
+        inflater.inflate(R.menu.fragment_light_scene_menu, menu);
+        onItemBeginEdit();
+        return true;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_item_add:
+                return true;
+            default:
+                break;
+        }
+        return super.onActionItemClicked(actionMode, menuItem);
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+        super.onDestroyActionMode(actionMode);
     }
 }
