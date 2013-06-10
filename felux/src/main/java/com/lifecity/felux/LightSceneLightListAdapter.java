@@ -2,33 +2,54 @@ package com.lifecity.felux;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.DialogInterface;
 import android.graphics.drawable.GradientDrawable;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 
-import com.lifecity.felux.R;
 import com.lifecity.felux.lights.DmxColorLight;
-import com.lifecity.felux.lights.DmxGroupLight;
-import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by doceme on 6/6/13.
  */
-public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
+//public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements CompoundButton.OnCheckedChangeListener {
+public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements View.OnClickListener {
     private Context context;
     private int layoutResourceId;
     private List<Light> lights;
-    //private boolean[] enabledLights;
+    private boolean editMode;
+    private ItemChangedListener itemChangedListener;
+
+    @Override
+    public void onClick(View view) {
+        CheckBox checkBox = (CheckBox)view;
+        Light light = (Light)checkBox.getTag();
+        light.setChecked(checkBox.isChecked());
+
+        if (itemChangedListener != null) {
+            itemChangedListener.onItemCheckedChanged(light);
+        }
+    }
+
+    /*
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        CheckBox checkBox = (CheckBox)compoundButton;
+        Light light = (Light)checkBox.getTag();
+        light.setChecked(checkBox.isChecked());
+
+        if (itemChangedListener != null) {
+            itemChangedListener.onItemCheckedChanged(light);
+        }
+    }
+    */
 
     static class LightHolder {
         CheckBox enable;
@@ -40,14 +61,60 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
         super(context, layoutResourceId, lights);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
-        this.lights = lights;
-        //enabledLights = new boolean[lights.size()];
+        //this.lights = lights.
+        this.lights = new ArrayList<Light>(lights.size());
+        for (Light light: lights) {
+            light.setChecked(false);
+            this.lights.add(light);
+        }
+    }
+
+    public void setItemChangedListener(ItemChangedListener itemChangedListener) {
+        this.itemChangedListener = itemChangedListener;
+    }
+
+    public void startEditMode() {
+        editMode = true;
+        notifyDataSetChanged();
+    }
+
+    public void stopEditMode() {
+        editMode = false;
+        notifyDataSetChanged();
+    }
+
+    public void selectAll(boolean select) {
+        for (Light light: lights) {
+            light.setChecked(select);
+        }
+        notifyDataSetChanged();
+    }
+
+    public boolean areAnyItemsChecked() {
+        for (Light light: lights) {
+            if (light.getChecked()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeChecked() {
+        ListIterator<Light> iterator = lights.listIterator();
+        while (iterator.hasNext()) {
+            Light light = iterator.next();
+            if (light.getChecked()) {
+                iterator.remove();
+            }
+        }
+        notifyDataSetChanged();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         LightHolder holder = null;
+        Light light = lights.get(position);
 
         if (row == null) {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
@@ -57,6 +124,8 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
             holder.enable = (CheckBox)row.findViewById(R.id.light_scene_light_list_row_checkbox);
             holder.color = (ImageView)row.findViewById(R.id.light_scene_light_list_row_color);
             holder.name = (TextView)row.findViewById(R.id.light_scene_light_list_row_name);
+            //holder.enable.setOnCheckedChangeListener(this);
+            holder.enable.setOnClickListener(this);
 
             row.setTag(holder);
 
@@ -64,7 +133,9 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
             holder = (LightHolder)row.getTag();
         }
 
-        Light light = lights.get(position);
+        holder.enable.setTag(light);
+        holder.enable.setVisibility(editMode ? View.VISIBLE : View.GONE);
+        holder.enable.setChecked(light.getChecked());
         holder.name.setText(light.getName());
 
         if (light instanceof DmxColorLight) {
@@ -83,5 +154,18 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> {
         return row;
     }
 
+    @Override
+    public int getCount() {
+        return lights.size();
+    }
 
+    @Override
+    public Light getItem(int position) {
+        return lights.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }

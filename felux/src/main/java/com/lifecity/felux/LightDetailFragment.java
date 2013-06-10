@@ -4,11 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.View;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
@@ -20,13 +19,14 @@ import com.lifecity.felux.lights.Light;
  * A fragment representing a single Light detail screen.
  * on handsets.
  */
-public class LightDetailFragment extends ItemDetailFragment<Light> {
+public class LightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener {
     private EditText nameEdit;
-    private EditText addrEdit;
+    private NumberPicker addrEdit;
     private TextView typeText;
     private TextView addrLabel;
     private TextView endAddrLabel;
     private EditText endAddrEdit;
+    private boolean actionCancelled;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -42,16 +42,20 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
 
             if (nameEdit.hasFocus()) {
                 nameEdit.clearFocus();
+                /*
                 nameEdit.dispatchWindowFocusChanged(false);
                 imm.hideSoftInputFromWindow(nameEdit.getWindowToken(), 0);
-            } else if (addrEdit.hasFocus()) {
-                addrEdit.clearFocus();
-                addrEdit.dispatchWindowFocusChanged(false);
-                imm.hideSoftInputFromWindow(addrEdit.getWindowToken(), 0);
+                */
             } else if (endAddrEdit.hasFocus()) {
                 endAddrEdit.clearFocus();
                 endAddrEdit.dispatchWindowFocusChanged(false);
                 imm.hideSoftInputFromWindow(endAddrEdit.getWindowToken(), 0);
+            } else if (addrEdit.hasFocus()) {
+                addrEdit.clearFocus();
+                /*
+                addrEdit.dispatchWindowFocusChanged(false);
+                imm.hideSoftInputFromWindow(addrEdit.getWindowToken(), 0);
+                */
             }
         }
 
@@ -59,16 +63,10 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
         nameEdit.setFocusableInTouchMode(enabled);
         addrEdit.setFocusable(enabled);
         addrEdit.setFocusableInTouchMode(enabled);
+        addrEdit.setEnabled(enabled);
         endAddrEdit.setFocusable(enabled);
         endAddrEdit.setFocusableInTouchMode(enabled);
 
-    }
-
-    private void beginEdit() {
-        nameEdit.requestFocus();
-        nameEdit.dispatchWindowFocusChanged(true);
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(nameEdit, InputMethodManager.SHOW_IMPLICIT);
     }
 
     @Override
@@ -76,14 +74,28 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
         super.onItemAdded(light);
         nameEdit.setText(light.getName());
         setControlsEnabled(true);
-        beginEdit();
         updateItemView(false);
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        if (hasFocus) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            view.dispatchWindowFocusChanged(true);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+
+        } else {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            view.dispatchWindowFocusChanged(false);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         nameEdit = (EditText)getView().findViewById(R.id.light_detail_name_edit);
-        nameEdit.setSelectAllOnFocus(true);
+        nameEdit.setOnFocusChangeListener(this);
+        /*
         nameEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
@@ -97,15 +109,19 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
                 }
             }
         });
+        */
 
         typeText = (TextView)getView().findViewById(R.id.light_detail_type_text);
         addrLabel = (TextView)getView().findViewById(R.id.light_detail_addr_label);
         endAddrLabel = (TextView)getView().findViewById(R.id.light_detail_end_addr_label);
-        addrEdit = (EditText)getView().findViewById(R.id.light_detail_addr_edit);
+        addrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_addr_picker);
         endAddrEdit = (EditText)getView().findViewById(R.id.light_detail_end_addr_edit);
 
+        addrEdit.setOnFocusChangeListener(this);
+        addrEdit.setMinValue(1);
+        addrEdit.setMaxValue(512);
+
         typeText.setText("");
-        addrEdit.setText("");
         endAddrEdit.setText("");
         endAddrEdit.setVisibility(View.INVISIBLE);
         endAddrLabel.setVisibility(View.INVISIBLE);
@@ -120,31 +136,51 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
 
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        MenuInflater inflater = actionMode.getMenuInflater();
+        inflater.inflate(R.menu.fragment_action_cancel, menu);
+        actionCancelled = false;
         setControlsEnabled(true);
-        beginEdit();
         return true;
     }
 
     @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_item_cancel:
+                actionCancelled = true;
+                if (actionMode != null) {
+                    actionMode.finish();
+                }
+                return true;
+            default:
+                break;
+        }
+        return super.onActionItemClicked(actionMode, menuItem);
+    }
+
+    @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        //super.onItemEndEdit();
-        if (!nameEdit.getText().toString().isEmpty()) {
-            item.setName(nameEdit.getText().toString());
-            detailCallbacks.onItemNameChanged(item);
-        }
-        if (item instanceof DmxLight && !addrEdit.toString().isEmpty()) {
-            DmxLight light = (DmxLight)item;
-            try {
-                int addr = Integer.valueOf(addrEdit.getText().toString());
-                light.setAddress(addr);
-            } catch (NumberFormatException e) {}
-        }
-        if (item instanceof DmxGroupLight && !endAddrEdit.toString().isEmpty()) {
-            DmxGroupLight light = (DmxGroupLight)item;
-            try {
-                int addr = Integer.valueOf(endAddrEdit.getText().toString());
-                light.setEndAddress(addr);
-            } catch (NumberFormatException e) {}
+        if (!actionCancelled) {
+            if (!nameEdit.getText().toString().isEmpty()) {
+                item.setName(nameEdit.getText().toString());
+                detailCallbacks.onItemNameChanged(item);
+            }
+            if (item instanceof DmxLight && !addrEdit.toString().isEmpty()) {
+                DmxLight light = (DmxLight)item;
+                try {
+                    int addr = addrEdit.getValue();
+                    light.setAddress(addr);
+                } catch (NumberFormatException e) {}
+            }
+            if (item instanceof DmxGroupLight && !endAddrEdit.toString().isEmpty()) {
+                DmxGroupLight light = (DmxGroupLight)item;
+                try {
+                    int addr = Integer.valueOf(endAddrEdit.getText().toString());
+                    light.setEndAddress(addr);
+                } catch (NumberFormatException e) {}
+            }
+        } else {
+            updateItemView(true);
         }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
@@ -167,7 +203,7 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
                     endAddrEdit.setVisibility(View.INVISIBLE);
                     if (updateValues) {
                         int address = ((DmxLight) item).getAddress();
-                        addrEdit.setText(address > 0 ? Integer.toString(address) : "");
+                        addrEdit.setValue(address > 0 ? address : 1);
                     }
                 } else if (item instanceof DmxGroupLight) {
                     typeText.setText(R.string.light_type_group);
@@ -178,18 +214,18 @@ public class LightDetailFragment extends ItemDetailFragment<Light> {
                     if (updateValues) {
                         int startAddress = ((DmxGroupLight) item).getAddress();
                         int endAddress = ((DmxGroupLight) item).getEndAddress();
-                        addrEdit.setText(startAddress > 0 ? Integer.toString(startAddress) : "");
+                        addrEdit.setValue(startAddress > 0 ? startAddress : 1);
                         endAddrEdit.setText(endAddress > 0 ? Integer.toString(endAddress) : "");
                     }
                 } else if (item instanceof DmxLight) {
                     typeText.setText(R.string.light_type_basic);
                     addrLabel.setText(R.string.light_detail_addr_label);
-                    addrEdit.setText(Integer.toString(((DmxLight) item).getAddress()));
+                    addrEdit.setValue(((DmxLight) item).getAddress());
                     endAddrLabel.setVisibility(View.INVISIBLE);
                     endAddrEdit.setVisibility(View.INVISIBLE);
                     if (updateValues) {
                         int address = ((DmxLight) item).getAddress();
-                        addrEdit.setText(address > 0 ? Integer.toString(address) : "");
+                        addrEdit.setValue(address > 0 ? address : 1);
                     }
                 }
             }

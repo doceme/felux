@@ -37,6 +37,7 @@
     <string name="light_scene_detail_lights_label">Lights:</string>
     <string name="light_colorpicker_title">Pick a color</string>
     <string name="light_scene_list_row_color_desc">color</string>
+    <string name="light_scene_detail_lights_select_all">All</string>
     <string-array name="scene_types">
         <item>@string/scene_type_light</item>
         <item>@string/scene_type_delay</item>

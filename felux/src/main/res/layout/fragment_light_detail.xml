@@ -1,91 +1,73 @@
-<TableLayout
+<LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
-        >
-    <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/detail_name_label"
-                android:id="@+id/light_detail_name_label" android:layout_column="0"
-                android:layout_marginRight="5dp"/>
-        <EditText
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/light_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
-                android:editable="false" android:layout_column="3"
-                />
-    </TableRow>
-    <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="@string/light_detail_type_label" android:id="@+id/light_detail_type_label"
-                  android:layout_column="0" android:layout_marginRight="5dp"
-                  android:textAlignment="center"/>
-
-        <TextView
-            android:layout_width="wrap_content"
+        android:orientation="vertical">
+    <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/light_detail_type_text"
-            android:layout_column="3"/>
-
-    </TableRow>
-
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <TextView
-            android:layout_width="wrap_content"
+            android:text="@string/detail_name_label"
+            android:id="@+id/light_detail_name_label" android:layout_column="0"
+            android:layout_marginRight="5dp"/>
+    <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/light_detail_addr_label"
-            android:id="@+id/light_detail_addr_label"
-            android:layout_column="0"
-            android:layout_marginRight="5dp"
-            android:textAlignment="center"/>
+            android:id="@+id/light_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
+            android:editable="false" android:layout_column="3"
+            android:selectAllOnFocus="true"
+            android:layout_marginLeft="5dp"/>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:text="@string/light_detail_type_label" android:id="@+id/light_detail_type_label"
+              android:layout_column="0" android:layout_marginRight="5dp"
+              android:textAlignment="center"
+              android:layout_marginTop="10dp"/>
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/light_detail_addr_edit"
-            android:layout_column="3"
-            android:numeric="integer"
-            android:autoText="false"
-            android:editable="false"
-            android:selectAllOnFocus="true"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/light_detail_type_text"
+        android:layout_column="3"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="5dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/light_detail_addr_label"
+        android:id="@+id/light_detail_addr_label"
+        android:layout_column="0"
+        android:layout_marginRight="5dp"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"/>
 
-    </TableRow>
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/light_detail_addr_picker"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="5dp"/>
 
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/light_detail_end_addr_label"
+        android:id="@+id/light_detail_end_addr_label"
+        android:layout_column="0"
+        android:layout_marginRight="5dp"
+        android:textAlignment="center"
+        android:visibility="invisible"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/light_detail_end_addr_label"
-            android:id="@+id/light_detail_end_addr_label"
-            android:layout_column="0"
-            android:layout_marginRight="5dp"
-            android:textAlignment="center"
-            android:visibility="invisible"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/light_detail_end_addr_edit"
+        android:layout_column="3"
+        android:numeric="integer"
+        android:autoText="false"
+        android:editable="false"
+        android:visibility="invisible" android:selectAllOnFocus="true"/>
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/light_detail_end_addr_edit"
-            android:layout_column="3"
-            android:numeric="integer"
-            android:autoText="false"
-            android:editable="false"
-            android:visibility="invisible" android:selectAllOnFocus="true"/>
-    </TableRow>
-</TableLayout>
+</LinearLayout>

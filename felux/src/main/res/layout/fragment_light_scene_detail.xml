@@ -1,41 +1,37 @@
-<TableLayout
+<LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
-        >
-    <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/detail_name_label"
-                android:id="@+id/light_scene_detail_name_label" android:layout_column="0"
-                android:layout_marginRight="5dp"/>
-        <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/light_scene_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
-                android:editable="false" android:layout_column="3"
-                android:layout_weight="1"/>
-    </TableRow>
+        android:orientation="vertical">
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_name_label"
+            android:id="@+id/light_scene_detail_name_label"
+            android:layout_marginRight="5dp"/>
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/light_scene_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
+            android:editable="false"
+            android:layout_marginLeft="5dp"/>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/light_scene_detail_lights_label"
+            android:id="@+id/light_scene_detail_lights_label"/>
 
-    <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/light_scene_detail_lights_select_all"
+        android:id="@+id/light_scene_detail_lights_select_all"
+        android:layout_gravity="left|center_vertical"
+        android:visibility="gone"/>
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/light_scene_detail_lights_label"
-                android:id="@+id/light_scene_detail_lights_label"
-                android:layout_column="0"/>
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/light_scene_detail_light_list"
+        />
 
-        <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/light_scene_detail_light_list"
-                android:layout_column="3"
-                android:layout_weight="1"/>
-    </TableRow>
-
-</TableLayout>
+</LinearLayout>

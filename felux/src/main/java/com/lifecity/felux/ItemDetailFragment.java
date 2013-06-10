@@ -15,7 +15,7 @@ import com.lifecity.felux.items.Item;
 abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Callback {
     protected int layout;
     protected ItemDetailCallbacks<Item> detailCallbacks;
-    //protected ActionMode actionMode;
+    protected ActionMode actionMode;
     protected FeluxManager manager;
 
     /**
@@ -81,8 +81,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     }
 
     private void startActionMode() {
-        //actionMode = getActivity().startActionMode(this);
-        getActivity().startActionMode(this);
+        actionMode = getActivity().startActionMode(this);
     }
 
     @Override
@@ -108,6 +107,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
+        actionMode = null;
     }
 
     public void onItemAdded(T item) {
