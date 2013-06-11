@@ -38,19 +38,6 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
         }
     }
 
-    /*
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        CheckBox checkBox = (CheckBox)compoundButton;
-        Light light = (Light)checkBox.getTag();
-        light.setChecked(checkBox.isChecked());
-
-        if (itemChangedListener != null) {
-            itemChangedListener.onItemCheckedChanged(light);
-        }
-    }
-    */
-
     static class LightHolder {
         CheckBox enable;
         ImageView color;

@@ -19,11 +19,13 @@ import com.lifecity.felux.scenes.LightScene;
  * A fragment representing a single Scene detail screen.
  * on handsets.
  */
-public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener {
+public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener, View.OnFocusChangeListener {
     private LightSceneLightListAdapter adapter;
     private Light currentLight;
     private CheckBox selectAll;
     private MenuItem removeLight;
+    private ListView lightListView;
+    private EditText nameEdit;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -38,6 +40,23 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         // TODO: Update light list
     }
 
+    private void setControlsEnabled(boolean enabled) {
+        if (!enabled) {
+            if (nameEdit.hasFocus()) {
+                nameEdit.clearFocus();
+            }
+        }
+
+        nameEdit.setFocusable(enabled);
+        nameEdit.setFocusableInTouchMode(enabled);
+        lightListView.setEnabled(enabled);
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        showHideKeyboard(view, hasFocus);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
@@ -50,7 +69,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
         adapter.setItemChangedListener(this);
 
-        ListView lightListView = (ListView)rootView.findViewById(R.id.light_scene_detail_light_list);
+        lightListView = (ListView)rootView.findViewById(R.id.light_scene_detail_light_list);
         TextView nameTextView = (TextView)rootView.findViewById(R.id.light_scene_detail_name_edit);
         selectAll =(CheckBox)rootView.findViewById(R.id.light_scene_detail_lights_select_all);
         selectAll.setOnCheckedChangeListener(this);
@@ -58,6 +77,9 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         lightListView.setAdapter(adapter);
         lightListView.setItemsCanFocus(false);
         lightListView.setOnItemClickListener(this);
+
+        nameEdit = (EditText)rootView.findViewById(R.id.light_scene_detail_name_edit);
+        nameEdit.setOnFocusChangeListener(this);
 
         return rootView;
     }

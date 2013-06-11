@@ -52,10 +52,6 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
                 imm.hideSoftInputFromWindow(endAddrEdit.getWindowToken(), 0);
             } else if (addrEdit.hasFocus()) {
                 addrEdit.clearFocus();
-                /*
-                addrEdit.dispatchWindowFocusChanged(false);
-                imm.hideSoftInputFromWindow(addrEdit.getWindowToken(), 0);
-                */
             }
         }
 
@@ -79,37 +75,13 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
-        if (hasFocus) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            view.dispatchWindowFocusChanged(true);
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-
-        } else {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            view.dispatchWindowFocusChanged(false);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
+        showHideKeyboard(view, hasFocus);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         nameEdit = (EditText)getView().findViewById(R.id.light_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
-        /*
-        nameEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!editable.toString().isEmpty()) {
-                    detailCallbacks.onItemNameChanged(item);
-                }
-            }
-        });
-        */
 
         typeText = (TextView)getView().findViewById(R.id.light_detail_type_text);
         addrLabel = (TextView)getView().findViewById(R.id.light_detail_addr_label);
@@ -196,26 +168,14 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
             if (item == null) {
                 typeText.setText("");
             } else {
+                addrLabel.setText(R.string.light_detail_addr_label);
                 if (item instanceof DmxColorLight) {
                     typeText.setText(R.string.light_type_color);
-                    addrLabel.setText(R.string.light_detail_addr_label);
                     endAddrLabel.setVisibility(View.INVISIBLE);
                     endAddrEdit.setVisibility(View.INVISIBLE);
                     if (updateValues) {
                         int address = ((DmxLight) item).getAddress();
                         addrEdit.setValue(address > 0 ? address : 1);
-                    }
-                } else if (item instanceof DmxGroupLight) {
-                    typeText.setText(R.string.light_type_group);
-                    addrLabel.setText(R.string.light_detail_start_addr_label);
-                    endAddrLabel.setText(R.string.light_detail_end_addr_label);
-                    endAddrLabel.setVisibility(View.VISIBLE);
-                    endAddrEdit.setVisibility(View.VISIBLE);
-                    if (updateValues) {
-                        int startAddress = ((DmxGroupLight) item).getAddress();
-                        int endAddress = ((DmxGroupLight) item).getEndAddress();
-                        addrEdit.setValue(startAddress > 0 ? startAddress : 1);
-                        endAddrEdit.setText(endAddress > 0 ? Integer.toString(endAddress) : "");
                     }
                 } else if (item instanceof DmxLight) {
                     typeText.setText(R.string.light_type_basic);

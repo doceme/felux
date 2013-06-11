@@ -18,8 +18,6 @@ import java.util.List;
 public abstract class ItemListFragment<T> extends ListFragment implements ItemDetailCallbacks<Item> {
     protected ArrayAdapter<T> adapter;
     protected List<T> items;
-    protected ActionMode actionMode;
-    protected ActionMode.Callback actionModeCallback;
     protected FeluxManager manager;
 
     /**
@@ -248,36 +246,6 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     public T selectedItem() {
         return items.get(selectedPosition());
     }
-
-    /*
-    private void startActionMode() {
-        actionMode = getActivity().startActionMode(new ActionMode.Callback() {
-            @Override
-            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                MenuInflater inflater = actionMode.getMenuInflater();
-                inflater.inflate(R.menu.fragment_light_scene_menu, menu);
-                itemListCallbacks.onItemBeginEdit(selectedItem());
-                return true;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                return false;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode actionMode) {
-                itemListCallbacks.onItemEndEdit(selectedItem());
-                actionMode = null;
-            }
-        });
-    }
-    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

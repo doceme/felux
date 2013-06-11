@@ -257,6 +257,10 @@ public class ValueBar extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+        if (!this.isEnabled()) {
+            return false;
+        }
+
 		getParent().requestDisallowInterceptTouchEvent(true);
 
 		// Convert coordinates to our internal coordinate system

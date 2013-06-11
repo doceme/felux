@@ -519,6 +519,10 @@ public class ColorPicker extends View {
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+        if (!this.isEnabled()) {
+            return false;
+        }
+
 		getParent().requestDisallowInterceptTouchEvent(true);
 
 		// Convert coordinates to our internal coordinate system
@@ -528,15 +532,17 @@ public class ColorPicker extends View {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			// Check whether the user pressed on the pointer.
-			float[] pointerPosition = calculatePointerPosition(mAngle);
-			if (x >= (pointerPosition[0] - mColorPointerHaloRadius)
-					&& x <= (pointerPosition[0] + mColorPointerHaloRadius)
-					&& y >= (pointerPosition[1] - mColorPointerHaloRadius)
-					&& y <= (pointerPosition[1] + mColorPointerHaloRadius)) {
+            float touchAngle = (float) java.lang.Math.atan2(y, x);
+            float[] wheelPosition = calculatePointerPosition(touchAngle);
+			if (x >= (wheelPosition[0] - mColorPointerHaloRadius)
+					&& x <= (wheelPosition[0] + mColorPointerHaloRadius)
+					&& y >= (wheelPosition[1] - mColorPointerHaloRadius)
+					&& y <= (wheelPosition[1] + mColorPointerHaloRadius)) {
+                setColor(calculateColor(touchAngle));
 				mUserIsMovingPointer = true;
 				invalidate();
 			}
-			// Check wheter the user pressed on the center.
+			// Check whether the user pressed on the center.
 			if (x >= -mColorCenterRadius && x <= mColorCenterRadius
 					&& y >= -mColorCenterRadius && y <= mColorCenterRadius) {
 				mCenterHaloPaint.setAlpha(0x50);

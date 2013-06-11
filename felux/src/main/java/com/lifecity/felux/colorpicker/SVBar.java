@@ -258,6 +258,10 @@ public class SVBar extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+        if (!this.isEnabled()) {
+            return false;
+        }
+
 		getParent().requestDisallowInterceptTouchEvent(true);
 
 		// Convert coordinates to our internal coordinate system
@@ -267,13 +271,17 @@ public class SVBar extends View {
 		case MotionEvent.ACTION_DOWN:
 		    	mIsMovingPointer = true;
 			// Check whether the user pressed on the pointer
-			if (x >= (mBarPointerHaloRadius)
-					&& x <= (mBarPointerHaloRadius + mBarLength)) {
+			//if (x >= (mBarPointerHaloRadius)
+			//		&& x <= (mBarPointerHaloRadius + mBarLength)) {
 				mBarPointerPosition = Math.round(x);
 				calculateColor(Math.round(x));
 				mBarPointerPaint.setColor(mColor);
+ 				if (mPicker != null) {
+ 					mPicker.setNewCenterColor(mColor);
+  					mPicker.changeOpacityBarColor(mColor);
+				}
 				invalidate();
-			}
+			//}
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (mIsMovingPointer) {

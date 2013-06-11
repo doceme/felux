@@ -1,9 +1,11 @@
 package com.lifecity.felux;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.lifecity.felux.items.Item;
@@ -80,7 +82,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
         }
     }
 
-    private void startActionMode() {
+    protected void startActionMode() {
         actionMode = getActivity().startActionMode(this);
     }
 
@@ -108,6 +110,16 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
         actionMode = null;
+    }
+
+    public void showHideKeyboard(View view, boolean show) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        view.dispatchWindowFocusChanged(show);
+        if (show) {
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        } else {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     public void onItemAdded(T item) {

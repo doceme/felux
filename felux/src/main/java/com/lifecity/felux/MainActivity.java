@@ -54,8 +54,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
-        itemToDetailFragment.put(DmxGroupLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
-        itemToDetailFragment.put(DmxColorLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DmxGroupLight.class.getCanonicalName(), GroupLightDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DmxColorLight.class.getCanonicalName(), ColorLightDetailFragment.class.getCanonicalName());
         //itemToDetailFragment = Collections.unmodifiableMap(detailFragments);
     }
 
@@ -81,7 +81,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         lights.add(new DmxColorLight("Screen", 1, Color.RED));
         lights.add(new DmxColorLight("Side", 5, Color.BLUE));
         lights.add(new DmxColorLight("Ceiling", 9, Color.GREEN));
-        lights.add(new DmxLight("Stage", 13));
+        lights.add(new DmxGroupLight("Stage", 13, 16));
 
         List<Scene> scenes = feluxManager.getScenes();
         scenes.add(new LightScene("Scene 1"));
