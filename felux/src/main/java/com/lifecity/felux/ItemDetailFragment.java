@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.lifecity.felux.items.Item;
 
@@ -18,7 +17,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     protected int layout;
     protected ItemDetailCallbacks<Item> detailCallbacks;
     protected ActionMode actionMode;
-    protected FeluxManager manager;
+    protected LightManager manager;
 
     /**
      * The dummy content this fragment is presenting.
@@ -33,7 +32,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
         this.detailCallbacks = callbacks;
     }
 
-    public void setFeluxManager(FeluxManager manager) {
+    public void setFeluxManager(LightManager manager) {
         this.manager = manager;
     }
 
@@ -88,12 +87,6 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
 
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        /*
-        MenuInflater inflater = actionMode.getMenuInflater();
-        inflater.inflate(R.menu.fragment_light_scene_menu, menu);
-        onItemBeginEdit();
-        return true;
-        */
         return false;
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by scaudle on 6/7/13.
  */
-public class FeluxManager {
+public class LightManager {
     protected List<Light> lights = new ArrayList<Light>();
     protected List<Scene> scenes = new ArrayList<Scene>();
 

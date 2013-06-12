@@ -37,4 +37,18 @@ public class DmxGroupLight extends DmxLight {
         this.endAddress = address;
         return this;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof DmxGroupLight) {
+            DmxGroupLight light = (DmxGroupLight)object;
+            if (light.getEndAddress() != endAddress) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        return super.equals(object);
+    }
 }

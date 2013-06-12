@@ -38,4 +38,18 @@ public abstract class Item {
     public String toString() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Item) {
+            Item item = (Item)object;
+            if (item.getName() != name) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        return super.equals(object);
+    }
 }

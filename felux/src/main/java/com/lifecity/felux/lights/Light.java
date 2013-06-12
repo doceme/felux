@@ -12,10 +12,12 @@ public abstract class Light extends Item {
 
     public Light() {
         super();
+        value = 0;
     }
 
     public Light(String name) {
         super(name);
+        value = 0;
     }
 
     public int getValue() {
@@ -39,5 +41,19 @@ public abstract class Light extends Item {
 
         this.value = value;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Light) {
+            Light light = (Light)object;
+            if (light.getValue() != value) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        return super.equals(object);
     }
 }

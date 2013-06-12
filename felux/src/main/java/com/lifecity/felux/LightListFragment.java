@@ -1,8 +1,7 @@
 package com.lifecity.felux;
 
 import android.view.MenuItem;
-import com.lifecity.felux.lights.DmxColorLight;
-import com.lifecity.felux.lights.DmxLight;
+
 import com.lifecity.felux.lights.Light;
 
 
@@ -22,7 +21,7 @@ public class LightListFragment extends ItemListFragment<Light> {
     public LightListFragment() {
     }
 
-    public void setFeluxManager(FeluxManager manager) {
+    public void setFeluxManager(LightManager manager) {
         this.items = manager.getLights();
     }
 

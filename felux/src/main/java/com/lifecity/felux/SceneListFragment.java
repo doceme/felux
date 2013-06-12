@@ -1,7 +1,7 @@
 package com.lifecity.felux;
 
 import android.view.MenuItem;
-import com.lifecity.felux.scenes.LightScene;
+
 import com.lifecity.felux.scenes.Scene;
 
 /**
@@ -15,7 +15,7 @@ public class SceneListFragment extends ItemListFragment<Scene> {
     public SceneListFragment() {
     }
 
-    public void setFeluxManager(FeluxManager manager) {
+    public void setFeluxManager(LightManager manager) {
         this.items = manager.getScenes();
     }
 

@@ -15,7 +15,6 @@ import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
 
-import java.lang.reflect.Constructor;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     public static final String ACTIVE_SCENE = "active_scene";
     */
     private FragmentManager mFragmentManager;
-    private FeluxManager feluxManager = new FeluxManager();
+    private LightManager lightManager = new LightManager();
 
     private static Map<String, String> itemToDetailFragment = new LinkedHashMap<String, String>();
     //private static Map<String, Integer> listPositions = new LinkedHashMap<String, Integer>();
@@ -77,13 +76,13 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
-        List<Light> lights = feluxManager.getLights();
+        List<Light> lights = lightManager.getLights();
         lights.add(new DmxColorLight("Screen", 1, Color.RED));
         lights.add(new DmxColorLight("Side", 5, Color.BLUE));
         lights.add(new DmxColorLight("Ceiling", 9, Color.GREEN));
         lights.add(new DmxGroupLight("Stage", 13, 16));
 
-        List<Scene> scenes = feluxManager.getScenes();
+        List<Scene> scenes = lightManager.getScenes();
         scenes.add(new LightScene("Scene 1"));
 
         mFragmentManager = getSupportFragmentManager();
@@ -158,7 +157,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                     ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
                     itemDetailFragment = (ItemDetailFragment)Class.forName(tag).newInstance();
                     itemDetailFragment.setDetailCallbacks(listFragment);
-                    itemDetailFragment.setFeluxManager(feluxManager);
+                    itemDetailFragment.setFeluxManager(lightManager);
                     ft.add(R.id.fragment_secondary, itemDetailFragment, tag);
                 } catch (Exception ex) {
                     throw new IllegalStateException("Invalid item");
@@ -226,7 +225,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             } else if (listFragment == null) {
                 try {
                     listFragment = (ItemListFragment)Class.forName(listTag).newInstance();
-                    listFragment.setFeluxManager(feluxManager);
+                    listFragment.setFeluxManager(lightManager);
                     ft.add(R.id.fragment_primary, listFragment, listTag);
                 } catch (Exception ex) {
                     throw new IllegalStateException("Invalid tab");

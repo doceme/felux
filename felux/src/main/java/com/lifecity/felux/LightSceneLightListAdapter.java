@@ -48,12 +48,14 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
         super(context, layoutResourceId, lights);
         this.context = context;
         this.layoutResourceId = layoutResourceId;
-        //this.lights = lights.
+        this.lights = lights;
+        /*
         this.lights = new ArrayList<Light>(lights.size());
         for (Light light: lights) {
             light.setChecked(false);
             this.lights.add(light);
         }
+        */
     }
 
     public void setItemChangedListener(ItemChangedListener itemChangedListener) {
@@ -101,7 +103,7 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         LightHolder holder = null;
-        Light light = lights.get(position);
+        Light light = getItem(position);
 
         if (row == null) {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
@@ -141,6 +143,7 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
         return row;
     }
 
+    /*
     @Override
     public int getCount() {
         return lights.size();
@@ -155,4 +158,5 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
     public long getItemId(int position) {
         return position;
     }
+    */
 }

@@ -34,4 +34,13 @@ public class DmxColorLight extends DmxLight {
         this.value = color;
         return this;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof DmxColorLight)) {
+            return false;
+        }
+
+        return super.equals(object);
+    }
 }

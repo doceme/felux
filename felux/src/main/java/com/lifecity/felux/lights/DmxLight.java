@@ -27,4 +27,18 @@ public class DmxLight extends Light {
         this.address = address;
         return this;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof DmxLight) {
+            DmxLight light = (DmxLight)object;
+            if (light.getAddress() != address) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        return super.equals(object);
+    }
 }

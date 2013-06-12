@@ -12,6 +12,7 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="light_types_label">Select a light type</string>
+    <string name="select_light_label">Select a light</string>
     <string name="detail_name_label">Name:</string>
     <string name="light_detail_type_label">Type:</string>
     <string name="light_detail_addr_label">Address:</string>
@@ -38,6 +39,8 @@
     <string name="light_colorpicker_title">Pick a color</string>
     <string name="light_scene_list_row_color_desc">color</string>
     <string name="light_scene_detail_lights_select_all">All</string><string name="light_detail_color_label">Color:</string>
+    <string name="light_scene_detail_light_already_added">All lights have already been added
+    </string>
     <string-array name="scene_types">
         <item>@string/scene_type_light</item>
         <item>@string/scene_type_delay</item>

@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.lifecity.felux.items.Item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ import java.util.List;
 public abstract class ItemListFragment<T> extends ListFragment implements ItemDetailCallbacks<Item> {
     protected ArrayAdapter<T> adapter;
     protected List<T> items;
-    protected FeluxManager manager;
+    protected LightManager manager;
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -76,7 +75,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     public ItemListFragment() {
     }
 
-    public abstract void setFeluxManager(FeluxManager manager);
+    public abstract void setFeluxManager(LightManager manager);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

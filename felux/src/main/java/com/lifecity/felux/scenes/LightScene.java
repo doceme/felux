@@ -37,4 +37,14 @@ public class LightScene extends Scene {
     public List<Light> getLights() {
         return lights;
     }
+
+    public boolean hasLight(Light light) {
+        for (Light checkLight: lights) {
+            if (checkLight.equals(light)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
