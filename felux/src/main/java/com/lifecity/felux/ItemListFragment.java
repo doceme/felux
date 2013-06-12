@@ -103,15 +103,13 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
 
         // Restore the previously serialized activated item position.
         ListView listView = getListView();
-        int position = listView.getCheckedItemPosition();
+        int position = listView.getCount() == 0 ? -1 : listView.getCheckedItemPosition();
         if (position < 0 && items.size() > 0) {
             position = 0;
             listView.setItemChecked(position, true);
         }
 
-        if (position >= 0) {
-            itemListCallbacks.onItemSelected(position, items.get(position));
-        }
+        itemListCallbacks.onItemSelected(position, position < 0 ? null : items.get(position));
 
         getActivity().invalidateOptionsMenu();
     }
@@ -175,9 +173,13 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
 
     public void removeItem(T item) {
         int oldPosition = selectedPosition();
+        int newPosition = oldPosition == 0 ? 0 : oldPosition - 1;
         items.remove(item);
         adapter.notifyDataSetChanged();
-        setActivatedPosition(oldPosition - 1);
+        if (items.size() == 0) {
+            newPosition = -1;
+        }
+        setActivatedPosition(newPosition);
     }
 
     public void moveItem(T item, boolean down) {

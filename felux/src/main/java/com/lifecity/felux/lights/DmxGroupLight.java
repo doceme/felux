@@ -1,5 +1,7 @@
 package com.lifecity.felux.lights;
 
+import com.lifecity.felux.items.Item;
+
 /**
  * DMX group light class
  */
@@ -10,8 +12,17 @@ public class DmxGroupLight extends DmxLight {
         super();
     }
 
+    public DmxGroupLight(DmxGroupLight light) {
+        super(light);
+        endAddress = light.endAddress;
+    }
+
     public DmxGroupLight(String name) {
         super(name);
+    }
+
+    public Item copy() {
+        return new DmxGroupLight(this);
     }
 
     public DmxGroupLight(String name, int startAddress, int endAddress) {

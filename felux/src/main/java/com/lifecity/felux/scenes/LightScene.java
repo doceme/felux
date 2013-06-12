@@ -16,8 +16,17 @@ public class LightScene extends Scene {
         super();
     }
 
+    public LightScene(LightScene scene) {
+        super(scene);
+        lights = scene.lights;
+    }
+
     public LightScene(String name) {
         super(name);
+    }
+
+    public Item copy() {
+        return new LightScene(this);
     }
 
     public LightScene addLight(Light light) {

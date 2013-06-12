@@ -132,6 +132,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         super.onSaveInstanceState(outState);
     }
 
+    @SuppressWarnings("unchecked")
     private ItemDetailFragment getItemFragment(Item item) {
         FragmentManager fm = mFragmentManager;
         FragmentTransaction ft = fm.beginTransaction();
@@ -145,6 +146,10 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             if (tag == null) {
                 throw new IllegalStateException("Invalid item");
             }
+        } else if (item == null) {
+            ft.detach(oldDetailFragment);
+            ft.commit();
+            return oldDetailFragment;
         }
 
         if (tag != null && !tag.isEmpty()) {
@@ -163,7 +168,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                     throw new IllegalStateException("Invalid item");
                 }
             } else {
-                if (itemDetailFragment != oldDetailFragment) {
+                if (itemDetailFragment.isDetached() || (itemDetailFragment != oldDetailFragment)) {
                     ft.attach(itemDetailFragment);
                 }
             }

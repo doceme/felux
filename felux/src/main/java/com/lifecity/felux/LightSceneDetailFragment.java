@@ -16,6 +16,7 @@ import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.Light;
 import com.lifecity.felux.scenes.LightScene;
+import com.lifecity.felux.scenes.Scene;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,13 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void updateItemView() {
-        adapter.clear();
-        for (Light light: item.getLights()) {
-            adapter.add(light);
+        if (nameEdit != null && adapter != null && item != null) {
+            nameEdit.setText(item.getName());
+            adapter.clear();
+            for (Light light: item.getLights()) {
+                adapter.add(light);
+            }
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -66,32 +71,19 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         showHideKeyboard(view, hasFocus);
     }
 
-    /*
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-
-        adapter = new LightSceneLightListAdapter(
-                getActivity(),
-                R.layout.light_scene_light_list_row,
-                item.getLights()
-        );
-
-        adapter.setItemChangedListener(this);
-
-        return rootView;
-    }
-    */
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         nameEdit = (EditText)view.findViewById(R.id.light_scene_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
+        List<Light> adapterLights = new ArrayList<Light>(item.getLights().size());
+        for (Light light: item.getLights()) {
+            adapterLights.add(light);
+        }
 
         adapter = new LightSceneLightListAdapter(
                 getActivity(),
                 R.layout.light_scene_light_list_row,
-                item.getLights()
+                adapterLights
         );
 
         adapter.setItemChangedListener(this);
@@ -130,8 +122,11 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     }
 
     @Override
-    public void onLightSelected(Light light) {
-        item.addLight(light);
+    public void onLightsSelected(List<Light> lights) {
+        for (Light light: lights) {
+            item.addLight(light);
+            adapter.add(light);
+        }
         selectAll.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
     }
@@ -139,6 +134,12 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     @Override
     public void onCanceled() {
 
+    }
+
+    @Override
+    public void onItemAdded(LightScene scene) {
+        super.onItemAdded(scene);
+        startActionMode();
     }
 
     @Override
@@ -157,13 +158,14 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        ListIterator<Light> iterator;
         switch (menuItem.getItemId()) {
             case R.id.action_item_add:
                 List<Light> newLights = new ArrayList<Light>(manager.getLights().size());
                 for (Light light: manager.getLights()) {
-                    newLights.add(light);
+                    newLights.add((Light)light.copy());
                 }
-                ListIterator<Light> iterator = newLights.listIterator();
+                iterator = newLights.listIterator();
                 while (iterator.hasNext()) {
                     if (item.hasLight(iterator.next())) {
                         iterator.remove();
@@ -182,6 +184,12 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
                 break;
             case R.id.action_item_remove:
                 adapter.removeChecked();
+                iterator = item.getLights().listIterator();
+                while (iterator.hasNext()) {
+                    if (iterator.next().getChecked()) {
+                        iterator.remove();
+                    }
+                }
                 if (adapter.getCount() == 0) {
                     selectAll.setVisibility(View.GONE);
                 }
@@ -195,9 +203,10 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        super.onDestroyActionMode(actionMode);
         adapter.stopEditMode();
         selectAll.setVisibility(View.GONE);
+        setControlsEnabled(false);
+        super.onDestroyActionMode(actionMode);
     }
 
     @Override

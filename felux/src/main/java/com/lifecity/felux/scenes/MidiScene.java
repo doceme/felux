@@ -14,8 +14,19 @@ public class MidiScene extends Scene {
         super();
     }
 
+    public MidiScene(MidiScene scene) {
+        super(scene);
+        this.note = scene.note;
+        this.velocity = scene.velocity;
+        this.useVelocity = scene.useVelocity;
+    }
+
     public MidiScene(String name) {
         super(name);
+    }
+
+    public Item copy() {
+        return new MidiScene(this);
     }
 
     public int getNode() {

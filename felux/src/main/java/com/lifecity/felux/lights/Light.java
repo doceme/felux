@@ -15,6 +15,11 @@ public abstract class Light extends Item {
         value = 0;
     }
 
+    public Light(Light light) {
+        super(light);
+        value = light.value;
+    }
+
     public Light(String name) {
         super(name);
         value = 0;

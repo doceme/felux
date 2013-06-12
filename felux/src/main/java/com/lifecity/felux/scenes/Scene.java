@@ -10,6 +10,10 @@ public abstract class Scene extends Item {
         super();
     }
 
+    public Scene(Scene scene) {
+        super(scene);
+    }
+
     public Scene(String name) {
         super(name);
     }

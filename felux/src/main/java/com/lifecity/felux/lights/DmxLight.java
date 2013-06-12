@@ -1,5 +1,7 @@
 package com.lifecity.felux.lights;
 
+import com.lifecity.felux.items.Item;
+
 /**
  * DMX basic light class
  */
@@ -10,6 +12,11 @@ public class DmxLight extends Light {
         super();
     }
 
+    public DmxLight(DmxLight light) {
+        super(light);
+        address = light.address;
+    }
+
     public DmxLight(String name) {
         super(name);
     }
@@ -17,6 +24,10 @@ public class DmxLight extends Light {
     public DmxLight(String name, int address) {
         super(name);
         this.address = address;
+    }
+
+    public Item copy() {
+        return new DmxLight(this);
     }
 
     public int getAddress() {

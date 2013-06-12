@@ -12,9 +12,16 @@ public abstract class Item {
     public Item() {
     }
 
+    public Item(Item item) {
+        this.name = item.name;
+        this.checked = item.checked;
+    }
+
     public Item(String name) {
         this.name = name;
     }
+
+    public abstract Item copy();
 
     public String getName() {
         return this.name;
@@ -50,6 +57,6 @@ public abstract class Item {
             return false;
         }
 
-        return super.equals(object);
+        return true;
     }
 }

@@ -60,9 +60,11 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
 
     public void setItem(T item) {
         Log.i(this.getClass().getSimpleName(), "setItem");
-        this.item = item;
-        if (getView() != null)
-            updateItemView();
+        if (this.item != item) {
+            this.item = item;
+            if (getView() != null)
+                updateItemView();
+        }
     }
 
     @Override
