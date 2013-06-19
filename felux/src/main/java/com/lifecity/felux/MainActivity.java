@@ -1,10 +1,17 @@
 package com.lifecity.felux;
 
 import android.app.ActionBar;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.*;
+import android.util.Log;
 import android.view.WindowManager;
+import android.hardware.usb.UsbAccessory;
+import android.hardware.usb.UsbManager;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.DmxGroupLight;
@@ -15,6 +22,7 @@ import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,14 +48,15 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     public static final String ACTIVE_LIGHT = "active_light";
     public static final String ACTIVE_SCENE = "active_scene";
     */
-    private FragmentManager mFragmentManager;
+    private static final String ACTION_USB_PERMISSION = "com.lifecity.felux.USB_PERMISSION";
+    private static final String TAG = "MainActivity";
+    private FragmentManager fragmentManager;
     private LightManager lightManager = new LightManager();
+    private FT312UartAccessory uartAccessory = new FT312UartAccessory();
 
     private static Map<String, String> itemToDetailFragment = new LinkedHashMap<String, String>();
-    //private static Map<String, Integer> listPositions = new LinkedHashMap<String, Integer>();
 
     static {
-        //Map<String, String> detailFragments = new LinkedHashMap<String, String>();
         itemToDetailFragment.put(LightScene.class.getCanonicalName(), LightSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DelayScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
@@ -55,7 +64,6 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         itemToDetailFragment.put(DmxLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxGroupLight.class.getCanonicalName(), GroupLightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxColorLight.class.getCanonicalName(), ColorLightDetailFragment.class.getCanonicalName());
-        //itemToDetailFragment = Collections.unmodifiableMap(detailFragments);
     }
 
     /**
@@ -64,10 +72,25 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
      */
     private boolean mTwoPane;
 
+    private final BroadcastReceiver usbReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            String action = intent.getAction();
+            if (UsbManager.ACTION_USB_ACCESSORY_DETACHED.equals(action))
+            {
+                Log.d(TAG, "accessory detached");
+                closeUsbAccessory();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        registerReceiver(usbReceiver, new IntentFilter(UsbManager.ACTION_USB_ACCESSORY_DETACHED));
 
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -85,9 +108,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         List<Scene> scenes = lightManager.getScenes();
         scenes.add(new LightScene("Scene 1"));
 
-        mFragmentManager = getSupportFragmentManager();
-        //listPositions.put(SceneListFragment.class.getCanonicalName(), -1);
-        //listPositions.put(LightListFragment.class.getCanonicalName(), -1);
+        fragmentManager = getSupportFragmentManager();
 
         //ActionBar actionBar = getActionBar();
         //actionBar.setDisplayOptions(actionBar.getDisplayOptions() & ~ActionBar.DISPLAY_SHOW_TITLE);
@@ -127,6 +148,49 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(usbReceiver);
+    }
+
+    private void openUsbAccessory() {
+        UsbManager manager = (UsbManager)getSystemService(Context.USB_SERVICE);
+        UsbAccessory accessory = (UsbAccessory)getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
+
+        String accessoryString = accessory == null ? "null" : accessory.toString();
+        Log.d(TAG, "usbAccessory: " + accessoryString);
+
+        try {
+            if (uartAccessory.open(manager, accessory)) {
+                //uartAccessory.reset();
+                uartAccessory.setConfig(115200,
+                        FT312UartAccessory.DATA_BITS_8,
+                        FT312UartAccessory.STOP_BITS_1,
+                        FT312UartAccessory.PARITY_NONE,
+                        FT312UartAccessory.FLOW_CONTROL_NONE);
+            }
+            byte[] buffer = new byte[] {(byte)'R'};
+            uartAccessory.write(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeUsbAccessory() {
+        try {
+            uartAccessory.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        openUsbAccessory();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         //outState.putInt(ACTIVE_TAB, getActionBar().getSelectedNavigationIndex());
         super.onSaveInstanceState(outState);
@@ -134,7 +198,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     @SuppressWarnings("unchecked")
     private ItemDetailFragment getItemFragment(Item item) {
-        FragmentManager fm = mFragmentManager;
+        FragmentManager fm = fragmentManager;
         FragmentTransaction ft = fm.beginTransaction();
         ItemDetailFragment itemDetailFragment = null;
         String tag = null;
