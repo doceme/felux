@@ -1,8 +1,10 @@
 package com.lifecity.felux;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -160,6 +162,21 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         String accessoryString = accessory == null ? "null" : accessory.toString();
         Log.d(TAG, "usbAccessory: " + accessoryString);
 
+        /*
+        if (accessory == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Please connect a felux light board")
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    })
+                    .show();
+        }
+        */
+
         try {
             if (uartAccessory.open(manager, accessory)) {
                 //uartAccessory.reset();
@@ -182,6 +199,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        finish();
     }
 
     @Override
