@@ -24,7 +24,9 @@ import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +56,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     private static final String TAG = "MainActivity";
     private FragmentManager fragmentManager;
     private LightManager lightManager = new LightManager();
-    private FT312UartAccessory uartAccessory = new FT312UartAccessory();
+    private FtdiUartFileDescriptor uartFileDescriptor;
+    private FileOutputStream uartOutputStream;
 
     private static Map<String, String> itemToDetailFragment = new LinkedHashMap<String, String>();
 
@@ -83,7 +86,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             if (UsbManager.ACTION_USB_ACCESSORY_DETACHED.equals(action))
             {
                 Log.d(TAG, "accessory detached");
-                closeUsbAccessory();
+                finish();
             }
         }
     };
@@ -153,17 +156,17 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(usbReceiver);
+        closeUsbAccessory();
     }
 
     private void openUsbAccessory() {
-        UsbManager manager = (UsbManager)getSystemService(Context.USB_SERVICE);
-        UsbAccessory accessory = (UsbAccessory)getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
+        if (uartFileDescriptor == null) {
+            UsbManager manager = (UsbManager)getSystemService(Context.USB_SERVICE);
+            UsbAccessory accessory = getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
+            String accessoryString = accessory == null ? "null" : accessory.toString();
+            Log.d(TAG, "usbAccessory: " + accessoryString);
 
-        String accessoryString = accessory == null ? "null" : accessory.toString();
-        Log.d(TAG, "usbAccessory: " + accessoryString);
-
-        /*
-        if (accessory == null) {
+            if (accessory == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Please connect a felux light board")
                     .setCancelable(false)
@@ -174,33 +177,33 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                         }
                     })
                     .show();
-        }
-        */
-
-        try {
-            if (uartAccessory.open(manager, accessory)) {
-                //uartAccessory.reset();
-                uartAccessory.setConfig(115200,
-                        FT312UartAccessory.DATA_BITS_8,
-                        FT312UartAccessory.STOP_BITS_1,
-                        FT312UartAccessory.PARITY_NONE,
-                        FT312UartAccessory.FLOW_CONTROL_NONE);
+            } else {
+                try {
+                    uartFileDescriptor = new FtdiUartFileDescriptor(manager.openAccessory(accessory));
+                        uartFileDescriptor.setConfig(115200,
+                                FtdiUartFileDescriptor.DATA_BITS_8,
+                                FtdiUartFileDescriptor.STOP_BITS_1,
+                                FtdiUartFileDescriptor.PARITY_NONE,
+                                FtdiUartFileDescriptor.FLOW_CONTROL_NONE);
+                    uartOutputStream = uartFileDescriptor.getOutputStream();
+                    uartOutputStream.write("setConfig\n".getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            byte[] buffer = new byte[] {(byte)'R'};
-            uartAccessory.write(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     private void closeUsbAccessory() {
         try {
-            uartAccessory.close();
+            if (uartOutputStream != null) {
+                uartOutputStream.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        finish();
+        uartOutputStream = null;
+        uartFileDescriptor = null;
     }
 
     @Override
