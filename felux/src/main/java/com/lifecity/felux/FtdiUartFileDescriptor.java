@@ -30,13 +30,13 @@ public class FtdiUartFileDescriptor extends ParcelFileDescriptor
         super(fileDescriptor);
     }
 
-    public class FtdiUartInputStream extends AutoCloseInputStream {
+    public static class FtdiUartInputStream extends AutoCloseInputStream {
         public FtdiUartInputStream(ParcelFileDescriptor fd) {
             super(fd);
         }
     }
 
-    public class FtdiUartOutputStream extends AutoCloseOutputStream {
+    public static class FtdiUartOutputStream extends AutoCloseOutputStream {
 
         public FtdiUartOutputStream(ParcelFileDescriptor fd) {
             super(fd);

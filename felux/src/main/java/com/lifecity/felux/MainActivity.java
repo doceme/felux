@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.support.v4.app.*;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
@@ -57,7 +59,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     private FragmentManager fragmentManager;
     private LightManager lightManager = new LightManager();
     private FtdiUartFileDescriptor uartFileDescriptor;
-    private FileOutputStream uartOutputStream;
+    private SimpleHdlcOutputStreamWriter felixWriter;
+    private UsbAccessory accessory;
 
     private static Map<String, String> itemToDetailFragment = new LinkedHashMap<String, String>();
 
@@ -144,11 +147,12 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                             new TabListener(this)
                     ));
 
-            /*
             if (savedInstanceState != null) {
-                actionBar.setSelectedNavigationItem(savedInstanceState.getInt(ACTIVE_TAB));
+                accessory = savedInstanceState.getParcelable("accessory");
+                uartFileDescriptor = savedInstanceState.getParcelable("uartFileDescriptor");
+                FtdiUartFileDescriptor.FtdiUartOutputStream ftdiOutputStream = new FtdiUartFileDescriptor.FtdiUartOutputStream(uartFileDescriptor);
+                felixWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
             }
-            */
         }
     }
 
@@ -162,7 +166,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     private void openUsbAccessory() {
         if (uartFileDescriptor == null) {
             UsbManager manager = (UsbManager)getSystemService(Context.USB_SERVICE);
-            UsbAccessory accessory = getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
+            accessory = getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
             String accessoryString = accessory == null ? "null" : accessory.toString();
             Log.d(TAG, "usbAccessory: " + accessoryString);
 
@@ -180,13 +184,14 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             } else {
                 try {
                     uartFileDescriptor = new FtdiUartFileDescriptor(manager.openAccessory(accessory));
-                        uartFileDescriptor.setConfig(115200,
-                                FtdiUartFileDescriptor.DATA_BITS_8,
-                                FtdiUartFileDescriptor.STOP_BITS_1,
-                                FtdiUartFileDescriptor.PARITY_NONE,
-                                FtdiUartFileDescriptor.FLOW_CONTROL_NONE);
-                    uartOutputStream = uartFileDescriptor.getOutputStream();
-                    uartOutputStream.write("setConfig\n".getBytes());
+                    FtdiUartFileDescriptor.FtdiUartOutputStream ftdiOutputStream = new FtdiUartFileDescriptor.FtdiUartOutputStream(uartFileDescriptor);
+                    ftdiOutputStream.setConfig(115200,
+                            FtdiUartFileDescriptor.DATA_BITS_8,
+                            FtdiUartFileDescriptor.STOP_BITS_1,
+                            FtdiUartFileDescriptor.PARITY_NONE,
+                            FtdiUartFileDescriptor.FLOW_CONTROL_NONE);
+                    felixWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
+                    felixWriter.write("setConfig\n".getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -196,13 +201,13 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     private void closeUsbAccessory() {
         try {
-            if (uartOutputStream != null) {
-                uartOutputStream.close();
+            if (felixWriter != null) {
+                felixWriter.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        uartOutputStream = null;
+        felixWriter = null;
         uartFileDescriptor = null;
     }
 
@@ -215,6 +220,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //outState.putInt(ACTIVE_TAB, getActionBar().getSelectedNavigationIndex());
+        outState.putParcelable("accessory", accessory);
+        outState.putParcelable("uartFileDescriptor", uartFileDescriptor);
         super.onSaveInstanceState(outState);
     }
 
