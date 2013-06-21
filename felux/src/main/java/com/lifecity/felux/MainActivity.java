@@ -9,10 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.support.v4.app.*;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
@@ -26,9 +24,7 @@ import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +55,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     private FragmentManager fragmentManager;
     private LightManager lightManager = new LightManager();
     private FtdiUartFileDescriptor uartFileDescriptor;
-    private SimpleHdlcOutputStreamWriter felixWriter;
+    private SimpleHdlcOutputStreamWriter feluxWriter;
     private UsbAccessory accessory;
 
     private static Map<String, String> itemToDetailFragment = new LinkedHashMap<String, String>();
@@ -151,7 +147,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 accessory = savedInstanceState.getParcelable("accessory");
                 uartFileDescriptor = savedInstanceState.getParcelable("uartFileDescriptor");
                 FtdiUartFileDescriptor.FtdiUartOutputStream ftdiOutputStream = new FtdiUartFileDescriptor.FtdiUartOutputStream(uartFileDescriptor);
-                felixWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
+                feluxWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
             }
         }
     }
@@ -190,8 +186,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                             FtdiUartFileDescriptor.STOP_BITS_1,
                             FtdiUartFileDescriptor.PARITY_NONE,
                             FtdiUartFileDescriptor.FLOW_CONTROL_NONE);
-                    felixWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
-                    felixWriter.write("setConfig\n".getBytes());
+                    feluxWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
+                    feluxWriter.write(new byte[] {(byte)0xA1, (byte)0x0, (byte)1, (byte)0x7f});
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -201,13 +197,13 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     private void closeUsbAccessory() {
         try {
-            if (felixWriter != null) {
-                felixWriter.close();
+            if (feluxWriter != null) {
+                feluxWriter.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        felixWriter = null;
+        feluxWriter = null;
         uartFileDescriptor = null;
     }
 
