@@ -143,12 +143,10 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                             new TabListener(this)
                     ));
 
+            /*
             if (savedInstanceState != null) {
-                accessory = savedInstanceState.getParcelable("accessory");
-                uartFileDescriptor = savedInstanceState.getParcelable("uartFileDescriptor");
-                FtdiUartFileDescriptor.FtdiUartOutputStream ftdiOutputStream = new FtdiUartFileDescriptor.FtdiUartOutputStream(uartFileDescriptor);
-                feluxWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
             }
+            */
         }
     }
 
@@ -159,14 +157,20 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         closeUsbAccessory();
     }
 
-    private void openUsbAccessory() {
-        if (uartFileDescriptor == null) {
-            UsbManager manager = (UsbManager)getSystemService(Context.USB_SERVICE);
-            accessory = getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
-            String accessoryString = accessory == null ? "null" : accessory.toString();
-            Log.d(TAG, "usbAccessory: " + accessoryString);
+    private UsbAccessory getAccessory(UsbManager manager) {
+        manager = (UsbManager)getSystemService(Context.USB_SERVICE);
+        UsbAccessory[] accessories = manager.getAccessoryList();
+        return accessories == null ? null : accessories[0];
 
-            if (accessory == null) {
+        /* TODO: Loop through all accessories */
+    }
+
+    private void openUsbAccessory() {
+        UsbManager manager = (UsbManager)getSystemService(Context.USB_SERVICE);
+        accessory = getAccessory(manager);
+        String accessoryString = accessory == null ? "null" : accessory.toString();
+
+        if (accessory == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Please connect a felux light board")
                     .setCancelable(false)
@@ -177,22 +181,31 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                         }
                     })
                     .show();
-            } else {
-                try {
-                    uartFileDescriptor = new FtdiUartFileDescriptor(manager.openAccessory(accessory));
-                    FtdiUartFileDescriptor.FtdiUartOutputStream ftdiOutputStream = new FtdiUartFileDescriptor.FtdiUartOutputStream(uartFileDescriptor);
+        } else {
+            try {
+                uartFileDescriptor = new FtdiUartFileDescriptor(manager.openAccessory(accessory));
+                FtdiUartFileDescriptor.FtdiUartOutputStream ftdiOutputStream = new FtdiUartFileDescriptor.FtdiUartOutputStream(uartFileDescriptor);
+                if (getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY) != null) {
+                    Log.d(TAG, "setConfig");
                     ftdiOutputStream.setConfig(115200,
                             FtdiUartFileDescriptor.DATA_BITS_8,
                             FtdiUartFileDescriptor.STOP_BITS_1,
                             FtdiUartFileDescriptor.PARITY_NONE,
                             FtdiUartFileDescriptor.FLOW_CONTROL_NONE);
-                    feluxWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
-                    feluxWriter.write(new byte[] {(byte)0xA1, (byte)0x0, (byte)1, (byte)0x7f});
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+                Log.d(TAG, "write");
+                feluxWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
+                feluxWriter.write(new byte[] {(byte)0xA1, (byte)0x0, (byte)1, (byte)0x7f});
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        closeUsbAccessory();
     }
 
     private void closeUsbAccessory() {
@@ -216,8 +229,6 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //outState.putInt(ACTIVE_TAB, getActionBar().getSelectedNavigationIndex());
-        outState.putParcelable("accessory", accessory);
-        outState.putParcelable("uartFileDescriptor", uartFileDescriptor);
         super.onSaveInstanceState(outState);
     }
 
