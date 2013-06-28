@@ -15,7 +15,7 @@ public class SceneListFragment extends ItemListFragment<Scene> {
     public SceneListFragment() {
     }
 
-    public void setFeluxManager(LightManager manager) {
+    public void setFeluxManager(FeluxManager manager) {
         this.items = manager.getScenes();
     }
 

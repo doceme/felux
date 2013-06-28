@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class ItemListFragment<T> extends ListFragment implements ItemDetailCallbacks<Item> {
     protected ArrayAdapter<T> adapter;
     protected List<T> items;
-    protected LightManager manager;
+    protected FeluxManager manager;
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -46,14 +46,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         }
 
         @Override
-        public void onItemBeginEdit(Item item) {
+        public void onItemUpdated(Item item) {
 
         }
 
-        @Override
-        public void onItemEndEdit(Item item) {
-
-        }
     }
 
     public int getNumItems() {
@@ -75,7 +71,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     public ItemListFragment() {
     }
 
-    public abstract void setFeluxManager(LightManager manager);
+    public abstract void setFeluxManager(FeluxManager manager);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -280,7 +276,8 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
   }
 
     @Override
-    public void onItemNameChanged(Item item) {
+    public void onItemDetailUpdated(Item item) {
         adapter.notifyDataSetChanged();
+        itemListCallbacks.onItemUpdated(item);
     }
 }

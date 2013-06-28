@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-
 import com.lifecity.felux.items.Item;
 
 /**
@@ -15,24 +14,25 @@ import com.lifecity.felux.items.Item;
  */
 abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Callback {
     protected int layout;
-    protected ItemDetailCallbacks<Item> detailCallbacks;
+    protected ItemDetailCallbacks<T> detailCallbacks;
     protected ActionMode actionMode;
-    protected LightManager manager;
+    protected FeluxManager manager;
 
     /**
      * The dummy content this fragment is presenting.
      */
     protected T item;
+    protected T itemBeforeEdit;
 
     public ItemDetailFragment(int layout) {
         this.layout = layout;
     }
 
-    public void setDetailCallbacks(ItemDetailCallbacks<Item> callbacks) {
+    public void setDetailCallbacks(ItemDetailCallbacks<T> callbacks) {
         this.detailCallbacks = callbacks;
     }
 
-    public void setFeluxManager(LightManager manager) {
+    public void setFeluxManager(FeluxManager manager) {
         this.manager = manager;
     }
 
@@ -89,7 +89,8 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
 
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        return false;
+        itemBeforeEdit = (T)((Item)item).copy();
+        return true;
     }
 
     @Override
@@ -104,7 +105,13 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        actionMode = null;
+        if (actionMode.getTag() == "cancelled") {
+            item = itemBeforeEdit;
+            detailCallbacks.onItemDetailUpdated(item);
+        } else {
+            itemBeforeEdit = null;
+        }
+        this.actionMode = null;
     }
 
     public void showHideKeyboard(View view, boolean show) {
@@ -120,10 +127,8 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     public void onItemAdded(T item) {
     }
 
-    public void onItemBeginEdit() {
-    }
-
-    public void onItemEndEdit() {
+    public void onItemUpdated(T item) {
+        updateItemView();
     }
 
     abstract public void updateItemView();

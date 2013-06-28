@@ -21,7 +21,7 @@ public class LightListFragment extends ItemListFragment<Light> {
     public LightListFragment() {
     }
 
-    public void setFeluxManager(LightManager manager) {
+    public void setFeluxManager(FeluxManager manager) {
         this.items = manager.getLights();
     }
 

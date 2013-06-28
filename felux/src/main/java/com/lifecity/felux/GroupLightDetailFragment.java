@@ -1,18 +1,10 @@
 package com.lifecity.felux;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.*;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.TextView;
-import com.lifecity.felux.items.Item;
-import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.DmxGroupLight;
-import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
 
 /**
@@ -124,7 +116,7 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         if (!actionCancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
-                detailCallbacks.onItemNameChanged(item);
+                detailCallbacks.onItemDetailUpdated(item);
             }
 
             DmxGroupLight light = (DmxGroupLight)item;

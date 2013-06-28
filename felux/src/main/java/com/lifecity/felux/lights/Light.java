@@ -6,7 +6,7 @@ import com.lifecity.felux.items.Item;
  * Basic light class
  */
 public abstract class Light extends Item {
-    protected int value;
+    protected int value = 0;
     public static final int MIN_VALUE = 0;
     public static final int MAX_VALUE = 255;
 

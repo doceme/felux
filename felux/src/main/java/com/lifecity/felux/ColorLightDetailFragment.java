@@ -1,10 +1,8 @@
 package com.lifecity.felux;
 
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.NumberPicker;
 import com.lifecity.felux.colorpicker.ColorPicker;
 import com.lifecity.felux.colorpicker.SVBar;
@@ -114,7 +112,7 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
         if (!actionCancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
-                detailCallbacks.onItemNameChanged(item);
+                detailCallbacks.onItemDetailUpdated(item);
             }
             DmxColorLight light = (DmxColorLight)item;
             light.setAddress(addrEdit.getValue());

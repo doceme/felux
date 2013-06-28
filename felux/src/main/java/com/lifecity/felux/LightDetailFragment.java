@@ -2,14 +2,11 @@ package com.lifecity.felux;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.DmxGroupLight;
 import com.lifecity.felux.lights.DmxLight;
@@ -26,7 +23,6 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
     private TextView addrLabel;
     private TextView endAddrLabel;
     private EditText endAddrEdit;
-    private boolean actionCancelled;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -110,19 +106,16 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.fragment_action_cancel, menu);
-        actionCancelled = false;
         setControlsEnabled(true);
-        return true;
+        return super.onCreateActionMode(actionMode, menu);
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_item_cancel:
-                actionCancelled = true;
-                if (actionMode != null) {
-                    actionMode.finish();
-                }
+                actionMode.setTag("cancelled");
+                actionMode.finish();
                 return true;
             default:
                 break;
@@ -132,10 +125,10 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        if (!actionCancelled) {
+        if (actionMode.getTag() != "cancelled") {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
-                detailCallbacks.onItemNameChanged(item);
+                detailCallbacks.onItemDetailUpdated(item);
             }
             if (item instanceof DmxLight && !addrEdit.toString().isEmpty()) {
                 DmxLight light = (DmxLight)item;
@@ -151,9 +144,9 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
                     light.setEndAddress(addr);
                 } catch (NumberFormatException e) {}
             }
-        } else {
+        }/* else {
             updateItemView(true);
-        }
+        }*/
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
     }

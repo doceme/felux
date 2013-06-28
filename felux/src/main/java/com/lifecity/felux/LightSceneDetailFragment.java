@@ -1,22 +1,18 @@
 package com.lifecity.felux;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.Light;
 import com.lifecity.felux.scenes.LightScene;
-import com.lifecity.felux.scenes.Scene;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,7 +149,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
             selectAll.setVisibility(View.VISIBLE);
         }
         setControlsEnabled(true);
-        return true;
+        return super.onCreateActionMode(actionMode, menu);
     }
 
     @Override
@@ -195,6 +191,9 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
                 }
                 removeLight.setVisible(adapter.areAnyItemsChecked());
                 return true;
+            case R.id.action_item_cancel:
+                actionMode.setTag("cancelled");
+                actionMode.finish();
             default:
                 break;
         }
@@ -203,9 +202,11 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        if (!nameEdit.getText().toString().isEmpty()) {
-            item.setName(nameEdit.getText().toString());
-            detailCallbacks.onItemNameChanged(item);
+        if (actionMode.getTag() != "cancelled") {
+            if (!nameEdit.getText().toString().isEmpty()) {
+                item.setName(nameEdit.getText().toString());
+            }
+            detailCallbacks.onItemDetailUpdated(item);
         }
         adapter.stopEditMode();
         selectAll.setVisibility(View.GONE);

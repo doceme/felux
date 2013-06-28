@@ -15,4 +15,11 @@
         android:showAsAction="ifRoom"
         android:orderInCategory="2">
     </item>
+    <item
+        android:id="@+id/action_item_cancel"
+        android:title="Cancel"
+        android:icon="@drawable/navigation_cancel"
+        android:showAsAction="ifRoom|withText"
+        android:orderInCategory="3">
+    </item>
 </menu>

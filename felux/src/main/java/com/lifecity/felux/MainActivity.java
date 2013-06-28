@@ -53,7 +53,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     private static final String ACTION_USB_PERMISSION = "com.lifecity.felux.USB_PERMISSION";
     private static final String TAG = "MainActivity";
     private FragmentManager fragmentManager;
-    private LightManager lightManager = new LightManager();
+    private FeluxManager feluxManager;
     private FtdiUartFileDescriptor uartFileDescriptor;
     private SimpleHdlcOutputStreamWriter feluxWriter;
     private UsbAccessory accessory;
@@ -93,6 +93,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        feluxManager = new FeluxManager(getPreferences(0));
         setContentView(R.layout.main_activity);
         registerReceiver(usbReceiver, new IntentFilter(UsbManager.ACTION_USB_ACCESSORY_DETACHED));
 
@@ -103,14 +104,22 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
-        List<Light> lights = lightManager.getLights();
-        lights.add(new DmxColorLight("Screen", 1, Color.RED));
-        lights.add(new DmxColorLight("Side", 5, Color.BLUE));
-        lights.add(new DmxColorLight("Ceiling", 9, Color.GREEN));
-        lights.add(new DmxGroupLight("Stage", 13, 16));
+        List<Light> lights = feluxManager.getLights();
+        if (lights.size() == 0) {
+            lights.add(new DmxColorLight("Screen", 1, Color.RED));
+            lights.add(new DmxColorLight("Side", 5, Color.BLUE));
+            lights.add(new DmxColorLight("Ceiling", 9, Color.GREEN));
+            lights.add(new DmxGroupLight("Stage", 13, 16));
+        }
 
-        List<Scene> scenes = lightManager.getScenes();
-        scenes.add(new LightScene("Scene 1"));
+        List<Scene> scenes = feluxManager.getScenes();
+        if (scenes.size() == 0) {
+            LightScene lightScene = new LightScene("Scene 1");
+            lightScene.addLight((Light)lights.get(0).copy());
+            lightScene.addLight((Light)lights.get(1).copy());
+            lightScene.addLight((Light)lights.get(2).copy());
+            scenes.add(lightScene);
+        }
 
         fragmentManager = getSupportFragmentManager();
 
@@ -155,6 +164,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         super.onDestroy();
         unregisterReceiver(usbReceiver);
         closeUsbAccessory();
+        feluxManager.saveLights();
+        feluxManager.saveScenes();
     }
 
     private UsbAccessory getAccessory(UsbManager manager) {
@@ -171,6 +182,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         String accessoryString = accessory == null ? "null" : accessory.toString();
 
         if (accessory == null) {
+            /*
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Please connect a felux light board")
                     .setCancelable(false)
@@ -181,6 +193,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                         }
                     })
                     .show();
+             */
         } else {
             try {
                 uartFileDescriptor = new FtdiUartFileDescriptor(manager.openAccessory(accessory));
@@ -233,7 +246,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     }
 
     @SuppressWarnings("unchecked")
-    private ItemDetailFragment getItemFragment(Item item) {
+    private ItemDetailFragment getItemDetailFragment(Item item) {
         FragmentManager fm = fragmentManager;
         FragmentTransaction ft = fm.beginTransaction();
         ItemDetailFragment itemDetailFragment = null;
@@ -262,7 +275,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                     ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
                     itemDetailFragment = (ItemDetailFragment)Class.forName(tag).newInstance();
                     itemDetailFragment.setDetailCallbacks(listFragment);
-                    itemDetailFragment.setFeluxManager(lightManager);
+                    itemDetailFragment.setFeluxManager(feluxManager);
                     ft.add(R.id.fragment_secondary, itemDetailFragment, tag);
                 } catch (Exception ex) {
                     throw new IllegalStateException("Invalid item");
@@ -291,25 +304,24 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     @Override
     @SuppressWarnings("unchecked")
     public void onItemSelected(int position, Item item) {
-        getItemFragment(item).setItem(item);
+        getItemDetailFragment(item).setItem(item);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onItemAdded(Item item) {
-        getItemFragment(item).onItemAdded(item);
+        getItemDetailFragment(item).onItemAdded(item);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemBeginEdit(Item item) {
-        getItemFragment(item).onItemBeginEdit();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void onItemEndEdit(Item item) {
-        getItemFragment(item).onItemEndEdit();
+    public void onItemUpdated(Item item) {
+        if (item instanceof Light) {
+            feluxManager.saveLights();
+        } else if (item instanceof Scene) {
+            feluxManager.saveScenes();
+        }
+        getItemDetailFragment(item).onItemUpdated(item);
     }
 
     private class TabListener implements ActionBar.TabListener {
@@ -330,7 +342,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             } else if (listFragment == null) {
                 try {
                     listFragment = (ItemListFragment)Class.forName(listTag).newInstance();
-                    listFragment.setFeluxManager(lightManager);
+                    listFragment.setFeluxManager(feluxManager);
                     ft.add(R.id.fragment_primary, listFragment, listTag);
                 } catch (Exception ex) {
                     throw new IllegalStateException("Invalid tab");

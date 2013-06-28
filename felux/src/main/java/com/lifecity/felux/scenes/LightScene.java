@@ -18,7 +18,10 @@ public class LightScene extends Scene {
 
     public LightScene(LightScene scene) {
         super(scene);
-        lights = scene.lights;
+        lights = new ArrayList<Light>();
+        for (Light light : scene.lights) {
+            addLight(light);
+        }
     }
 
     public LightScene(String name) {

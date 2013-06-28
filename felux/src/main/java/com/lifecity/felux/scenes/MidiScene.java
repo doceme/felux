@@ -6,9 +6,9 @@ import com.lifecity.felux.items.Item;
  * MidiScene class
  */
 public class MidiScene extends Scene {
-    int note;
-    int velocity;
-    boolean useVelocity;
+    int channel = 0;
+    int note = 0;
+    int velocity = 0;
 
     public MidiScene() {
         super();
@@ -16,9 +16,9 @@ public class MidiScene extends Scene {
 
     public MidiScene(MidiScene scene) {
         super(scene);
+        this.channel = scene.channel;
         this.note = scene.note;
         this.velocity = scene.velocity;
-        this.useVelocity = scene.useVelocity;
     }
 
     public MidiScene(String name) {
@@ -29,7 +29,16 @@ public class MidiScene extends Scene {
         return new MidiScene(this);
     }
 
-    public int getNode() {
+    public int getChannel() {
+        return channel;
+    }
+
+    public MidiScene setChannel(int channel) {
+        this.channel = channel;
+        return this;
+    }
+
+    public int getNote() {
         return note;
     }
 
@@ -44,11 +53,6 @@ public class MidiScene extends Scene {
 
     public MidiScene setVelocity(int velocity) {
         this.velocity = velocity;
-        return this;
-    }
-
-    public MidiScene useVelocity(boolean useVelocity) {
-        this.useVelocity = useVelocity;
         return this;
     }
 }

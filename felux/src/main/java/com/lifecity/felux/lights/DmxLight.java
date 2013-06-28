@@ -6,7 +6,7 @@ import com.lifecity.felux.items.Item;
  * DMX basic light class
  */
 public class DmxLight extends Light {
-    protected int address;
+    protected int address = 0;
 
     public DmxLight() {
         super();
