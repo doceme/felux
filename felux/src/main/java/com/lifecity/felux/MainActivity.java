@@ -103,23 +103,6 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
-        List<Light> lights = feluxManager.getLights();
-        if (lights.size() == 0) {
-            lights.add(new DmxColorLight("Screen", 1, Color.RED));
-            lights.add(new DmxColorLight("Side", 5, Color.BLUE));
-            lights.add(new DmxColorLight("Ceiling", 9, Color.GREEN));
-            lights.add(new DmxGroupLight("Stage", 13, 16));
-        }
-
-        List<Scene> scenes = feluxManager.getScenes();
-        if (scenes.size() == 0) {
-            LightScene lightScene = new LightScene("Scene 1");
-            lightScene.addLight((Light)lights.get(0).copy());
-            lightScene.addLight((Light)lights.get(1).copy());
-            lightScene.addLight((Light)lights.get(2).copy());
-            scenes.add(lightScene);
-        }
-
         fragmentManager = getSupportFragmentManager();
 
         //ActionBar actionBar = getActionBar();
@@ -163,8 +146,6 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         super.onDestroy();
         unregisterReceiver(usbReceiver);
         closeUsbAccessory();
-        feluxManager.saveLights();
-        feluxManager.saveScenes();
     }
 
     private UsbAccessory getAccessory(UsbManager manager) {
@@ -207,11 +188,12 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 }
                 Log.d(TAG, "write");
                 feluxWriter = new SimpleHdlcOutputStreamWriter(ftdiOutputStream);
-                feluxWriter.write(new byte[] {(byte)0xA1, (byte)0x0, (byte)1, (byte)0x7f});
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        feluxManager.setFeluxWriter(feluxWriter);
     }
 
     @Override
@@ -222,8 +204,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     private void closeUsbAccessory() {
         try {
-            if (feluxWriter != null) {
-                feluxWriter.close();
+            if (feluxManager != null) {
+                feluxManager.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -236,6 +218,29 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     protected void onResume() {
         super.onResume();
         openUsbAccessory();
+        feluxManager.open();
+
+        List<Light> lights = feluxManager.getLights();
+        if (lights.size() == 0) {
+            lights.add(new DmxColorLight("Screen", 1, Color.RED));
+            lights.add(new DmxColorLight("Side", 5, Color.BLUE));
+            lights.add(new DmxColorLight("Ceiling", 9, Color.GREEN));
+            lights.add(new DmxGroupLight("Stage", 13, 16));
+        }
+
+        List<Scene> scenes = feluxManager.getScenes();
+        if (scenes.size() == 0) {
+            LightScene lightScene = new LightScene("Scene 1");
+            lightScene.addLight((Light)lights.get(0).copy());
+            lightScene.addLight((Light)lights.get(1).copy());
+            lightScene.addLight((Light)lights.get(2).copy());
+            scenes.add(lightScene);
+        }
+
+        ItemListFragment listFragment = (ItemListFragment)fragmentManager.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
+        if (listFragment != null) {
+            listFragment.onItemsLoaded(feluxManager);
+        }
     }
 
     @Override
@@ -259,8 +264,10 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 throw new IllegalStateException("Invalid item");
             }
         } else if (item == null) {
-            ft.detach(oldDetailFragment);
-            ft.commit();
+            if (oldDetailFragment != null) {
+                ft.detach(oldDetailFragment);
+                ft.commit();
+            }
             return oldDetailFragment;
         }
 
@@ -304,24 +311,33 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     @Override
     @SuppressWarnings("unchecked")
     public void onItemSelected(int position, Item item) {
-        getItemDetailFragment(item).setItem(item);
+        ItemDetailFragment detailFragment = getItemDetailFragment(item);
+        if (detailFragment != null) {
+            detailFragment.setItem(item);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onItemAdded(Item item) {
-        getItemDetailFragment(item).onItemAdded(item);
+        ItemDetailFragment detailFragment = getItemDetailFragment(item);
+        if (detailFragment != null) {
+            getItemDetailFragment(item).onItemAdded(item);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onItemUpdated(Item item) {
+        ItemDetailFragment detailFragment = getItemDetailFragment(item);
         if (item instanceof Light) {
             feluxManager.saveLights();
         } else if (item instanceof Scene) {
             feluxManager.saveScenes();
         }
-        getItemDetailFragment(item).onItemUpdated(item);
+        if (detailFragment != null) {
+            getItemDetailFragment(item).onItemUpdated(item);
+        }
     }
 
     private class TabListener implements ActionBar.TabListener {

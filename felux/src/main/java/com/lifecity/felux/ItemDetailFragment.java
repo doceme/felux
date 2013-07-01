@@ -27,6 +27,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     protected T itemBeforeEdit;
 
     public ItemDetailFragment(int layout) {
+        setRetainInstance(true);
         this.layout = layout;
     }
 

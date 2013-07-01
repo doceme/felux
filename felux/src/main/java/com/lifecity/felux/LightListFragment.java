@@ -22,7 +22,14 @@ public class LightListFragment extends ItemListFragment<Light> {
     }
 
     public void setFeluxManager(FeluxManager manager) {
+        super.setFeluxManager(manager);
         this.items = manager.getLights();
+    }
+
+    @Override
+    public void onItemsLoaded(FeluxManager manager) {
+        this.items = manager.getLights();
+        super.onItemsLoaded(manager);
     }
 
     @Override

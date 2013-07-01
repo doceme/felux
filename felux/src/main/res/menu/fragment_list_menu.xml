@@ -18,7 +18,7 @@
     <item
         android:id="@+id/item_copy"
         android:title="Copy"
-        android:icon="@android:drawable/ic_menu_set_as"
+        android:icon="@drawable/content_copy"
         android:showAsAction="ifRoom"
         android:orderInCategory="3">
     </item>

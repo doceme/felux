@@ -16,7 +16,14 @@ public class SceneListFragment extends ItemListFragment<Scene> {
     }
 
     public void setFeluxManager(FeluxManager manager) {
+        super.setFeluxManager(manager);
         this.items = manager.getScenes();
+    }
+
+    @Override
+    public void onItemsLoaded(FeluxManager manager) {
+        this.items = manager.getScenes();
+        super.onItemsLoaded(manager);
     }
 
     @Override

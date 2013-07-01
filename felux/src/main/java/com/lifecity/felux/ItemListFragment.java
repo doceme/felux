@@ -14,7 +14,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class ItemListFragment<T> extends ListFragment implements ItemDetailCallbacks<Item> {
+public abstract class ItemListFragment<T> extends ListFragment implements ItemDetailCallbacks<Item>, FeluxManagerCallbacks {
     protected ArrayAdapter<T> adapter;
     protected List<T> items;
     protected FeluxManager manager;
@@ -52,6 +52,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
 
     }
 
+    public void setFeluxManager(FeluxManager manager) {
+        this.manager = manager;
+    }
+
     public int getNumItems() {
         return items.size();
     }
@@ -69,9 +73,8 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
      * fragment (e.g. upon screen orientation changes).
      */
     public ItemListFragment() {
+        setRetainInstance(true);
     }
-
-    public abstract void setFeluxManager(FeluxManager manager);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
@@ -138,6 +142,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
         // Notify the active callbacks interface (the activity, if the
@@ -146,6 +151,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         getActivity().invalidateOptionsMenu();
     }
 
+    @SuppressWarnings("unchecked")
     public void setActivatedPosition(int position) {
         if (position == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);
@@ -159,6 +165,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         mActivatedPosition = position;
     }
 
+    @SuppressWarnings("unchecked")
     public void addItem(T item) {
         items.add(item);
         adapter.notifyDataSetChanged();
@@ -211,10 +218,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         int position = selectedPosition();
         MenuItem upItem = menu.findItem(R.id.item_moveup);
         MenuItem downItem = menu.findItem(R.id.item_movedown);
-        //MenuItem editItem = menu.findItem(R.id.item_edit);
+        MenuItem copyItem = menu.findItem(R.id.item_copy);
         MenuItem removeItem = menu.findItem(R.id.item_remove);
 
-        //editItem.setVisible(items.size() > 0);
+        copyItem.setVisible(items.size() > 0);
         removeItem.setVisible(items.size() > 0);
 
         if (position >= 0 && items.size() > 0) {
@@ -243,6 +250,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
         case R.id.item_moveup:
@@ -277,6 +285,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
   }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onItemDetailUpdated(Item item) {
         adapter.notifyDataSetChanged();
         itemListCallbacks.onItemUpdated(item);
@@ -285,5 +294,15 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     @Override
     public void onItemDetailAdded(Item item) {
         setActivatedPosition(items.size() - 1);
+    }
+
+    @Override
+    public void onItemsLoaded(FeluxManager manager) {
+        adapter.clear();
+        adapter.addAll(items);
+        adapter.notifyDataSetChanged();
+        if (adapter.getCount() > 0) {
+            setActivatedPosition(0);
+        }
     }
 }
