@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import com.lifecity.felux.lights.DmxGroupLight;
 import com.lifecity.felux.lights.Light;
 
@@ -11,11 +13,12 @@ import com.lifecity.felux.lights.Light;
  * A fragment representing a single Light detail screen.
  * on handsets.
  */
-public class GroupLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener {
+public class GroupLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, SeekBar.OnSeekBarChangeListener {
     private EditText nameEdit;
     private NumberPicker startAddrEdit;
     private NumberPicker endAddrEdit;
-    private boolean actionCancelled;
+    private TextView valueLabel;
+    private SeekBar valueSeekBar;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -46,6 +49,9 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         endAddrEdit.setEnabled(enabled);
         endAddrEdit.setFocusable(enabled);
         endAddrEdit.setFocusableInTouchMode(enabled);
+        valueSeekBar.setEnabled(enabled);
+        valueSeekBar.setFocusable(enabled);
+        valueSeekBar.setFocusableInTouchMode(enabled);
     }
 
     @Override
@@ -68,6 +74,8 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
 
         startAddrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_addr_picker);
         endAddrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_end_addr_picker);
+        valueLabel = (TextView)getView().findViewById(R.id.light_detail_light_value_label);
+        valueSeekBar = (SeekBar)getView().findViewById(R.id.light_detail_light_value);
 
         startAddrEdit.setOnFocusChangeListener(this);
         startAddrEdit.setMinValue(1);
@@ -76,6 +84,9 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         endAddrEdit.setOnFocusChangeListener(this);
         endAddrEdit.setMinValue(1);
         endAddrEdit.setMaxValue(512);
+
+        valueSeekBar.setMax(255);
+        valueSeekBar.setOnSeekBarChangeListener(this);
 
         setControlsEnabled(false);
 
@@ -90,19 +101,16 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.fragment_action_cancel, menu);
-        actionCancelled = false;
         setControlsEnabled(true);
-        return true;
+        return super.onCreateActionMode(actionMode, menu);
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_item_cancel:
-                actionCancelled = true;
-                if (actionMode != null) {
-                    actionMode.finish();
-                }
+                actionMode.setTag("cancelled");
+                actionMode.finish();
                 return true;
             default:
                 break;
@@ -112,20 +120,23 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
+        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
         setControlsEnabled(false);
-        if (!actionCancelled) {
+        if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
-                detailCallbacks.onItemDetailUpdated(item);
             }
 
             DmxGroupLight light = (DmxGroupLight)item;
             light.setAddress(startAddrEdit.getValue());
             light.setEndAddress(endAddrEdit.getValue());
-        } else {
+        }/* else {
             updateItemView(true);
-        }
+        }*/
         super.onDestroyActionMode(actionMode);
+        if (!cancelled) {
+            detailCallbacks.onItemDetailUpdated(item);
+        }
     }
 
     public void updateItemView(boolean updateValues) {
@@ -133,12 +144,32 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
             if (nameEdit != null) {
                 nameEdit.setText(item != null ? item.getName() : "");
             }
+
+            if (startAddrEdit != null && endAddrEdit != null && item != null) {
+                DmxGroupLight light = (DmxGroupLight)item;
+                int startAddress = light.getAddress();
+                int endAddress = light.getEndAddress();
+                startAddrEdit.setValue(startAddress > 0 ? startAddress : 1);
+                endAddrEdit.setValue(endAddress > 0 ? endAddress : 1);
+                valueLabel.setText(String.valueOf(light.getPercent()) + "%");
+                valueSeekBar.setProgress(light.getValue());
+            }
         }
-        if (updateValues && startAddrEdit != null && endAddrEdit != null && item != null) {
-            int startAddress = ((DmxGroupLight) item).getAddress();
-            int endAddress = ((DmxGroupLight) item).getEndAddress();
-            startAddrEdit.setValue(startAddress > 0 ? startAddress : 1);
-            endAddrEdit.setValue(endAddress > 0 ? endAddress : 1);
-        }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        item.setValue(progress);
+        valueLabel.setText(String.valueOf(item.getPercent()) + "%");
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }

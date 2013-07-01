@@ -63,8 +63,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     static {
         itemToDetailFragment.put(LightScene.class.getCanonicalName(), LightSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DelayScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
-        itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
-        itemToDetailFragment.put(MidiScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(MidiScene.class.getCanonicalName(), MidiSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxGroupLight.class.getCanonicalName(), GroupLightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxColorLight.class.getCanonicalName(), ColorLightDetailFragment.class.getCanonicalName());
@@ -276,7 +275,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                     itemDetailFragment = (ItemDetailFragment)Class.forName(tag).newInstance();
                     itemDetailFragment.setDetailCallbacks(listFragment);
                     itemDetailFragment.setFeluxManager(feluxManager);
-                    ft.add(R.id.fragment_secondary, itemDetailFragment, tag);
+                    //ft.add(R.id.fragment_secondary, itemDetailFragment, tag);
+                    ft.replace(R.id.fragment_secondary, itemDetailFragment, tag);
                 } catch (Exception ex) {
                     throw new IllegalStateException("Invalid item");
                 }
@@ -343,7 +343,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 try {
                     listFragment = (ItemListFragment)Class.forName(listTag).newInstance();
                     listFragment.setFeluxManager(feluxManager);
-                    ft.add(R.id.fragment_primary, listFragment, listTag);
+                    //ft.add(R.id.fragment_primary, listFragment, listTag);
+                    ft.replace(R.id.fragment_primary, listFragment, listTag);
                 } catch (Exception ex) {
                     throw new IllegalStateException("Invalid tab");
                 }

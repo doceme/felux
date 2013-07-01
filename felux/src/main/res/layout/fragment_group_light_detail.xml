@@ -1,7 +1,8 @@
 <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical">
+        android:orientation="vertical"
+    >
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,6 +78,32 @@
                 android:id="@+id/light_detail_end_addr_picker"
                 android:layout_gravity="left|center_vertical"
                 android:layout_marginLeft="5dp"/>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="fill_parent"
+                      android:layout_height="fill_parent"
+                      android:orientation="vertical"
+                      android:layout_marginLeft="20dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/light_detail_light_value_label"
+                android:layout_gravity="center"/>
+
+            <SeekBar
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/light_detail_light_value"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:max="255"
+                android:focusableInTouchMode="false"/>
+
         </LinearLayout>
 
     </LinearLayout>

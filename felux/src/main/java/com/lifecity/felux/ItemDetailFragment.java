@@ -1,5 +1,6 @@
 package com.lifecity.felux;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     protected ItemDetailCallbacks<T> detailCallbacks;
     protected ActionMode actionMode;
     protected FeluxManager manager;
+    protected boolean itemAdded;
 
     /**
      * The dummy content this fragment is presenting.
@@ -43,9 +45,20 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         updateItemView();
+
+        if (itemAdded) {
+            itemAdded = false;
+            startActionMode();
+            detailCallbacks.onItemDetailAdded(item);
+        }
     }
 
     @Override
@@ -58,13 +71,14 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
         return item;
     }
 
-    public void setItem(T item) {
-        Log.i(this.getClass().getSimpleName(), "setItem");
+    public ItemDetailFragment<T> setItem(T item) {
         if (this.item != item) {
             this.item = item;
             if (getView() != null)
                 updateItemView();
         }
+
+        return this;
     }
 
     @Override
@@ -88,6 +102,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         T temp = item;
         itemBeforeEdit = item;
@@ -131,6 +146,8 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     }
 
     public void onItemAdded(T item) {
+        itemAdded = true;
+        setItem(item);
     }
 
     public void onItemUpdated(T item) {

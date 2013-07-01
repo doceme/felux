@@ -61,6 +61,7 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
 
     }
 
+    /*
     @Override
     public void onItemAdded(Light light) {
         super.onItemAdded(light);
@@ -68,6 +69,7 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
         setControlsEnabled(true);
         updateItemView(false);
     }
+    */
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {

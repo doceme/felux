@@ -41,6 +41,11 @@
     <string name="light_scene_detail_lights_select_all">All</string><string name="light_detail_color_label">Color:</string>
     <string name="light_scene_detail_light_already_added">All lights have already been added
     </string>
+    <string name="midi_scene_detail_note_label">Note:</string>
+    <string name="midi_scene_detail_channel_label">Channel:</string>
+    <string name="midi_scene_detail_velocity_label">Velocity:</string>
+    <string name="midi_scene_detail_event_label">Event:</string>
+    <string name="scene_detail_preview_label">Preview</string>
     <string-array name="scene_types">
         <item>@string/scene_type_light</item>
         <item>@string/scene_type_delay</item>

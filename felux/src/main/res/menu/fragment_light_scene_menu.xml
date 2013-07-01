@@ -12,7 +12,7 @@
         android:id="@+id/action_item_add"
         android:title="Add"
         android:icon="@drawable/content_new"
-        android:showAsAction="ifRoom"
+        android:showAsAction="ifRoom|withText"
         android:orderInCategory="2">
     </item>
     <item

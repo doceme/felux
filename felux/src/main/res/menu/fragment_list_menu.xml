@@ -16,11 +16,18 @@
         android:orderInCategory="2">
     </item>
     <item
+        android:id="@+id/item_copy"
+        android:title="Copy"
+        android:icon="@android:drawable/ic_menu_set_as"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="3">
+    </item>
+    <item
         android:id="@+id/item_remove"
         android:title="Remove"
         android:icon="@drawable/content_discard"
         android:showAsAction="ifRoom"
-        android:orderInCategory="3">
+        android:orderInCategory="4">
     </item>
     <item
         android:id="@+id/item_add"

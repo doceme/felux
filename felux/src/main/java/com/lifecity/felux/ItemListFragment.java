@@ -162,9 +162,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     public void addItem(T item) {
         items.add(item);
         adapter.notifyDataSetChanged();
-        setActivatedPosition(items.size() - 1);
         itemListCallbacks.onItemAdded(item);
-        //startActionMode();
     }
 
     public void removeItem(T item) {
@@ -253,6 +251,9 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         case R.id.item_movedown:
             moveItem(selectedItem(), true);
             return true;
+        case R.id.item_copy:
+            addItem((T)((Item)selectedItem()).copy());
+            return true;
         case R.id.item_remove:
             ConfirmDialogFragment dialog = new ConfirmDialogFragment("Delete", "Are you sure you want to delete this?", new ConfirmDialogFragment.ConfirmDialogListener() {
                 @Override
@@ -279,5 +280,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     public void onItemDetailUpdated(Item item) {
         adapter.notifyDataSetChanged();
         itemListCallbacks.onItemUpdated(item);
+    }
+
+    @Override
+    public void onItemDetailAdded(Item item) {
+        setActivatedPosition(items.size() - 1);
     }
 }

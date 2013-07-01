@@ -16,7 +16,6 @@ import com.lifecity.felux.lights.Light;
 public class ColorLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, ColorPicker.OnColorChangedListener {
     private EditText nameEdit;
     private NumberPicker addrEdit;
-    private boolean actionCancelled;
     private ColorPicker colorPicker;
     private SVBar svBar;
 
@@ -47,12 +46,14 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
 
     }
 
+    /*
     @Override
     public void onItemAdded(Light light) {
         super.onItemAdded(light);
         updateItemView(true);
         startActionMode();
     }
+    */
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
@@ -87,7 +88,6 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.fragment_action_cancel, menu);
-        actionCancelled = false;
         setControlsEnabled(true);
         return super.onCreateActionMode(actionMode, menu);
     }
@@ -96,10 +96,8 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_item_cancel:
-                actionCancelled = true;
-                if (actionMode != null) {
-                    actionMode.finish();
-                }
+                actionMode.setTag("cancelled");
+                actionMode.finish();
                 return true;
             default:
                 break;

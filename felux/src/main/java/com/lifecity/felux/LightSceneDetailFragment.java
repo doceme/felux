@@ -132,11 +132,13 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     }
 
+    /*
     @Override
     public void onItemAdded(LightScene scene) {
         super.onItemAdded(scene);
         startActionMode();
     }
+    */
 
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {

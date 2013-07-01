@@ -34,7 +34,7 @@ public abstract class Light extends Item {
     }
 
     public int getPercent() {
-        return (int)(((float)value / 255.0f) * 100);
+        return Light.getPercent(value);
     }
 
     public Light setValue(int value) {
