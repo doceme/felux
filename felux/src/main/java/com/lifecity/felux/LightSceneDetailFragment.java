@@ -202,16 +202,19 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        if (actionMode.getTag() != "cancelled") {
+        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
+        if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
             }
-            detailCallbacks.onItemDetailUpdated(item);
         }
         adapter.stopEditMode();
         selectAll.setVisibility(View.GONE);
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
+        if (!cancelled) {
+            detailCallbacks.onItemDetailUpdated(item);
+        }
     }
 
     @Override

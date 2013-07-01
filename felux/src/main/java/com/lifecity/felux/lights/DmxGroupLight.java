@@ -51,15 +51,37 @@ public class DmxGroupLight extends DmxLight {
 
     @Override
     public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+
         if (object instanceof DmxGroupLight) {
-            DmxGroupLight light = (DmxGroupLight)object;
-            if (light.getEndAddress() != endAddress) {
-                return false;
-            }
+            DmxGroupLight that = (DmxGroupLight)object;
+            return that.canEqual(this) && (that.getEndAddress() == endAddress) && super.equals(that);
         } else {
             return false;
         }
+    }
 
-        return super.equals(object);
+    @Override public int hashCode() {
+        final int prime = 17;
+        int result = 1;
+        result = 31 * result + endAddress;
+        result = 31 * result + super.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean canEqual(Object object) {
+        return (object instanceof DmxGroupLight);
+    }
+
+    @Override
+    public void update(Item item) {
+        if (item instanceof DmxGroupLight) {
+            DmxGroupLight that = (DmxGroupLight)item;
+            this.endAddress = that.endAddress;
+            super.update(item);
+        }
     }
 }

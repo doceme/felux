@@ -125,10 +125,10 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        if (actionMode.getTag() != "cancelled") {
+        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
+        if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
-                detailCallbacks.onItemDetailUpdated(item);
             }
             if (item instanceof DmxLight && !addrEdit.toString().isEmpty()) {
                 DmxLight light = (DmxLight)item;
@@ -149,6 +149,9 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
         }*/
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
+        if (!cancelled) {
+            detailCallbacks.onItemDetailUpdated(item);
+        }
     }
 
     public void updateItemView(boolean updateValues) {

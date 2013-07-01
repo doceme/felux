@@ -55,4 +55,15 @@ public class MidiScene extends Scene {
         this.velocity = velocity;
         return this;
     }
+
+    @Override
+    public void update(Item item) {
+        if (item instanceof MidiScene) {
+            MidiScene that = (MidiScene)item;
+            this.channel = that.getChannel();
+            this.note = that.getNote();
+            this.velocity = that.getVelocity();
+            super.update(item);
+        }
+    }
 }

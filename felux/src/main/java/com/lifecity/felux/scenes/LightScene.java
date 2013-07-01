@@ -18,8 +18,8 @@ public class LightScene extends Scene {
 
     public LightScene(LightScene scene) {
         super(scene);
-        lights = new ArrayList<Light>();
-        for (Light light : scene.lights) {
+        lights = new ArrayList<Light>(scene.getLights().size());
+        for (Light light : scene.getLights()) {
             addLight(light);
         }
     }
@@ -50,6 +50,10 @@ public class LightScene extends Scene {
         return lights;
     }
 
+    public void setLights(List<Light> lights) {
+        this.lights = lights;
+    }
+
     public boolean hasLight(Light light) {
         for (Light checkLight: lights) {
             if (checkLight.equals(light)) {
@@ -58,5 +62,14 @@ public class LightScene extends Scene {
         }
 
         return false;
+    }
+
+    @Override
+    public void update(Item item) {
+        if (item instanceof LightScene) {
+            LightScene that = (LightScene)item;
+            this.lights = that.getLights();
+            super.update(item);
+        }
     }
 }

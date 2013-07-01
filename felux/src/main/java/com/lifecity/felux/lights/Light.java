@@ -50,15 +50,37 @@ public abstract class Light extends Item {
 
     @Override
     public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+
         if (object instanceof Light) {
-            Light light = (Light)object;
-            if (light.getValue() != value) {
-                return false;
-            }
+            Light that = (Light)object;
+            return that.canEqual(this) && (that.getValue() == value) && super.equals(that);
         } else {
             return false;
         }
+    }
 
-        return super.equals(object);
+    @Override public int hashCode() {
+        final int prime = 17;
+        int result = 1;
+        result = 31 * result + value;
+        result = 31 * result + super.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean canEqual(Object object) {
+        return (object instanceof Light);
+    }
+
+    @Override
+    public void update(Item item) {
+        if (item instanceof Light) {
+            Light that = (Light)item;
+            this.value = that.value;
+            super.update(item);
+        }
     }
 }

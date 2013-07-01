@@ -1,6 +1,8 @@
 package com.lifecity.felux;
 
 import android.content.SharedPreferences;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -20,10 +22,11 @@ public class FeluxManager {
     private List<Light> lights;
     private List<Scene> scenes;
     private Gson gson;
-    static final private String PREF_LIGHTS = "lights";
-    static final private String PREF_SCENES = "scenes";
-    static final private Type lightListType = new TypeToken<List<Light>>() {}.getType();
-    static final private Type sceneListType = new TypeToken<List<Scene>>() {}.getType();
+    private static final String TAG = "FeluxManager";
+    private static final String PREF_LIGHTS = "lights";
+    private static final String PREF_SCENES = "scenes";
+    private static final Type lightListType = new TypeToken<List<Light>>() {}.getType();
+    private static final Type sceneListType = new TypeToken<List<Scene>>() {}.getType();
 
     public FeluxManager(SharedPreferences preferences) {
         if (preferences == null) {
@@ -61,6 +64,7 @@ public class FeluxManager {
         if (scenesJson == null) {
             scenes = new ArrayList<Scene>();
         } else {
+            //Log.d(TAG, "Loading scenes: " + scenesJson);
             scenes = gson.fromJson(scenesJson, sceneListType);
         }
     }
@@ -75,6 +79,7 @@ public class FeluxManager {
     public void saveScenes() {
         SharedPreferences.Editor editor = preferences.edit();
         String scenesJson = gson.toJson(scenes, sceneListType);
+        //Log.d(TAG, "Saving scenes: " + scenesJson);
         editor.putString(PREF_SCENES, scenesJson);
         editor.commit();
     }

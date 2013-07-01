@@ -89,7 +89,10 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
 
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        itemBeforeEdit = (T)((Item)item).copy();
+        T temp = item;
+        itemBeforeEdit = item;
+        temp = (T)((Item)item).copy();
+        item = temp;
         return true;
     }
 
@@ -109,6 +112,9 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
             item = itemBeforeEdit;
             detailCallbacks.onItemDetailUpdated(item);
         } else {
+            Item temp = (Item)itemBeforeEdit;
+            temp.update((Item)item);
+            item = itemBeforeEdit;
             itemBeforeEdit = null;
         }
         this.actionMode = null;

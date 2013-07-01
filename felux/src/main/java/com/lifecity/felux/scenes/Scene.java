@@ -17,4 +17,11 @@ public abstract class Scene extends Item {
     public Scene(String name) {
         super(name);
     }
+
+    @Override
+    public void update(Item item) {
+        if (item instanceof Scene) {
+            super.update(item);
+        }
+    }
 }

@@ -41,15 +41,37 @@ public class DmxLight extends Light {
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof DmxLight) {
-            DmxLight light = (DmxLight)object;
-            if (light.getAddress() != address) {
-                return false;
-            }
-        } else {
-            return false;
+        if (this == object) {
+            return true;
         }
 
-        return super.equals(object);
+        if (object instanceof DmxLight) {
+            DmxLight that = (DmxLight)object;
+            return that.canEqual(this) && (that.getAddress() == address) && super.equals(that);
+        } else  {
+            return false;
+        }
+    }
+
+    @Override public int hashCode() {
+        final int prime = 17;
+        int result = 1;
+        result = 31 * result + address;
+        result = 31 * result + super.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean canEqual(Object object) {
+        return (object instanceof DmxLight);
+    }
+
+    @Override
+    public void update(Item item) {
+        if (item instanceof DmxLight) {
+            DmxLight that = (DmxLight)item;
+            this.address = that.address;
+            super.update(item);
+        }
     }
 }

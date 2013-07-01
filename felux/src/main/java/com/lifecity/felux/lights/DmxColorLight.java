@@ -46,10 +46,34 @@ public class DmxColorLight extends DmxLight {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof DmxColorLight)) {
-            return false;
+        if (this == object) {
+            return true;
         }
 
-        return super.equals(object);
+        if (object instanceof DmxColorLight) {
+            DmxColorLight that = (DmxColorLight)object;
+            return that.canEqual(this) && super.equals(that);
+        } else {
+            return false;
+        }
+    }
+
+    @Override public int hashCode() {
+        final int prime = 7;
+        int result = 1;
+        result = 31 * result + super.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean canEqual(Object object) {
+        return (object instanceof DmxColorLight);
+    }
+
+    @Override
+    public void update(Item item) {
+        if (item instanceof DmxColorLight) {
+            super.update(item);
+        }
     }
 }

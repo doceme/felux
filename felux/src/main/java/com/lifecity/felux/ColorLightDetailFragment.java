@@ -89,7 +89,7 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
         inflater.inflate(R.menu.fragment_action_cancel, menu);
         actionCancelled = false;
         setControlsEnabled(true);
-        return true;
+        return super.onCreateActionMode(actionMode, menu);
     }
 
     @Override
@@ -109,19 +109,22 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        if (!actionCancelled) {
+        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
+        if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
-                detailCallbacks.onItemDetailUpdated(item);
             }
             DmxColorLight light = (DmxColorLight)item;
             light.setAddress(addrEdit.getValue());
             light.setColor(colorPicker.getColor());
-        } else {
+        }/* else {
             updateItemView(true);
-        }
+        }*/
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
+        if (!cancelled) {
+            detailCallbacks.onItemDetailUpdated(item);
+        }
     }
 
     public void updateItemView(boolean updateValues) {

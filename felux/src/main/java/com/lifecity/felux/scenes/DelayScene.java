@@ -33,4 +33,13 @@ public class DelayScene extends Scene {
         this.delay = delay;
         return this;
     }
+
+    @Override
+    public void update(Item item) {
+        if (item instanceof DelayScene) {
+            DelayScene that = (DelayScene)item;
+            this.delay = that.getDelay();
+            super.update(item);
+        }
+    }
 }
