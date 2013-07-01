@@ -132,14 +132,6 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     }
 
-    /*
-    @Override
-    public void onItemAdded(LightScene scene) {
-        super.onItemAdded(scene);
-        startActionMode();
-    }
-    */
-
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
@@ -214,9 +206,6 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         selectAll.setVisibility(View.GONE);
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
-        if (!cancelled) {
-            detailCallbacks.onItemDetailUpdated(item);
-        }
     }
 
     @Override

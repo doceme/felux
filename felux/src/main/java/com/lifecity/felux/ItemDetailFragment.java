@@ -125,13 +125,13 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     public void onDestroyActionMode(ActionMode actionMode) {
         if (actionMode.getTag() == "cancelled") {
             item = itemBeforeEdit;
-            detailCallbacks.onItemDetailUpdated(item);
         } else {
             Item temp = (Item)itemBeforeEdit;
             temp.update((Item)item);
             item = itemBeforeEdit;
             itemBeforeEdit = null;
         }
+        detailCallbacks.onItemDetailUpdated(item);
         this.actionMode = null;
     }
 

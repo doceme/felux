@@ -115,14 +115,9 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
             DmxColorLight light = (DmxColorLight)item;
             light.setAddress(addrEdit.getValue());
             light.setColor(colorPicker.getColor());
-        }/* else {
-            updateItemView(true);
-        }*/
+        }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
-        if (!cancelled) {
-            detailCallbacks.onItemDetailUpdated(item);
-        }
     }
 
     public void updateItemView(boolean updateValues) {

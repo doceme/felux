@@ -146,14 +146,9 @@ public class LightDetailFragment extends ItemDetailFragment<Light> implements Vi
                     light.setEndAddress(addr);
                 } catch (NumberFormatException e) {}
             }
-        }/* else {
-            updateItemView(true);
-        }*/
+        }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
-        if (!cancelled) {
-            detailCallbacks.onItemDetailUpdated(item);
-        }
     }
 
     public void updateItemView(boolean updateValues) {

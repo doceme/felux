@@ -121,7 +121,6 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
         boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
-        setControlsEnabled(false);
         if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
@@ -130,13 +129,9 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
             DmxGroupLight light = (DmxGroupLight)item;
             light.setAddress(startAddrEdit.getValue());
             light.setEndAddress(endAddrEdit.getValue());
-        }/* else {
-            updateItemView(true);
-        }*/
-        super.onDestroyActionMode(actionMode);
-        if (!cancelled) {
-            detailCallbacks.onItemDetailUpdated(item);
         }
+        setControlsEnabled(false);
+        super.onDestroyActionMode(actionMode);
     }
 
     public void updateItemView(boolean updateValues) {

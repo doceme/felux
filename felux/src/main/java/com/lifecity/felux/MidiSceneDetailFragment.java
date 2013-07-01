@@ -97,6 +97,19 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
     }
 
     @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        ListIterator<Light> iterator;
+        switch (menuItem.getItemId()) {
+            case R.id.action_item_cancel:
+                actionMode.setTag("cancelled");
+                actionMode.finish();
+            default:
+                break;
+        }
+        return super.onActionItemClicked(actionMode, menuItem);
+    }
+
+    @Override
     public void onDestroyActionMode(ActionMode actionMode) {
         boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
         if (!cancelled) {
@@ -115,8 +128,5 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
-        if (!cancelled) {
-            detailCallbacks.onItemDetailUpdated(item);
-        }
     }
 }
