@@ -2,16 +2,16 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/item_moveup"
-        android:title="Move Up"
-        android:icon="@drawable/navigation_collapse"
+        android:id="@+id/item_add"
+        android:title="Add"
+        android:icon="@drawable/content_new"
         android:showAsAction="ifRoom"
         android:orderInCategory="1">
     </item>
     <item
-        android:id="@+id/item_movedown"
-        android:title="Move Down"
-        android:icon="@drawable/navigation_expand"
+        android:id="@+id/item_remove"
+        android:title="Remove"
+        android:icon="@drawable/content_discard"
         android:showAsAction="ifRoom"
         android:orderInCategory="2">
     </item>
@@ -23,17 +23,17 @@
         android:orderInCategory="3">
     </item>
     <item
-        android:id="@+id/item_remove"
-        android:title="Remove"
-        android:icon="@drawable/content_discard"
-        android:showAsAction="ifRoom"
-        android:orderInCategory="4">
-    </item>
-    <item
-        android:id="@+id/item_add"
-        android:title="Add"
-        android:icon="@drawable/content_new"
+        android:id="@+id/item_moveup"
+        android:title="Move Up"
+        android:icon="@drawable/navigation_collapse"
         android:showAsAction="ifRoom"
         android:orderInCategory="5">
+    </item>
+    <item
+        android:id="@+id/item_movedown"
+        android:title="Move Down"
+        android:icon="@drawable/navigation_expand"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="6">
     </item>
 </menu>
