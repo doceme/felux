@@ -147,8 +147,14 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     }
 
     public void onItemAdded(T item) {
-        itemAdded = true;
         setItem(item);
+
+        if (item.getClass().equals(this.item.getClass())) {
+            startActionMode();
+            detailCallbacks.onItemDetailAdded(item);
+        } else {
+                itemAdded = true;
+        }
     }
 
     public void onItemUpdated(T item) {

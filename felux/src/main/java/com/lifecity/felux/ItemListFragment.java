@@ -161,13 +161,14 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     public void addItem(T item) {
         items.add(item);
         adapter.notifyDataSetChanged();
+        setActivatedPosition(items.size() - 1);
         itemListCallbacks.onItemAdded(item);
     }
 
     public void removeItem(T item) {
         int oldPosition = selectedPosition();
         int newPosition = oldPosition == 0 ? 0 : oldPosition - 1;
-        items.remove(item);
+        items.remove(oldPosition);
         adapter.notifyDataSetChanged();
         if (items.size() == 0) {
             newPosition = -1;
@@ -264,10 +265,6 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
             });
             dialog.show(getActivity().getSupportFragmentManager(), "confirm_remove_dialog_tag");
             return true;
-        /*case R.id.item_edit:
-            startActionMode();
-            return true;
-            */
         case R.id.item_add:
             getActivity().invalidateOptionsMenu();
             return true;
