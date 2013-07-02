@@ -1,10 +1,8 @@
 package com.lifecity.felux;
 
 import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -64,7 +62,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         itemToDetailFragment.put(LightScene.class.getCanonicalName(), LightSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DelayScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), MidiSceneDetailFragment.class.getCanonicalName());
-        itemToDetailFragment.put(DmxLight.class.getCanonicalName(), LightDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DmxLight.class.getCanonicalName(), BasicLightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxGroupLight.class.getCanonicalName(), GroupLightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxColorLight.class.getCanonicalName(), ColorLightDetailFragment.class.getCanonicalName());
     }
@@ -233,7 +231,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             LightScene lightScene = new LightScene("Scene 1");
             lightScene.addLight((Light)lights.get(0).copy());
             lightScene.addLight((Light)lights.get(1).copy());
-            lightScene.addLight((Light)lights.get(2).copy());
+            lightScene.addLight((Light) lights.get(2).copy());
             scenes.add(lightScene);
         }
 

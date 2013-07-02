@@ -10,7 +10,8 @@
         android:id="@+id/midi_scene_detail_preview_button"
         android:layout_gravity="left|center_vertical"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"/>
 
     <TextView
             android:layout_width="match_parent"
@@ -23,7 +24,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/midi_scene_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
             android:editable="false"
-            android:layout_marginLeft="5dp"/>
+            android:layout_marginLeft="5dp"
+            android:selectAllOnFocus="true"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +37,8 @@
         android:id="@+id/midi_scene_detail_channel_edit" android:inputType="number" android:singleLine="true" android:textIsSelectable="true"
         android:editable="false"
         android:layout_marginLeft="5dp"
-        android:numeric="integer"/>
+        android:numeric="integer"
+        android:selectAllOnFocus="true"/>
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +50,8 @@
         android:id="@+id/midi_scene_detail_note_edit" android:inputType="number" android:singleLine="true" android:textIsSelectable="true"
         android:editable="false"
         android:layout_marginLeft="5dp"
-        android:numeric="integer"/>
+        android:numeric="integer"
+        android:selectAllOnFocus="true"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +63,8 @@
         android:id="@+id/midi_scene_detail_velocity_edit" android:inputType="number" android:singleLine="true" android:textIsSelectable="true"
         android:editable="false"
         android:layout_marginLeft="5dp"
-        android:numeric="integer"/>
+        android:numeric="integer"
+        android:selectAllOnFocus="true"/>
 
     <Switch
         android:layout_width="wrap_content"

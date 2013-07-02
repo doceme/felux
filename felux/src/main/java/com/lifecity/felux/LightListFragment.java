@@ -9,7 +9,7 @@ import com.lifecity.felux.lights.Light;
  * A list fragment representing a list of Lights. This fragment
  * also supports tablet devices by allowing list items to be given an
  * 'activated' state upon selection. This helps indicate which item is
- * currently being viewed in a {@link LightDetailFragment}.
+ * currently being viewed in a {@link BasicLightDetailFragment}.
  * <p>
  * interface.
  */

@@ -6,17 +6,16 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.lifecity.felux.lights.DmxGroupLight;
+import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
 
 /**
  * A fragment representing a single Light detail screen.
  * on handsets.
  */
-public class GroupLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, SeekBar.OnSeekBarChangeListener {
+public class BasicLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, SeekBar.OnSeekBarChangeListener {
     private EditText nameEdit;
-    private NumberPicker startAddrEdit;
-    private NumberPicker endAddrEdit;
+    private NumberPicker addrEdit;
     private TextView valueLabel;
     private SeekBar valueSeekBar;
 
@@ -24,29 +23,24 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public GroupLightDetailFragment() {
-        super(R.layout.fragment_group_light_detail);
+    public BasicLightDetailFragment() {
+        super(R.layout.fragment_basic_light_detail);
     }
 
     private void setControlsEnabled(boolean enabled) {
         if (!enabled) {
             if (nameEdit.hasFocus()) {
                 nameEdit.clearFocus();
-            } else if (startAddrEdit.hasFocus()) {
-                startAddrEdit.clearFocus();
-            } else if (endAddrEdit.hasFocus()) {
-                endAddrEdit.clearFocus();
+            } else if (addrEdit.hasFocus()) {
+                addrEdit.clearFocus();
             }
         }
 
         nameEdit.setFocusable(enabled);
         nameEdit.setFocusableInTouchMode(enabled);
-        startAddrEdit.setEnabled(enabled);
-        startAddrEdit.setFocusable(enabled);
-        startAddrEdit.setFocusableInTouchMode(enabled);
-        endAddrEdit.setEnabled(enabled);
-        endAddrEdit.setFocusable(enabled);
-        endAddrEdit.setFocusableInTouchMode(enabled);
+        addrEdit.setEnabled(enabled);
+        addrEdit.setFocusable(enabled);
+        addrEdit.setFocusableInTouchMode(enabled);
         valueSeekBar.setEnabled(enabled);
         valueSeekBar.setFocusable(enabled);
         valueSeekBar.setFocusableInTouchMode(enabled);
@@ -70,18 +64,13 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         nameEdit = (EditText)getView().findViewById(R.id.light_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
 
-        startAddrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_addr_picker);
-        endAddrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_end_addr_picker);
+        addrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_addr_picker);
         valueLabel = (TextView)getView().findViewById(R.id.light_detail_light_value_label);
         valueSeekBar = (SeekBar)getView().findViewById(R.id.light_detail_light_value);
 
-        startAddrEdit.setOnFocusChangeListener(this);
-        startAddrEdit.setMinValue(1);
-        startAddrEdit.setMaxValue(512);
-
-        endAddrEdit.setOnFocusChangeListener(this);
-        endAddrEdit.setMinValue(1);
-        endAddrEdit.setMaxValue(512);
+        addrEdit.setOnFocusChangeListener(this);
+        addrEdit.setMinValue(1);
+        addrEdit.setMaxValue(512);
 
         valueSeekBar.setMax(255);
         valueSeekBar.setOnSeekBarChangeListener(this);
@@ -124,9 +113,8 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
                 item.setName(nameEdit.getText().toString());
             }
 
-            DmxGroupLight light = (DmxGroupLight)item;
-            light.setAddress(startAddrEdit.getValue());
-            light.setEndAddress(endAddrEdit.getValue());
+            DmxLight light = (DmxLight)item;
+            light.setAddress(addrEdit.getValue());
         }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
@@ -138,12 +126,10 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
                 nameEdit.setText(item != null ? item.getName() : "");
             }
 
-            if (startAddrEdit != null && endAddrEdit != null && item != null) {
-                DmxGroupLight light = (DmxGroupLight)item;
+            if (addrEdit != null && item != null) {
+                DmxLight light = (DmxLight)item;
                 int startAddress = light.getAddress();
-                int endAddress = light.getEndAddress();
-                startAddrEdit.setValue(startAddress > 0 ? startAddress : 1);
-                endAddrEdit.setValue(endAddress > 0 ? endAddress : 1);
+                addrEdit.setValue(startAddress > 0 ? startAddress : 1);
                 valueLabel.setText(String.valueOf(light.getPercent()) + "%");
                 valueSeekBar.setProgress(light.getValue());
             }
@@ -166,3 +152,4 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
 
     }
 }
+
