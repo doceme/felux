@@ -79,16 +79,8 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        adapter = new ArrayAdapter<T>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                items
-        );
-
-        setListAdapter(adapter);
         setHasOptionsMenu(true);
+        updateAdapter();
     }
 
     @Override
@@ -296,11 +288,20 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         setActivatedPosition(items.size() - 1);
     }
 
+    private void updateAdapter() {
+        adapter = new ArrayAdapter<T>(
+                getActivity(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                items
+        );
+
+        setListAdapter(adapter);
+    }
+
     @Override
     public void onItemsLoaded(FeluxManager manager) {
-        adapter.clear();
-        adapter.addAll(items);
-        adapter.notifyDataSetChanged();
+        updateAdapter();
         if (adapter.getCount() > 0) {
             setActivatedPosition(0);
         }
