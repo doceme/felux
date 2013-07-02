@@ -322,7 +322,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     public void onItemAdded(Item item) {
         ItemDetailFragment detailFragment = getItemDetailFragment(item);
         if (detailFragment != null) {
-            getItemDetailFragment(item).onItemAdded(item);
+            detailFragment.onItemAdded(item);
         }
     }
 
@@ -336,7 +336,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             feluxManager.saveScenes();
         }
         if (detailFragment != null) {
-            getItemDetailFragment(item).onItemUpdated(item);
+            detailFragment.onItemUpdated(item);
         }
     }
 
