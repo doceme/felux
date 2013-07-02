@@ -40,6 +40,13 @@ public class SimpleHdlcOutputStreamWriter {
     }
 
     public void write(byte[] buffer, int offset, int count) throws IOException {
+        if (offset > buffer.length || offset < 0) {
+            throw new ArrayIndexOutOfBoundsException("Offset out of bounds: " + offset);
+        }
+        if (count < 0 || count > buffer.length - offset) {
+            throw new ArrayIndexOutOfBoundsException("Length out of bounds: " + count);
+        }
+
         /* Start of frame */
         out.write(FRAME_BYTE);
 
@@ -62,6 +69,7 @@ public class SimpleHdlcOutputStreamWriter {
         write_escape(((crcValue >> 16) & 0xff));
         write_escape(((crcValue >> 8) & 0xff));
         write_escape((crcValue & 0xff));
+        out.flush();
     }
 
     public void write(int data) throws IOException {
