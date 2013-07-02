@@ -9,6 +9,7 @@ public class MidiScene extends Scene {
     int channel = 0;
     int note = 0;
     int velocity = 0;
+    boolean eventOn = true;
 
     public MidiScene() {
         super();
@@ -53,6 +54,15 @@ public class MidiScene extends Scene {
 
     public MidiScene setVelocity(int velocity) {
         this.velocity = velocity;
+        return this;
+    }
+
+    public boolean getEventOn() {
+        return eventOn;
+    }
+
+    public MidiScene setEventOn(boolean eventOn) {
+        this.eventOn = eventOn;
         return this;
     }
 

@@ -1,17 +1,11 @@
 package com.lifecity.felux;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import com.lifecity.felux.items.Item;
-import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.Light;
-import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.MidiScene;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ListIterator;
 
 /**
@@ -26,6 +20,7 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
     private EditText noteEdit;
     private TextView velocityLabel;
     private EditText velocityEdit;
+    private Switch eventSwitch;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -43,6 +38,7 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
             channelEdit.setText(String.valueOf(item.getChannel()));
             noteEdit.setText(String.valueOf(item.getNote()));
             velocityEdit.setText(String.valueOf(item.getVelocity()));
+            eventSwitch.setChecked(item.getEventOn());
         }
     }
 
@@ -61,6 +57,9 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         noteEdit.setFocusableInTouchMode(enabled);
         velocityEdit.setFocusable(enabled);
         velocityEdit.setFocusableInTouchMode(enabled);
+        eventSwitch.setEnabled(enabled);
+        eventSwitch.setFocusable(enabled);
+        eventSwitch.setFocusableInTouchMode(enabled);
     }
 
     @Override
@@ -82,6 +81,8 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         channelLabel = (TextView)view.findViewById(R.id.midi_scene_detail_channel_label);
         noteLabel = (TextView)view.findViewById(R.id.midi_scene_detail_note_label);
         velocityLabel = (TextView)view.findViewById(R.id.midi_scene_detail_velocity_label);
+
+        eventSwitch = (Switch)view.findViewById(R.id.midi_scene_detail_event_switch);
 
         setControlsEnabled(false);
 
@@ -125,6 +126,7 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
             if (!velocityEdit.getText().toString().isEmpty()) {
                 item.setVelocity(Integer.valueOf(velocityEdit.getText().toString()));
             }
+            item.setEventOn(eventSwitch.isChecked());
         }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);

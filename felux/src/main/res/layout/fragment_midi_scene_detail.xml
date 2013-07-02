@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/midi_scene_detail_event_label"
-        android:id="@+id/midi_scene_detail_command_switch"
+        android:id="@+id/midi_scene_detail_event_switch"
         android:layout_gravity="left|center_vertical"
         android:checked="true"
         android:layout_marginTop="15dp"/>
