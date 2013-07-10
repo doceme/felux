@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import com.lifecity.felux.scenes.Scene;
 import com.lifecity.felux.scenes.LightScene;
-import com.lifecity.felux.scenes.DelayScene;
 import com.lifecity.felux.scenes.MidiScene;
 
 public class AddSceneDialogFragment extends DialogFragment {
@@ -32,8 +31,6 @@ public class AddSceneDialogFragment extends DialogFragment {
                         if (which == 0) {
                             scene = new LightScene();
                         } else if (which == 1) {
-                            scene = new DelayScene();
-                        } else if (which == 2) {
                             scene = new MidiScene();
                         } else {
                             throw new IllegalStateException("Invalid scene type");

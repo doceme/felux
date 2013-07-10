@@ -17,7 +17,6 @@ import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.DmxGroupLight;
 import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
-import com.lifecity.felux.scenes.DelayScene;
 import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
@@ -29,18 +28,7 @@ import java.util.Map;
 
 
 /**
- * An activity representing a list of Lights. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- * <p>
- * The activity makes heavy use of fragments. The list of items is a
- * {@link SceneListFragment} and the item details
- * (if present) is a {@link SceneDetailFragment}.
- * <p>
- * This activity also implements the required
- * to listen for item selections.
+ * MainActivity class
  */
 public class MainActivity extends FragmentActivity implements ItemListCallbacks<Item> {
     /*
@@ -60,7 +48,6 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     static {
         itemToDetailFragment.put(LightScene.class.getCanonicalName(), LightSceneDetailFragment.class.getCanonicalName());
-        itemToDetailFragment.put(DelayScene.class.getCanonicalName(), SceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), MidiSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxLight.class.getCanonicalName(), BasicLightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxGroupLight.class.getCanonicalName(), GroupLightDetailFragment.class.getCanonicalName());
