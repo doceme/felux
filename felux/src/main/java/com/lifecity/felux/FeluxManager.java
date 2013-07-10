@@ -1,6 +1,7 @@
 package com.lifecity.felux;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -34,6 +35,14 @@ public class FeluxManager {
     private static final Type sceneListType = new TypeToken<List<Scene>>() {}.getType();
     private static final Type cueListType = new TypeToken<List<Cue>>() {}.getType();
     private SimpleHdlcOutputStreamWriter feluxWriter;
+
+    private final byte CMD_DMX_SET_VALUE = (byte)0x91;
+    private final byte CMD_DMX_SET_GROUP = (byte)0x92;
+    private final byte CMD_DMX_SET_RANGE = (byte)0x93;
+    private final byte CMD_DMX_SET_BLACKOUT = (byte)0x99;
+    private final byte CMD_MIDI_NOTE_ON = (byte)0xA1;
+    private final byte CMD_MIDI_NOTE_OFF = (byte)0xA2;
+    private final byte CMD_HOUSE_LIGHTS = (byte)0xB0;
 
     public FeluxManager(SharedPreferences preferences) {
         if (preferences == null) {
@@ -82,11 +91,33 @@ public class FeluxManager {
     }
 
     public void showLight(int universe, int address, int value) {
-        byte[] data = {(byte)0x91, 0, (byte)(address << 16), (byte)(address & 0xff), (byte)value};
-        try {
-            feluxWriter.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (feluxWriter != null) {
+            byte[] data = {CMD_DMX_SET_RANGE,
+                    (byte)universe,
+                    (byte)(address << 16), (byte)(address & 0xff),
+                    (byte)value};
+            try {
+                feluxWriter.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showColorLight(int universe, int address, int color) {
+        if (feluxWriter != null) {
+            byte[] data = {CMD_DMX_SET_RANGE,
+                    (byte)universe,
+                    (byte)(address << 16), (byte)(address & 0xff),
+                    (byte) Color.red(color),
+                    (byte) Color.blue(color),
+                    (byte) Color.green(color),
+                    (byte) 0xff};
+            try {
+                feluxWriter.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

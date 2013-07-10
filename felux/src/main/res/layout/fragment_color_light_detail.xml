@@ -39,21 +39,57 @@
                 android:paddingBottom="10dp"
                 android:layout_marginLeft="5dp"
                 android:text="@string/light_type_color"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/light_detail_addr_label"
-                android:id="@+id/light_detail_addr_label"
-                android:layout_column="0"
-                android:layout_marginRight="5dp"
-                android:textAlignment="center"
-                android:layout_marginTop="10dp"/>
-            <NumberPicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/light_detail_addr_picker"
-                android:layout_gravity="left|center_vertical"
-                android:layout_marginLeft="5dp"/>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal">
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/light_detail_universe_label"
+                        android:id="@+id/light_detail_universe_label"
+                        android:textAlignment="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <NumberPicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/light_detail_universe_picker"
+                        android:layout_gravity="left|center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="7dp"/>
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginLeft="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/light_detail_addr_label"
+                        android:id="@+id/light_detail_addr_label"
+                        android:layout_column="0"
+                        android:textAlignment="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center_horizontal"/>
+                    <NumberPicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/light_detail_addr_picker"
+                        android:layout_gravity="left|center_vertical"
+                        />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"

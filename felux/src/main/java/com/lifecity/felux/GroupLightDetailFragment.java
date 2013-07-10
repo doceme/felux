@@ -15,6 +15,7 @@ import com.lifecity.felux.lights.Light;
  */
 public class GroupLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, SeekBar.OnSeekBarChangeListener {
     private EditText nameEdit;
+    private NumberPicker univEdit;
     private NumberPicker startAddrEdit;
     private NumberPicker endAddrEdit;
     private TextView valueLabel;
@@ -32,6 +33,8 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         if (!enabled) {
             if (nameEdit.hasFocus()) {
                 nameEdit.clearFocus();
+            } else if (univEdit.hasFocus()) {
+                univEdit.clearFocus();
             } else if (startAddrEdit.hasFocus()) {
                 startAddrEdit.clearFocus();
             } else if (endAddrEdit.hasFocus()) {
@@ -41,6 +44,9 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
 
         nameEdit.setFocusable(enabled);
         nameEdit.setFocusableInTouchMode(enabled);
+        univEdit.setEnabled(enabled);
+        univEdit.setFocusable(enabled);
+        univEdit.setFocusableInTouchMode(enabled);
         startAddrEdit.setEnabled(enabled);
         startAddrEdit.setFocusable(enabled);
         startAddrEdit.setFocusableInTouchMode(enabled);
@@ -70,10 +76,15 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         nameEdit = (EditText)getView().findViewById(R.id.light_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
 
+        univEdit = (NumberPicker)getView().findViewById(R.id.light_detail_universe_picker);
         startAddrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_addr_picker);
         endAddrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_end_addr_picker);
         valueLabel = (TextView)getView().findViewById(R.id.light_detail_light_value_label);
         valueSeekBar = (SeekBar)getView().findViewById(R.id.light_detail_light_value);
+
+        univEdit.setOnFocusChangeListener(this);
+        univEdit.setMinValue(0);
+        univEdit.setMaxValue(2);
 
         startAddrEdit.setOnFocusChangeListener(this);
         startAddrEdit.setMinValue(1);
@@ -125,6 +136,7 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
             }
 
             DmxGroupLight light = (DmxGroupLight)item;
+            light.setUniverse(univEdit.getValue());
             light.setAddress(startAddrEdit.getValue());
             light.setEndAddress(endAddrEdit.getValue());
         }
@@ -138,10 +150,12 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
                 nameEdit.setText(item != null ? item.getName() : "");
             }
 
-            if (startAddrEdit != null && endAddrEdit != null && item != null) {
+            if (univEdit != null && startAddrEdit != null && endAddrEdit != null && item != null) {
                 DmxGroupLight light = (DmxGroupLight)item;
+                int universe = light.getUniverse();
                 int startAddress = light.getAddress();
                 int endAddress = light.getEndAddress();
+                univEdit.setValue(universe < 0 ? 0 : universe);
                 startAddrEdit.setValue(startAddress > 0 ? startAddress : 1);
                 endAddrEdit.setValue(endAddress > 0 ? endAddress : 1);
                 valueLabel.setText(String.valueOf(light.getPercent()) + "%");

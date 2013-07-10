@@ -14,6 +14,7 @@
     <string name="select_scene_label">Select scenes for this cue</string>
     <string name="detail_name_label">Name:</string>
     <string name="light_detail_type_label">Type:</string>
+    <string name="light_detail_universe_label">Universe:</string>
     <string name="light_detail_addr_label">Address:</string>
     <string name="light_detail_start_addr_label">Start Address:</string>
     <string name="light_detail_end_addr_label">End Address:</string>

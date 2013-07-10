@@ -15,6 +15,7 @@ import com.lifecity.felux.lights.Light;
  */
 public class BasicLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, SeekBar.OnSeekBarChangeListener {
     private EditText nameEdit;
+    private NumberPicker univEdit;
     private NumberPicker addrEdit;
     private TextView valueLabel;
     private SeekBar valueSeekBar;
@@ -31,6 +32,8 @@ public class BasicLightDetailFragment extends ItemDetailFragment<Light> implemen
         if (!enabled) {
             if (nameEdit.hasFocus()) {
                 nameEdit.clearFocus();
+            } else if (univEdit.hasFocus()) {
+                univEdit.clearFocus();
             } else if (addrEdit.hasFocus()) {
                 addrEdit.clearFocus();
             }
@@ -38,6 +41,9 @@ public class BasicLightDetailFragment extends ItemDetailFragment<Light> implemen
 
         nameEdit.setFocusable(enabled);
         nameEdit.setFocusableInTouchMode(enabled);
+        univEdit.setEnabled(enabled);
+        univEdit.setFocusable(enabled);
+        univEdit.setFocusableInTouchMode(enabled);
         addrEdit.setEnabled(enabled);
         addrEdit.setFocusable(enabled);
         addrEdit.setFocusableInTouchMode(enabled);
@@ -49,8 +55,10 @@ public class BasicLightDetailFragment extends ItemDetailFragment<Light> implemen
     @Override
     public void onItemAdded(Light light) {
         super.onItemAdded(light);
-        nameEdit.setText(light.getName());
-        setControlsEnabled(true);
+        if (nameEdit != null) {
+            nameEdit.setText(light.getName());
+            setControlsEnabled(true);
+        }
         updateItemView(false);
     }
 
@@ -64,9 +72,14 @@ public class BasicLightDetailFragment extends ItemDetailFragment<Light> implemen
         nameEdit = (EditText)getView().findViewById(R.id.light_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
 
+        univEdit = (NumberPicker)getView().findViewById(R.id.light_detail_universe_picker);
         addrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_addr_picker);
         valueLabel = (TextView)getView().findViewById(R.id.light_detail_light_value_label);
         valueSeekBar = (SeekBar)getView().findViewById(R.id.light_detail_light_value);
+
+        univEdit.setOnFocusChangeListener(this);
+        univEdit.setMinValue(0);
+        univEdit.setMaxValue(2);
 
         addrEdit.setOnFocusChangeListener(this);
         addrEdit.setMinValue(1);
@@ -114,6 +127,7 @@ public class BasicLightDetailFragment extends ItemDetailFragment<Light> implemen
             }
 
             DmxLight light = (DmxLight)item;
+            light.setUniverse(univEdit.getValue());
             light.setAddress(addrEdit.getValue());
         }
         setControlsEnabled(false);
@@ -126,10 +140,12 @@ public class BasicLightDetailFragment extends ItemDetailFragment<Light> implemen
                 nameEdit.setText(item != null ? item.getName() : "");
             }
 
-            if (addrEdit != null && item != null) {
+            if (univEdit != null && addrEdit != null && item != null) {
                 DmxLight light = (DmxLight)item;
-                int startAddress = light.getAddress();
-                addrEdit.setValue(startAddress > 0 ? startAddress : 1);
+                int address = light.getAddress();
+                int universe = light.getUniverse();
+                univEdit.setValue(universe < 0 ? 0 : universe);
+                addrEdit.setValue(address > 0 ? address : 1);
                 valueLabel.setText(String.valueOf(light.getPercent()) + "%");
                 valueSeekBar.setProgress(light.getValue());
             }

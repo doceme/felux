@@ -16,6 +16,7 @@ import com.lifecity.felux.lights.Light;
  */
 public class ColorLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, ColorPicker.OnColorChangedListener {
     private EditText nameEdit;
+    private NumberPicker univEdit;
     private NumberPicker addrEdit;
     private ColorPicker colorPicker;
     private SVBar svBar;
@@ -32,6 +33,8 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
         if (!enabled) {
             if (nameEdit.hasFocus()) {
                 nameEdit.clearFocus();
+            } else if (univEdit.hasFocus()) {
+                univEdit.clearFocus();
             } else if (addrEdit.hasFocus()) {
                 addrEdit.clearFocus();
             }
@@ -39,6 +42,9 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
 
         nameEdit.setFocusable(enabled);
         nameEdit.setFocusableInTouchMode(enabled);
+        univEdit.setFocusable(enabled);
+        univEdit.setFocusableInTouchMode(enabled);
+        univEdit.setEnabled(enabled);
         addrEdit.setFocusable(enabled);
         addrEdit.setFocusableInTouchMode(enabled);
         addrEdit.setEnabled(enabled);
@@ -46,15 +52,6 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
         svBar.setEnabled(enabled);
 
     }
-
-    /*
-    @Override
-    public void onItemAdded(Light light) {
-        super.onItemAdded(light);
-        updateItemView(true);
-        startActionMode();
-    }
-    */
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
@@ -64,11 +61,15 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         nameEdit = (EditText)view.findViewById(R.id.light_detail_name_edit);
+        univEdit = (NumberPicker)view.findViewById(R.id.light_detail_universe_picker);
         addrEdit = (NumberPicker)view.findViewById(R.id.light_detail_addr_picker);
         colorPicker = (ColorPicker)view.findViewById(R.id.light_detail_color_picker);
         svBar = (SVBar)view.findViewById(R.id.light_detail_color_svbar);
 
         nameEdit.setOnFocusChangeListener(this);
+        univEdit.setOnFocusChangeListener(this);
+        univEdit.setMinValue(0);
+        univEdit.setMaxValue(2);
         addrEdit.setOnFocusChangeListener(this);
         addrEdit.setMinValue(1);
         addrEdit.setMaxValue(512);
@@ -114,6 +115,7 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
                 item.setName(nameEdit.getText().toString());
             }
             DmxColorLight light = (DmxColorLight)item;
+            light.setUniverse(univEdit.getValue());
             light.setAddress(addrEdit.getValue());
             light.setColor(colorPicker.getColor());
         }
@@ -127,10 +129,12 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
                 nameEdit.setText(item != null ? item.getName() : "");
             }
 
-            if (addrEdit != null && item != null) {
+            if (univEdit != null && addrEdit != null && item != null) {
                 DmxColorLight light = (DmxColorLight)item;
+                int universe = light.getUniverse();
                 int address = light.getAddress();
                 int color = light.getColor();
+                univEdit.setValue(universe < 0 ? 0 : universe);
                 addrEdit.setValue(address > 0 ? address : 1);
                 colorPicker.setColor(color);
                 colorPicker.setNewCenterColor(color);
@@ -141,11 +145,7 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
 
     @Override
     public void onColorChanged(int color) {
-        /* TODO: Update light hardware */
         DmxColorLight light = (DmxColorLight)item;
-        manager.showLight(0, light.getAddress(), Color.red(color));
-        manager.showLight(0, light.getAddress() + 1, Color.green(color));
-        manager.showLight(0, light.getAddress() + 2, Color.blue(color));
-        manager.showLight(0, light.getAddress() + 3, 255);
+        manager.showColorLight(light.getUniverse(), light.getAddress(), color);
     }
 }
