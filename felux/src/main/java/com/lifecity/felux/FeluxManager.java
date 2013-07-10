@@ -74,6 +74,15 @@ public class FeluxManager {
         }
     }
 
+    public void showLight(int universe, int address, int value) {
+        byte[] data = {(byte)0x91, 0, (byte)(address << 16), (byte)(address & 0xff), (byte)value};
+        try {
+            feluxWriter.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void loadScenes() {
         String scenesJson = preferences.getString(PREF_SCENES, null);
 

@@ -1,5 +1,6 @@
 package com.lifecity.felux;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.EditText;
@@ -141,5 +142,10 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
     @Override
     public void onColorChanged(int color) {
         /* TODO: Update light hardware */
+        DmxColorLight light = (DmxColorLight)item;
+        manager.showLight(0, light.getAddress(), Color.red(color));
+        manager.showLight(0, light.getAddress() + 1, Color.green(color));
+        manager.showLight(0, light.getAddress() + 2, Color.blue(color));
+        manager.showLight(0, light.getAddress() + 3, 255);
     }
 }
