@@ -10,6 +10,7 @@ import java.util.List;
  * LightScene class
  */
 public class LightScene extends Scene {
+    protected float fade;
     protected List<Light> lights = new ArrayList<Light>();
 
     public LightScene() {
@@ -62,6 +63,15 @@ public class LightScene extends Scene {
         }
 
         return false;
+    }
+
+    public float getFade() {
+        return this.fade;
+    }
+
+    public LightScene setFade(float fade) {
+        this.fade = fade;
+        return this;
     }
 
     @Override

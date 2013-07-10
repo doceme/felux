@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
+import com.lifecity.felux.cues.Cue;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.DmxGroupLight;
@@ -47,6 +48,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     private static Map<String, String> itemToDetailFragment = new LinkedHashMap<String, String>();
 
     static {
+        itemToDetailFragment.put(Cue.class.getCanonicalName(), CueDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(LightScene.class.getCanonicalName(), LightSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), MidiSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxLight.class.getCanonicalName(), BasicLightDetailFragment.class.getCanonicalName());
@@ -102,6 +104,14 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             mTwoPane = true;
 
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+            actionBar.addTab(actionBar
+                    .newTab()
+                    .setText(R.string.title_cue_list)
+                    .setTag(CueListFragment.class.getCanonicalName())
+                    .setTabListener(
+                            new TabListener(this)
+                    ));
 
             actionBar.addTab(actionBar
                     .newTab()

@@ -40,21 +40,6 @@ public class AddLightSceneDialogFragment extends DialogFragment {
         String[] lightNames = new String[lights.size()];
         checkedLights = new boolean[lights.size()];
 
-        /*
-        adapter = new LightSceneLightListAdapter(
-                getActivity().getApplicationContext(),
-                R.layout.light_scene_light_list_row,
-                lights
-        );
-
-        adapter = new ArrayAdapter<Light>(
-                getActivity().getApplicationContext(),
-                android.R.layout.simple_list_item_multiple_choice,
-                android.R.id.text1,
-                lights
-        );
-        */
-
         /* Initialize light names */
         for (int i = 0; i < lights.size(); i++) {
             lightNames[i] = lights.get(i).getName();

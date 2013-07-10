@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.lifecity.felux.cues.Cue;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.items.ItemAdapter;
 import com.lifecity.felux.lights.*;
@@ -23,12 +24,15 @@ public class FeluxManager {
     private SharedPreferences preferences;
     private List<Light> lights = new ArrayList<Light>();
     private List<Scene> scenes = new ArrayList<Scene>();
+    private List<Cue> cues = new ArrayList<Cue>();
     private Gson gson;
     private static final String TAG = "FeluxManager";
     private static final String PREF_LIGHTS = "lights";
     private static final String PREF_SCENES = "scenes";
+    private static final String PREF_CUES = "cues";
     private static final Type lightListType = new TypeToken<List<Light>>() {}.getType();
     private static final Type sceneListType = new TypeToken<List<Scene>>() {}.getType();
+    private static final Type cueListType = new TypeToken<List<Cue>>() {}.getType();
     private SimpleHdlcOutputStreamWriter feluxWriter;
 
     public FeluxManager(SharedPreferences preferences) {
@@ -41,6 +45,7 @@ public class FeluxManager {
         final GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Light.class, new ItemAdapter<Light>());
         gsonBuilder.registerTypeAdapter(Scene.class, new ItemAdapter<Scene>());
+        //gsonBuilder.registerTypeAdapter(Cue.class, new ItemAdapter<Cue>());
         gson = gsonBuilder.create();
 
 
@@ -50,6 +55,7 @@ public class FeluxManager {
     public void open() {
         loadLights();
         loadScenes();
+        loadCues();
     }
 
     public void setFeluxWriter(SimpleHdlcOutputStreamWriter feluxWriter) {
@@ -62,6 +68,7 @@ public class FeluxManager {
         }
         saveLights();
         saveScenes();
+        saveCues();
     }
 
     public void loadLights() {
@@ -93,6 +100,16 @@ public class FeluxManager {
         }
     }
 
+    public void loadCues() {
+        String cuesJson = preferences.getString(PREF_CUES, null);
+
+        if (cuesJson == null) {
+            cues.clear();
+        } else {
+            cues = gson.fromJson(cuesJson, cueListType);
+        }
+    }
+
     public void saveLights() {
         SharedPreferences.Editor editor = preferences.edit();
         String lightsJson = gson.toJson(lights, lightListType);
@@ -108,11 +125,23 @@ public class FeluxManager {
         editor.commit();
     }
 
+    public void saveCues() {
+        SharedPreferences.Editor editor = preferences.edit();
+        String cuesJson = gson.toJson(cues, cueListType);
+        //Log.d(TAG, "Saving cues: " + cuesJson);
+        editor.putString(PREF_CUES, cuesJson);
+        editor.commit();
+    }
+
     public List<Light> getLights() {
         return lights;
     }
 
     public List<Scene> getScenes() {
         return scenes;
+    }
+
+    public List<Cue> getCues() {
+        return cues;
     }
 }

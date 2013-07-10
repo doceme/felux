@@ -2,17 +2,12 @@ package com.lifecity.felux;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
-
+import com.lifecity.felux.cues.Cue;
 import com.lifecity.felux.items.Item;
-import com.lifecity.felux.lights.DmxColorLight;
-import com.lifecity.felux.lights.Light;
 import com.lifecity.felux.scenes.LightScene;
+import com.lifecity.felux.scenes.Scene;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +17,20 @@ import java.util.ListIterator;
  * A fragment representing a single Scene detail screen.
  * on handsets.
  */
-public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener, View.OnFocusChangeListener, AddLightSceneDialogFragment.AddLightSceneDialogListener {
-    private LightSceneLightListAdapter adapter;
-    private Light currentLight;
+public class CueDetailFragment extends ItemDetailFragment<Cue> implements AdapterView.OnItemClickListener, AddCueSceneDialogFragment.AddCueSceneDialogListener, CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener, CueSceneDialogFragment.CueSceneDialogListener, ItemChangedListener {
+    private CueSceneListAdapter adapter;
+    private Scene currentScene;
     private CheckBox selectAll;
-    private MenuItem removeLight;
-    private ListView lightListView;
+    private MenuItem removeScene;
+    private ListView sceneListView;
     private EditText nameEdit;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public LightSceneDetailFragment() {
-        super(R.layout.fragment_light_scene_detail);
+    public CueDetailFragment() {
+        super(R.layout.fragment_cue_detail);
     }
 
     @Override
@@ -43,8 +38,8 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         if (nameEdit != null && adapter != null && item != null) {
             nameEdit.setText(item.getName());
             adapter.clear();
-            for (Light light: item.getLights()) {
-                adapter.add(light);
+            for (Scene scene: item.getScenes()) {
+                adapter.add(scene);
             }
             adapter.notifyDataSetChanged();
         }
@@ -59,7 +54,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
         nameEdit.setFocusable(enabled);
         nameEdit.setFocusableInTouchMode(enabled);
-        lightListView.setEnabled(enabled);
+        sceneListView.setEnabled(enabled);
     }
 
     @Override
@@ -69,29 +64,28 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        nameEdit = (EditText)view.findViewById(R.id.light_scene_detail_name_edit);
+        nameEdit = (EditText)view.findViewById(R.id.cue_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
-        List<Light> adapterLights = new ArrayList<Light>(item.getLights().size());
-        for (Light light: item.getLights()) {
-            adapterLights.add(light);
+        List<Scene> adapterScenes = new ArrayList<Scene>(item.getScenes().size());
+        for (Scene scene: item.getScenes()) {
+            adapterScenes.add(scene);
         }
 
-        adapter = new LightSceneLightListAdapter(
+        adapter = new CueSceneListAdapter(
                 getActivity(),
-                R.layout.light_scene_light_list_row,
-                adapterLights
+                R.layout.cue_scene_list_row,
+                adapterScenes
         );
 
         adapter.setItemChangedListener(this);
 
-        lightListView = (ListView)view.findViewById(R.id.light_scene_detail_light_list);
-        TextView nameTextView = (TextView)view.findViewById(R.id.light_scene_detail_name_edit);
-        selectAll =(CheckBox)view.findViewById(R.id.light_scene_detail_lights_select_all);
+        sceneListView = (ListView)view.findViewById(R.id.cue_detail_scene_list);
+        selectAll =(CheckBox)view.findViewById(R.id.cue_detail_scenes_select_all);
         selectAll.setOnCheckedChangeListener(this);
-        nameTextView.setText(item.getName());
-        lightListView.setAdapter(adapter);
-        lightListView.setItemsCanFocus(false);
-        lightListView.setOnItemClickListener(this);
+        nameEdit.setText(item.getName());
+        sceneListView.setAdapter(adapter);
+        sceneListView.setItemsCanFocus(false);
+        sceneListView.setOnItemClickListener(this);
 
         setControlsEnabled(false);
 
@@ -100,28 +94,33 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        currentLight = (Light)adapterView.getItemAtPosition(i);
-        if (currentLight instanceof DmxColorLight) {
-            DmxColorLight dmxColorLight = (DmxColorLight)currentLight;
-            ColorLightDialogFragment dialog = new ColorLightDialogFragment(this);
-            dialog.setColor(dmxColorLight.getColor());
-            dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
+        currentScene = (Scene)adapterView.getItemAtPosition(i);
+        boolean isLightScene = currentScene instanceof LightScene;
+        CueSceneDialogFragment dialog = new CueSceneDialogFragment(this, isLightScene);
+        dialog.setHold(currentScene.getHold());
+        if (isLightScene) {
+            LightScene lightScene = (LightScene) currentScene;
+            dialog.setFade(lightScene.getFade());
         }
+        dialog.show(getActivity().getSupportFragmentManager(), "cue_light_scene_dialog_tag");
     }
 
     @Override
-    public void onColorSelected(int color) {
-        if (currentLight != null) {
-            ((DmxColorLight) currentLight).setColor(color);
+    public void onCueChanged(float hold, float fade, boolean isLightScene) {
+        if (currentScene != null) {
+            currentScene.setHold(hold);
+            if (isLightScene) {
+                ((LightScene) currentScene).setFade(fade);
+            }
             adapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onLightsSelected(List<Light> lights) {
-        for (Light light: lights) {
-            item.addLight(light);
-            adapter.add(light);
+    public void onScenesSelected(List<Scene> scenes) {
+        for (Scene scene: scenes) {
+            item.addScene(scene);
+            adapter.add(scene);
         }
         selectAll.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
@@ -136,8 +135,8 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.fragment_add_remove_menu, menu);
-        removeLight = (MenuItem)menu.findItem(R.id.action_item_remove);
-        removeLight.setVisible(adapter.areAnyItemsChecked());
+        removeScene = menu.findItem(R.id.action_item_remove);
+        removeScene.setVisible(adapter.areAnyItemsChecked());
         adapter.startEditMode();
         if (adapter.getCount() > 0) {
             selectAll.setVisibility(View.VISIBLE);
@@ -148,25 +147,18 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        ListIterator<Light> iterator;
         switch (menuItem.getItemId()) {
             case R.id.action_item_add:
-                List<Light> newLights = new ArrayList<Light>(manager.getLights().size());
-                for (Light light: manager.getLights()) {
-                    newLights.add((Light)light.copy());
+                List<Scene> newScenes = new ArrayList<Scene>(manager.getScenes().size());
+                for (Scene scene: manager.getScenes()) {
+                    newScenes.add((Scene)scene.copy());
                 }
-                iterator = newLights.listIterator();
-                while (iterator.hasNext()) {
-                    if (item.hasLight(iterator.next())) {
-                        iterator.remove();
-                    }
-                }
-                if (newLights.size() > 0) {
-                    AddLightSceneDialogFragment dialog = new AddLightSceneDialogFragment(this, newLights);
-                    dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
+                if (newScenes.size() > 0) {
+                    AddCueSceneDialogFragment dialog = new AddCueSceneDialogFragment(this, newScenes);
+                    dialog.show(getActivity().getSupportFragmentManager(), "add_cue_scene_dialog_tag");
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage(R.string.light_scene_detail_light_already_added)
+                    builder.setMessage(R.string.cue_detail_no_scenes)
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.yes, null)
                     .show();
@@ -174,7 +166,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
                 break;
             case R.id.action_item_remove:
                 adapter.removeChecked();
-                iterator = item.getLights().listIterator();
+                ListIterator<Scene> iterator = item.getScenes().listIterator();
                 while (iterator.hasNext()) {
                     if (iterator.next().getChecked()) {
                         iterator.remove();
@@ -183,7 +175,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
                 if (adapter.getCount() == 0) {
                     selectAll.setVisibility(View.GONE);
                 }
-                removeLight.setVisible(adapter.areAnyItemsChecked());
+                removeScene.setVisible(adapter.areAnyItemsChecked());
                 return true;
             case R.id.action_item_cancel:
                 actionMode.setTag("cancelled");
@@ -211,11 +203,11 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         adapter.selectAll(checked);
-        removeLight.setVisible(checked);
+        removeScene.setVisible(checked);
     }
 
     @Override
     public void onItemCheckedChanged(Item item) {
-        removeLight.setVisible(adapter.areAnyItemsChecked());
+        removeScene.setVisible(adapter.areAnyItemsChecked());
     }
 }

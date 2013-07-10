@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:showDividers="beginning|end">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cue_scene_hold_label"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="@string/cue_hold_label"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cue_scene_hold"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:inputType="numberDecimal"
+        android:selectAllOnFocus="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cue_scene_fade_label"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="@string/cue_fade_label"
+        android:visibility="gone"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cue_scene_fade"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:inputType="numberDecimal"
+        android:selectAllOnFocus="true"/>
+
+</LinearLayout>

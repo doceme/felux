@@ -6,6 +6,8 @@ import com.lifecity.felux.items.Item;
  * Scene class
  */
 public abstract class Scene extends Item {
+    protected float hold;
+
     public Scene() {
         super();
     }
@@ -16,6 +18,15 @@ public abstract class Scene extends Item {
 
     public Scene(String name) {
         super(name);
+    }
+
+    public float getHold() {
+        return this.hold;
+    }
+
+    public Scene setHold(float hold) {
+        this.hold = hold;
+        return this;
     }
 
     @Override
