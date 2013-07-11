@@ -56,7 +56,8 @@ public abstract class Light extends Item {
 
         if (object instanceof Light) {
             Light that = (Light)object;
-            return that.canEqual(this) && (that.getValue() == value) && super.equals(that);
+            //return that.canEqual(this) && (that.getValue() == value) && super.equals(that);
+            return that.canEqual(this) && super.equals(that);
         } else {
             return false;
         }
@@ -65,7 +66,7 @@ public abstract class Light extends Item {
     @Override public int hashCode() {
         final int prime = 17;
         int result = 1;
-        result = 31 * result + value;
+        //result = 31 * result + value;
         result = 31 * result + super.hashCode();
         return result;
     }

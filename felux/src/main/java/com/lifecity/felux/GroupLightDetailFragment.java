@@ -168,6 +168,10 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         item.setValue(progress);
         valueLabel.setText(String.valueOf(item.getPercent()) + "%");
+        if (manager != null) {
+            DmxGroupLight light = (DmxGroupLight)item;
+            manager.showGroupLight(light);
+        }
     }
 
     @Override

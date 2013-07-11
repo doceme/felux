@@ -22,13 +22,14 @@ import java.util.ListIterator;
  * A fragment representing a single Scene detail screen.
  * on handsets.
  */
-public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener, View.OnFocusChangeListener, AddLightSceneDialogFragment.AddLightSceneDialogListener {
+public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener, View.OnFocusChangeListener, AddLightSceneDialogFragment.AddLightSceneDialogListener, View.OnClickListener {
     private LightSceneLightListAdapter adapter;
     private Light currentLight;
     private CheckBox selectAll;
     private MenuItem removeLight;
     private ListView lightListView;
     private EditText nameEdit;
+    private Button previewButton;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -71,6 +72,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     public void onViewCreated(View view, Bundle savedInstanceState) {
         nameEdit = (EditText)view.findViewById(R.id.light_scene_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
+        previewButton = (Button)view.findViewById(R.id.light_scene_detail_preview_button);
         List<Light> adapterLights = new ArrayList<Light>(item.getLights().size());
         for (Light light: item.getLights()) {
             adapterLights.add(light);
@@ -83,6 +85,8 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         );
 
         adapter.setItemChangedListener(this);
+
+        previewButton.setOnClickListener(this);
 
         lightListView = (ListView)view.findViewById(R.id.light_scene_detail_light_list);
         TextView nameTextView = (TextView)view.findViewById(R.id.light_scene_detail_name_edit);
@@ -105,6 +109,8 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
             DmxColorLight dmxColorLight = (DmxColorLight)currentLight;
             ColorLightDialogFragment dialog = new ColorLightDialogFragment(this);
             dialog.setColor(dmxColorLight.getColor());
+            dialog.setLight(dmxColorLight);
+            dialog.setFeluxManager(manager);
             dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
         }
     }
@@ -113,6 +119,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     public void onColorSelected(int color) {
         if (currentLight != null) {
             ((DmxColorLight) currentLight).setColor(color);
+            manager.showColorLight((DmxColorLight)currentLight);
             adapter.notifyDataSetChanged();
         }
     }
@@ -217,5 +224,12 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     @Override
     public void onItemCheckedChanged(Item item) {
         removeLight.setVisible(adapter.areAnyItemsChecked());
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == previewButton && manager != null) {
+            manager.showLightScene(item);
+        }
     }
 }

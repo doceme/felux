@@ -7,6 +7,7 @@ import android.widget.*;
 import com.lifecity.felux.cues.Cue;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.scenes.LightScene;
+import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
 
 import java.util.ArrayList;
@@ -17,9 +18,10 @@ import java.util.ListIterator;
  * A fragment representing a single Scene detail screen.
  * on handsets.
  */
-public class CueDetailFragment extends ItemDetailFragment<Cue> implements AdapterView.OnItemClickListener, AddCueSceneDialogFragment.AddCueSceneDialogListener, CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener, CueSceneDialogFragment.CueSceneDialogListener, ItemChangedListener {
+public class CueDetailFragment extends ItemDetailFragment<Cue> implements AdapterView.OnItemClickListener, AddCueSceneDialogFragment.AddCueSceneDialogListener, CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener, CueSceneDialogFragment.CueSceneDialogListener, ItemChangedListener, View.OnClickListener {
     private CueSceneListAdapter adapter;
     private Scene currentScene;
+    private Button previewButton;
     private CheckBox selectAll;
     private MenuItem removeScene;
     private ListView sceneListView;
@@ -64,6 +66,8 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        previewButton = (Button)view.findViewById(R.id.cue_detail_preview_button);
+        previewButton.setOnClickListener(this);
         nameEdit = (EditText)view.findViewById(R.id.cue_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
         List<Scene> adapterScenes = new ArrayList<Scene>(item.getScenes().size());
@@ -209,5 +213,19 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
     @Override
     public void onItemCheckedChanged(Item item) {
         removeScene.setVisible(adapter.areAnyItemsChecked());
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == previewButton && manager != null) {
+            for (Scene scene : item.getScenes()) {
+                if (scene instanceof LightScene) {
+                    /* TODO: implement fade & hold */
+                } else if (scene instanceof MidiScene) {
+                    MidiScene midiScene = (MidiScene)scene;
+                    /* TODO: implement hold */
+                }
+            }
+        }
     }
 }

@@ -9,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.lifecity.felux.colorpicker.ColorPicker;
 import com.lifecity.felux.colorpicker.SVBar;
+import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.Light;
 
 /**
@@ -21,10 +23,16 @@ import com.lifecity.felux.lights.Light;
 public class ColorLightDialogFragment extends DialogFragment implements ColorPicker.OnColorChangedListener {
     private int color;
     private ColorLightDialogListener listener;
+    private Switch previewSwitch;
+    private DmxColorLight light;
+    private FeluxManager manager;
 
     @Override
     public void onColorChanged(int color) {
         this.color = color;
+        if (previewSwitch.isChecked() && manager != null && light != null) {
+            manager.showColorLight(light.getUniverse(), light.getAddress(), color);
+        }
     }
 
     public interface ColorLightDialogListener {
@@ -40,6 +48,14 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
         this.color = color;
     }
 
+    public void setLight(DmxColorLight light) {
+        this.light = light;
+    }
+
+    public void setFeluxManager(FeluxManager manager) {
+       this.manager = manager;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -48,6 +64,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
         builder.setView(view);
         builder.setTitle(R.string.light_colorpicker_title);
 
+        previewSwitch = (Switch)view.findViewById(R.id.color_light_preview);
         SVBar svBar = (SVBar)view.findViewById(R.id.svbar);
         ColorPicker picker = (ColorPicker)view.findViewById(R.id.picker);
         picker.addSVBar(svBar);
@@ -61,6 +78,9 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
             public void onClick(DialogInterface dialog, int id) {
                 if (listener != null) {
                     listener.onColorSelected(color);
+                    if (previewSwitch.isChecked() && manager != null && light != null) {
+                        manager.showColorLight(light.getUniverse(), light.getAddress(), color);
+                    }
                 }
             }
         });

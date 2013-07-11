@@ -12,7 +12,8 @@ import java.util.ListIterator;
  * A fragment representing a single Scene detail screen.
  * on handsets.
  */
-public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> implements View.OnFocusChangeListener {
+public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> implements View.OnFocusChangeListener, View.OnClickListener {
+    private Button previewButton;
     private EditText nameEdit;
     private TextView channelLabel;
     private EditText channelEdit;
@@ -69,6 +70,8 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        previewButton = (Button)view.findViewById(R.id.midi_scene_detail_preview_button);
+        previewButton.setOnClickListener(this);
         nameEdit = (EditText)view.findViewById(R.id.midi_scene_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
         channelEdit = (EditText)view.findViewById(R.id.midi_scene_detail_channel_edit);
@@ -130,5 +133,12 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == previewButton && manager != null) {
+            manager.showMidiScene(item);
+        }
     }
 }

@@ -11,6 +11,8 @@ import com.lifecity.felux.cues.Cue;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.items.ItemAdapter;
 import com.lifecity.felux.lights.*;
+import com.lifecity.felux.scenes.LightScene;
+import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
 
 import java.io.IOException;
@@ -90,37 +92,6 @@ public class FeluxManager {
         }
     }
 
-    public void showLight(int universe, int address, int value) {
-        if (feluxWriter != null) {
-            byte[] data = {CMD_DMX_SET_RANGE,
-                    (byte)universe,
-                    (byte)(address << 16), (byte)(address & 0xff),
-                    (byte)value};
-            try {
-                feluxWriter.write(data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void showColorLight(int universe, int address, int color) {
-        if (feluxWriter != null) {
-            byte[] data = {CMD_DMX_SET_RANGE,
-                    (byte)universe,
-                    (byte)(address << 16), (byte)(address & 0xff),
-                    (byte) Color.red(color),
-                    (byte) Color.blue(color),
-                    (byte) Color.green(color),
-                    (byte) 0xff};
-            try {
-                feluxWriter.write(data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void loadScenes() {
         String scenesJson = preferences.getString(PREF_SCENES, null);
 
@@ -174,5 +145,97 @@ public class FeluxManager {
 
     public List<Cue> getCues() {
         return cues;
+    }
+
+    public void showLight(int universe, int address, int value) {
+        if (feluxWriter != null) {
+            byte[] data = {CMD_DMX_SET_VALUE,
+                    (byte)universe,
+                    (byte)(address << 16), (byte)(address & 0xff),
+                    (byte)value};
+            try {
+                feluxWriter.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showLight(DmxLight light) {
+        showLight(light.getUniverse(), light.getAddress(), light.getValue());
+    }
+
+    public void showGroupLight(int universe, int startAddress, int endAddress, int value) {
+        if (feluxWriter != null) {
+            byte[] data = {CMD_DMX_SET_GROUP,
+                    (byte)universe,
+                    (byte)(startAddress << 16), (byte)(startAddress & 0xff),
+                    (byte)(endAddress - startAddress + 1),
+                    (byte)(value)};
+            try {
+                feluxWriter.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showGroupLight(DmxGroupLight light) {
+        showGroupLight(light.getUniverse(), light.getStartAddress(), light.getEndAddress(), light.getValue());
+    }
+
+    public void showColorLight(int universe, int address, int color) {
+        if (feluxWriter != null) {
+            byte[] data = {CMD_DMX_SET_RANGE,
+                    (byte)universe,
+                    (byte)(address << 16), (byte)(address & 0xff),
+                    (byte)4,
+                    (byte) Color.red(color),
+                    (byte) Color.green(color),
+                    (byte) Color.blue(color),
+                    (byte) 0xff};
+            try {
+                feluxWriter.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showColorLight(DmxColorLight light) {
+        showColorLight(light.getUniverse(), light.getAddress(), light.getColor());
+    }
+
+    public void showLightScene(LightScene scene) {
+        if (feluxWriter != null) {
+            for (Light light: scene.getLights()) {
+                if (light instanceof DmxColorLight) {
+                    showColorLight((DmxColorLight)light);
+                } else if (light instanceof DmxGroupLight) {
+                    showGroupLight((DmxGroupLight)light);
+                } else if (light instanceof DmxLight) {
+                    showLight((DmxLight)light);
+                }
+            }
+        }
+    }
+
+    public void showMidiScene(int channel, int note, int velocity, boolean isEventOn) {
+        if (feluxWriter != null) {
+            byte cmd = isEventOn ? CMD_MIDI_NOTE_ON : CMD_MIDI_NOTE_OFF;
+            byte[] data = {cmd,
+                    (byte)channel,
+                    (byte)note,
+                    (byte)velocity};
+            try {
+                feluxWriter.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showMidiScene(MidiScene scene) {
+        showMidiScene(scene.getChannel(), scene.getNote(), scene.getVelocity(), scene.getEventOn());
     }
 }
