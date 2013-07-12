@@ -23,6 +23,8 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
     private Button previewButton;
     private CheckBox selectAll;
     private MenuItem removeScene;
+    private MenuItem moveUpScene;
+    private MenuItem moveDownScene;
     private ListView sceneListView;
     private EditText nameEdit;
 
@@ -34,14 +36,18 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
         super(R.layout.fragment_cue_detail);
     }
 
+    private void updateScenes() {
+        adapter.clear();
+        for (Scene scene: item.getScenes()) {
+            adapter.add(scene);
+        }
+    }
+
     @Override
     public void updateItemView() {
         if (nameEdit != null && adapter != null && item != null) {
             nameEdit.setText(item.getName());
-            adapter.clear();
-            for (Scene scene: item.getScenes()) {
-                adapter.add(scene);
-            }
+            updateScenes();
             adapter.notifyDataSetChanged();
         }
     }
@@ -137,19 +143,23 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
-        inflater.inflate(R.menu.fragment_add_remove_menu, menu);
+        inflater.inflate(R.menu.fragment_add_remove_move_menu, menu);
         removeScene = menu.findItem(R.id.action_item_remove);
+        moveUpScene = menu.findItem(R.id.action_item_moveup);
+        moveDownScene = menu.findItem(R.id.action_item_movedown);
         removeScene.setVisible(adapter.areAnyItemsChecked());
         adapter.startEditMode();
         if (adapter.getCount() > 0) {
             selectAll.setVisibility(View.VISIBLE);
         }
+        updateMoveIcons();
         setControlsEnabled(true);
         return super.onCreateActionMode(actionMode, menu);
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        int position = adapter.getSingleCheckedItemPosition();
         switch (menuItem.getItemId()) {
             case R.id.action_item_add:
                 List<Scene> newScenes = new ArrayList<Scene>(manager.getScenes().size());
@@ -180,6 +190,12 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
                 }
                 removeScene.setVisible(adapter.areAnyItemsChecked());
                 return true;
+            case R.id.action_item_moveup:
+                moveScene(this.item.getScenes().get(position), false);
+                return true;
+            case R.id.action_item_movedown:
+                moveScene(this.item.getScenes().get(position), true);
+                return true;
             case R.id.action_item_cancel:
                 actionMode.setTag("cancelled");
                 actionMode.finish();
@@ -209,8 +225,76 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
         removeScene.setVisible(checked);
     }
 
+    public void moveScene(Scene scene, boolean down) {
+        int oldPosition = adapter.getSingleCheckedItemPosition();
+        int newPosition;
+
+        if (oldPosition >= 0) {
+            if (down) {
+                if (oldPosition < (sceneListView.getCount() - 1)) {
+                    newPosition = oldPosition + 1;
+                }  else {
+                    return;
+                }
+            } else {
+                if (oldPosition > 0) {
+                    newPosition = oldPosition - 1;
+                } else {
+                    return;
+                }
+            }
+
+            List<Scene> scenes = item.getScenes();
+            Scene temp = scenes.get(newPosition);
+            scenes.set(newPosition, scene);
+            scenes.set(oldPosition, temp);
+            updateScenes();
+            updateMoveIcons();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    /*
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int position = adapter.getSingleCheckedItemPosition();
+            if (position >= 0) {
+            switch (item.getItemId()) {
+                case R.id.action_item_moveup:
+                    moveScene(this.item.getScenes().get(position), false);
+                    return true;
+                case R.id.action_item_movedown:
+                    moveScene(this.item.getScenes().get(position), true);
+                    return true;
+                default:
+                    break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    */
+
+    private void updateMoveIcons() {
+        int position = adapter.getSingleCheckedItemPosition();
+        if (position >= 0) {
+            int size = sceneListView.getCount();
+
+            if (position >= 0 && size > 0) {
+                moveUpScene.setVisible(position > 0);
+                moveDownScene.setVisible(position < (size - 1));
+            } else {
+                moveUpScene.setVisible(false);
+                moveDownScene.setVisible(false);
+            }
+        } else {
+            moveUpScene.setVisible(false);
+            moveDownScene.setVisible(false);
+        }
+    }
     @Override
     public void onItemCheckedChanged(Item item) {
+        updateMoveIcons();
         removeScene.setVisible(adapter.areAnyItemsChecked());
     }
 

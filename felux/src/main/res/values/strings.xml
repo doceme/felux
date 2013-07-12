@@ -36,7 +36,7 @@
     <string name="light_scene_detail_lights_label">Lights:</string>
     <string name="light_colorpicker_title">Pick a color</string>
     <string name="light_seekbar_title">Pick a value</string>
-    <string name="cue_scene_update_title">Changed scene values</string>
+    <string name="cue_scene_update_title">Change scene values</string>
     <string name="light_scene_list_row_color_desc">color</string>
     <string name="detail_select_all">Select All</string>
     <string name="light_detail_color_label">Color:</string>

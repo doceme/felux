@@ -16,10 +16,24 @@
         android:orderInCategory="2">
     </item>
     <item
+        android:id="@+id/action_item_moveup"
+        android:title="Move Up"
+        android:icon="@drawable/navigation_collapse"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="3">
+    </item>
+    <item
+        android:id="@+id/action_item_movedown"
+        android:title="Move Down"
+        android:icon="@drawable/navigation_expand"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="4">
+    </item>
+    <item
         android:id="@+id/action_item_cancel"
         android:title="Cancel"
         android:icon="@drawable/navigation_cancel"
         android:showAsAction="ifRoom|withText"
-        android:orderInCategory="3">
+        android:orderInCategory="5">
     </item>
 </menu>

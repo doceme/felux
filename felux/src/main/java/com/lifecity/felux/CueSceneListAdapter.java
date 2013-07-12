@@ -74,6 +74,40 @@ public class CueSceneListAdapter extends ArrayAdapter<Scene> implements View.OnC
         notifyDataSetChanged();
     }
 
+    public int getSingleCheckedItemPosition() {
+        int result = -1;
+        boolean checked = false;
+        for (int i = 0; i < scenes.size(); i++) {
+            if (scenes.get(i).getChecked()) {
+                if (checked) {
+                    return -1;
+                } else {
+                    checked = true;
+                    result = i;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /*
+    public boolean isOnlyOneItemChecked() {
+        boolean result = false;
+        for (Scene scene: scenes) {
+            if (scene.getChecked()) {
+                if (result) {
+                    return false;
+                } else {
+                    result = true;
+                }
+            }
+        }
+
+        return result;
+    }
+    */
+
     public boolean areAnyItemsChecked() {
         for (Scene scene: scenes) {
             if (scene.getChecked()) {

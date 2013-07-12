@@ -232,7 +232,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             scenes.add(lightScene);
         }
 
-        ItemListFragment listFragment = (ItemListFragment)fragmentManager.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
+        //ItemListFragment listFragment = (ItemListFragment)fragmentManager.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
+        ItemListFragment listFragment = getItemListFragment();
         if (listFragment != null) {
             listFragment.onItemsLoaded(feluxManager);
         }
@@ -242,6 +243,11 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     protected void onSaveInstanceState(Bundle outState) {
         //outState.putInt(ACTIVE_TAB, getActionBar().getSelectedNavigationIndex());
         super.onSaveInstanceState(outState);
+    }
+
+    @SuppressWarnings("unchecked")
+    private ItemListFragment getItemListFragment() {
+        return (ItemListFragment)fragmentManager.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
     }
 
     @SuppressWarnings("unchecked")
@@ -273,7 +279,8 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             }
             if (itemDetailFragment == null) {
                 try {
-                    ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
+                    //ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
+                    ItemListFragment listFragment = getItemListFragment();
                     itemDetailFragment = (ItemDetailFragment)Class.forName(tag).newInstance();
                     itemDetailFragment.setDetailCallbacks(listFragment);
                     itemDetailFragment.setFeluxManager(feluxManager);
