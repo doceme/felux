@@ -39,14 +39,18 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         super(R.layout.fragment_light_scene_detail);
     }
 
+    private void updateLights() {
+        adapter.clear();
+        for (Light light: item.getLights()) {
+            adapter.add(light);
+        }
+    }
+
     @Override
     public void updateItemView() {
         if (nameEdit != null && adapter != null && item != null) {
             nameEdit.setText(item.getName());
-            adapter.clear();
-            for (Light light: item.getLights()) {
-                adapter.add(light);
-            }
+            updateLights();
             adapter.notifyDataSetChanged();
         }
     }
@@ -145,12 +149,14 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         inflater.inflate(R.menu.fragment_add_remove_menu, menu);
         removeLight = (MenuItem)menu.findItem(R.id.action_item_remove);
         removeLight.setVisible(adapter.areAnyItemsChecked());
+        setControlsEnabled(true);
+        boolean result = super.onCreateActionMode(actionMode, menu);
+        updateLights();
         adapter.startEditMode();
         if (adapter.getCount() > 0) {
             selectAll.setVisibility(View.VISIBLE);
         }
-        setControlsEnabled(true);
-        return super.onCreateActionMode(actionMode, menu);
+        return result;
     }
 
     @Override
