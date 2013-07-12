@@ -32,6 +32,8 @@ public abstract class Scene extends Item {
     @Override
     public void update(Item item) {
         if (item instanceof Scene) {
+            Scene that = (Scene)item;
+            hold = that.getHold();
             super.update(item);
         }
     }

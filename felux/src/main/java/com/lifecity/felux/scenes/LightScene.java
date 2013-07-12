@@ -10,7 +10,7 @@ import java.util.List;
  * LightScene class
  */
 public class LightScene extends Scene {
-    protected float fade;
+    protected float fade = 10;
     protected List<Light> lights = new ArrayList<Light>();
 
     public LightScene() {
@@ -21,7 +21,7 @@ public class LightScene extends Scene {
         super(scene);
         lights = new ArrayList<Light>(scene.getLights().size());
         for (Light light : scene.getLights()) {
-            addLight(light);
+            addLight((Light)light.copy());
         }
     }
 
@@ -79,6 +79,7 @@ public class LightScene extends Scene {
         if (item instanceof LightScene) {
             LightScene that = (LightScene)item;
             this.lights = that.getLights();
+            this.fade = that.getFade();
             super.update(item);
         }
     }

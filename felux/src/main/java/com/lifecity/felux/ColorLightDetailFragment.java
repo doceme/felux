@@ -146,6 +146,6 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
     @Override
     public void onColorChanged(int color) {
         DmxColorLight light = (DmxColorLight)item;
-        manager.showColorLight(light.getUniverse(), light.getAddress(), color);
+        manager.showColorLight(light, color);
     }
 }

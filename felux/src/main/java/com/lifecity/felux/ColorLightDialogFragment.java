@@ -31,7 +31,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
     public void onColorChanged(int color) {
         this.color = color;
         if (previewSwitch.isChecked() && manager != null && light != null) {
-            manager.showColorLight(light.getUniverse(), light.getAddress(), color);
+            manager.showColorLight(light, color);
         }
     }
 
@@ -79,7 +79,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
                 if (listener != null) {
                     listener.onColorSelected(color);
                     if (previewSwitch.isChecked() && manager != null && light != null) {
-                        manager.showColorLight(light.getUniverse(), light.getAddress(), color);
+                        manager.showColorLight(light, color);
                     }
                 }
             }
