@@ -131,7 +131,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     public void onColorSelected(int color) {
         if (currentLight != null) {
             ((DmxColorLight) currentLight).setColor(color);
-            manager.showColorLight((DmxColorLight)currentLight);
+            manager.showLight((DmxLight)currentLight);
             adapter.notifyDataSetChanged();
         }
     }
@@ -252,7 +252,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     @Override
     public void onClick(View view) {
         if (view == previewButton && manager != null) {
-            manager.showLightScene(item);
+            manager.showScene(item);
         }
     }
 }

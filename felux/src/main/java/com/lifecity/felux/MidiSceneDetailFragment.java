@@ -138,7 +138,7 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
     @Override
     public void onClick(View view) {
         if (view == previewButton && manager != null) {
-            manager.showMidiScene(item);
+            manager.showScene(item);
         }
     }
 }

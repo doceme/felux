@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.lifecity.felux.cues.Cue;
-import com.lifecity.felux.items.Item;
 import com.lifecity.felux.items.ItemAdapter;
 import com.lifecity.felux.lights.*;
 import com.lifecity.felux.scenes.LightScene;
@@ -19,8 +18,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by scaudle on 6/7/13.
@@ -52,6 +49,8 @@ public class FeluxManager {
     private final byte CMD_MIDI_NOTE_OFF = (byte)0xA0;
     private final byte CMD_MIDI_NOTE_ON = (byte)0xA1;
     private final byte CMD_HOUSE_LIGHTS = (byte)0xC0;
+
+    private final int MILLIS_PER_SECONDS = 1000;
 
     public FeluxManager(SharedPreferences preferences) {
         if (preferences == null) {
@@ -203,18 +202,6 @@ public class FeluxManager {
         }
     }
 
-    public void showBasicLight(DmxLight light) {
-        showBasicLight(light, false);
-    }
-
-    public void showBasicLight(DmxLight light, int value) {
-        DmxLight baseLight = (DmxLight)getBaseLight(light);
-        if (baseLight != null) {
-            baseLight.setValue(value);
-            showBasicLight(baseLight);
-        }
-    }
-
     public void showGroupLight(DmxGroupLight light, boolean fade) {
         if (feluxWriter != null) {
             int startAddress = light.getStartAddress();
@@ -231,18 +218,6 @@ public class FeluxManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void showGroupLight(DmxGroupLight light) {
-        showGroupLight(light, false);
-    }
-
-    public void showGroupLight(DmxGroupLight light, int value) {
-        DmxGroupLight baseLight = (DmxGroupLight)getBaseLight(light);
-        if (baseLight != null) {
-            baseLight.setValue(value);
-            showGroupLight(baseLight);
         }
     }
 
@@ -298,15 +273,11 @@ public class FeluxManager {
         }
     }
 
-    public void showColorLight(DmxColorLight light) {
-        showColorLight(light, false);
-    }
-
-    public void showColorLight(DmxColorLight light, int color) {
-        DmxColorLight baseLight = (DmxColorLight)getBaseLight(light);
-        if (baseLight != null) {
-            baseLight.setColor(color);
-            showColorLight(baseLight);
+    public void showScene(Scene scene) {
+        if (scene instanceof LightScene) {
+            showLightScene((LightScene)scene);
+        } else if (scene instanceof MidiScene) {
+            showMidiScene((MidiScene)scene);
         }
     }
 
@@ -324,22 +295,10 @@ public class FeluxManager {
             }
 
             if (shouldFade) {
-                startFade((int)(scene.getFade() * 1000));
+                startFade((int)(scene.getFade() * MILLIS_PER_SECONDS));
             }
         }
     }
-
-    /*
-    public void fadeColorLight(DmxColorLight light, int color) {
-        DmxColorLight baseLight = (DmxColorLight)getBaseLight(light);
-        if (baseLight != null) {
-            if (baseLight.getColor() != color) {
-                //baseLight.setColor(color);
-                //showColorLight(baseLight);
-            }
-        }
-    }
-    */
 
     public void showMidiScene(int channel, int note, int velocity, boolean isEventOn) {
         if (feluxWriter != null) {
@@ -360,78 +319,34 @@ public class FeluxManager {
         showMidiScene(scene.getChannel(), scene.getNote(), scene.getVelocity(), scene.getEventOn());
     }
 
-    private class LightSceneFadeTimerTask extends TimerTask {
-        private int count = 0;
-        private int fade;
-        private List<Light> lights;
-        private List<Light> preFadelights;
+    public void showCue(Cue cue) {
+        if (feluxWriter != null) {
+            new CueThread(cue).start();
+        }
+    }
 
-        private LightSceneFadeTimerTask(FeluxManager manager, LightScene scene) {
-            this.lights = scene.getLights();
+    private class CueThread extends Thread {
+        private Cue cue;
 
-            /* Get fade in milliseconds */
-            fade = (int)(scene.getFade() * 1000);
-
-            int size = lights.size();
-            preFadelights = new ArrayList<Light>(size);
-            for (int i = 0; i < lights.size(); i++) {
-                preFadelights.add((Light)lights.get(i).copy());
-            }
+        private CueThread(Cue cue) {
+            this.cue = cue;
         }
 
         @Override
         public void run() {
-            for (int i = 0; i < lights.size(); i++) {
-                Light oldLight = preFadelights.get(i);
-                Light newLight = lights.get(i);
-
-                if (oldLight instanceof DmxColorLight && newLight instanceof DmxColorLight) {
-                    DmxColorLight oldDmxColorLight = (DmxColorLight)oldLight;
-                    DmxColorLight newDmxColorLight = (DmxColorLight)newLight;
-                    int oldRed = Color.red(oldDmxColorLight.getColor());
-                    int oldGreen = Color.green(oldDmxColorLight.getColor());
-                    int oldBlue = Color.blue(oldDmxColorLight.getColor());
-
-                    int newRed = Color.red(newDmxColorLight.getColor());
-                    int newGreen = Color.green(newDmxColorLight.getColor());
-                    int newBlue = Color.blue(newDmxColorLight.getColor());
-
-                    float scaleFactor = (float)count / (float)fade;
-
-                    int red = oldRed + (int)((float)(newRed - oldRed) * scaleFactor);
-                    int green = oldGreen + (int)((float)(newGreen - oldGreen) * scaleFactor);
-                    int blue = oldBlue + (int)((float)(newBlue - oldBlue) * scaleFactor);
-
-                    int color = Color.rgb(red, green, blue);
-
-                    showColorLight(newDmxColorLight, color);
-                } else if (oldLight instanceof DmxGroupLight && newLight instanceof DmxGroupLight) {
-                    DmxGroupLight oldDmxGroupLight = (DmxGroupLight)oldLight;
-                    DmxGroupLight newDmxGroupLight = (DmxGroupLight)newLight;
-                    int oldValue = oldDmxGroupLight.getValue();
-                    int newValue = newDmxGroupLight.getValue();
-
-                    float scaleFactor = (float)count / (float)fade;
-
-                    int value = oldValue + (int)((float)(newValue - oldValue) * scaleFactor);
-
-                    showGroupLight(newDmxGroupLight, value);
-                } else if (oldLight instanceof DmxGroupLight && newLight instanceof DmxGroupLight) {
-                    DmxLight oldDmxLight = (DmxLight)oldLight;
-                    DmxLight newDmxLight = (DmxLight)newLight;
-                    int oldValue = oldDmxLight.getValue();
-                    int newValue = newDmxLight.getValue();
-
-                    float scaleFactor = (float)count / (float)fade;
-
-                    int value = oldValue + (int)((float)(newValue - oldValue) * scaleFactor);
-
-                    showLight(newDmxLight, value);
+            for (Scene scene: cue.getScenes()) {
+                int fade = 0;
+                int hold = (int)(scene.getHold() * MILLIS_PER_SECONDS);
+                showScene(scene);
+                if (scene instanceof LightScene) {
+                    fade = (int)(((LightScene)scene).getFade() * MILLIS_PER_SECONDS);
                 }
-            }
 
-            if (++count >= fade) {
-                cancel();
+                try {
+                    Thread.sleep(fade + hold);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

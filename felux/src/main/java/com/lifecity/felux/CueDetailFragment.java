@@ -7,7 +7,6 @@ import android.widget.*;
 import com.lifecity.felux.cues.Cue;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.scenes.LightScene;
-import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
 
 import java.util.ArrayList;
@@ -218,14 +217,7 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
     @Override
     public void onClick(View view) {
         if (view == previewButton && manager != null) {
-            for (Scene scene : item.getScenes()) {
-                if (scene instanceof LightScene) {
-                    /* TODO: implement fade & hold */
-                } else if (scene instanceof MidiScene) {
-                    MidiScene midiScene = (MidiScene)scene;
-                    /* TODO: implement hold */
-                }
-            }
+            manager.showCue(item);
         }
     }
 }
