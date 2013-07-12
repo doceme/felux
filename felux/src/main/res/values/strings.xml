@@ -32,7 +32,7 @@
     <string name="scene_detail_note_label">Note:</string>
     <string name="scene_detail_velocity_label">Velocity:</string>
     <string name="scene_type_light">Light</string>
-    <string name="scene_type_midi">Midi</string>
+    <string name="scene_type_midi">MIDI</string>
     <string name="light_scene_detail_lights_label">Lights:</string>
     <string name="light_colorpicker_title">Pick a color</string>
     <string name="cue_scene_update_title">Changed scene values</string>
