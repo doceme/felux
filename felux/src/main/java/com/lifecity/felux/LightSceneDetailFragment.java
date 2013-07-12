@@ -11,6 +11,7 @@ import android.widget.*;
 
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
+import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
 import com.lifecity.felux.scenes.LightScene;
 
@@ -22,7 +23,7 @@ import java.util.ListIterator;
  * A fragment representing a single Scene detail screen.
  * on handsets.
  */
-public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener, View.OnFocusChangeListener, AddLightSceneDialogFragment.AddLightSceneDialogListener, View.OnClickListener {
+public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, LightDialogFragment.LightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener, View.OnFocusChangeListener, AddLightSceneDialogFragment.AddLightSceneDialogListener, View.OnClickListener {
     private LightSceneLightListAdapter adapter;
     private Light currentLight;
     private CheckBox selectAll;
@@ -116,6 +117,13 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
             dialog.setLight(dmxColorLight);
             dialog.setFeluxManager(manager);
             dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
+        } else if (currentLight instanceof DmxLight) {
+            DmxLight dmxLight = (DmxLight)currentLight;
+            LightDialogFragment dialog = new LightDialogFragment(this);
+            dialog.setValue(dmxLight.getValue());
+            dialog.setLight(dmxLight);
+            dialog.setFeluxManager(manager);
+            dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
         }
     }
 
@@ -124,6 +132,15 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         if (currentLight != null) {
             ((DmxColorLight) currentLight).setColor(color);
             manager.showColorLight((DmxColorLight)currentLight);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onValueSelected(int value) {
+        if (currentLight != null) {
+            currentLight.setValue(value);
+            manager.showLight((DmxLight)currentLight);
             adapter.notifyDataSetChanged();
         }
     }

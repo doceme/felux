@@ -165,6 +165,28 @@ public class FeluxManager {
     }
 
     public void showLight(DmxLight light, boolean fade) {
+        if (light instanceof DmxColorLight) {
+            showColorLight((DmxColorLight)light, fade);
+        } else if (light instanceof DmxGroupLight) {
+            showGroupLight((DmxGroupLight)light, fade);
+        } else {
+            showBasicLight(light, fade);
+        }
+    }
+
+    public void showLight(DmxLight light) {
+        showLight(light, false);
+    }
+
+    public void showLight(DmxLight light, int value) {
+        DmxLight baseLight = (DmxLight)getBaseLight(light);
+        if (baseLight != null) {
+            baseLight.setValue(value);
+            showLight(baseLight);
+        }
+    }
+
+    public void showBasicLight(DmxLight light, boolean fade) {
         if (feluxWriter != null) {
             int address = light.getAddress();
             byte[] data = {
@@ -181,15 +203,15 @@ public class FeluxManager {
         }
     }
 
-    public void showLight(DmxLight light) {
-        showLight(light, false);
+    public void showBasicLight(DmxLight light) {
+        showBasicLight(light, false);
     }
 
-    public void showLight(DmxLight light, int value) {
+    public void showBasicLight(DmxLight light, int value) {
         DmxLight baseLight = (DmxLight)getBaseLight(light);
         if (baseLight != null) {
             baseLight.setValue(value);
-            showLight(baseLight);
+            showBasicLight(baseLight);
         }
     }
 

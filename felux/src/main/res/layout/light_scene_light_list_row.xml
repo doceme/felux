@@ -26,6 +26,23 @@
             android:focusableInTouchMode="false"
             android:contentDescription="@string/light_scene_list_row_color_desc"/>
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="horizontal"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:paddingTop="10dp"
+                  android:paddingBottom="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/light_scene_light_list_row_value"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:visibility="gone"/>
+    </LinearLayout>
+
     <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -7,15 +7,11 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.SeekBar;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.lifecity.felux.colorpicker.ColorPicker;
 import com.lifecity.felux.colorpicker.SVBar;
 import com.lifecity.felux.lights.DmxColorLight;
-import com.lifecity.felux.lights.Light;
 
 /**
  * Created by scaudle on 6/7/13.
@@ -31,7 +27,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
     public void onColorChanged(int color) {
         this.color = color;
         if (previewSwitch.isChecked() && manager != null && light != null) {
-            manager.showColorLight(light, color);
+            manager.showLight(light, color);
         }
     }
 
@@ -60,7 +56,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_color_light, null);
+        View view = inflater.inflate(R.layout.fragment_color_light_dialog, null);
         builder.setView(view);
         builder.setTitle(R.string.light_colorpicker_title);
 
@@ -79,7 +75,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
                 if (listener != null) {
                     listener.onColorSelected(color);
                     if (previewSwitch.isChecked() && manager != null && light != null) {
-                        manager.showColorLight(light, color);
+                        manager.showLight(light, color);
                     }
                 }
             }

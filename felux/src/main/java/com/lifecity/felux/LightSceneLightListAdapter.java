@@ -41,6 +41,7 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
     static class LightHolder {
         CheckBox enable;
         ImageView color;
+        TextView value;
         TextView name;
     }
 
@@ -112,6 +113,7 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
             holder = new LightHolder();
             holder.enable = (CheckBox)row.findViewById(R.id.light_scene_light_list_row_checkbox);
             holder.color = (ImageView)row.findViewById(R.id.light_scene_light_list_row_color);
+            holder.value = (TextView)row.findViewById(R.id.light_scene_light_list_row_value);
             holder.name = (TextView)row.findViewById(R.id.light_scene_light_list_row_name);
             //holder.enable.setOnCheckedChangeListener(this);
             holder.enable.setOnClickListener(this);
@@ -134,29 +136,15 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
             gd.setColor(dmxColorLight.getColor());
             //gd.setStroke(3, Color.WHITE);
             gd.setCornerRadius(5.0f);
+            holder.value.setVisibility(View.GONE);
             holder.color.setVisibility(View.VISIBLE);
             holder.color.setBackground(gd);
         } else {
             holder.color.setVisibility(View.GONE);
+            holder.value.setVisibility(View.VISIBLE);
+            holder.value.setText(String.valueOf(light.getPercent()) + "%");
         }
 
         return row;
     }
-
-    /*
-    @Override
-    public int getCount() {
-        return lights.size();
-    }
-
-    @Override
-    public Light getItem(int position) {
-        return lights.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-    */
 }

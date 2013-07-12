@@ -7,6 +7,7 @@ import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.lifecity.felux.lights.DmxGroupLight;
+import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
 
 /**
@@ -169,8 +170,7 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         item.setValue(progress);
         valueLabel.setText(String.valueOf(item.getPercent()) + "%");
         if (manager != null) {
-            DmxGroupLight light = (DmxGroupLight)item;
-            manager.showGroupLight(light);
+            manager.showLight((DmxLight) item);
         }
     }
 

@@ -8,6 +8,7 @@ import android.widget.NumberPicker;
 import com.lifecity.felux.colorpicker.ColorPicker;
 import com.lifecity.felux.colorpicker.SVBar;
 import com.lifecity.felux.lights.DmxColorLight;
+import com.lifecity.felux.lights.DmxLight;
 import com.lifecity.felux.lights.Light;
 
 /**
@@ -145,7 +146,6 @@ public class ColorLightDetailFragment extends ItemDetailFragment<Light> implemen
 
     @Override
     public void onColorChanged(int color) {
-        DmxColorLight light = (DmxColorLight)item;
-        manager.showColorLight(light, color);
+        manager.showLight((DmxLight)item, color);
     }
 }
