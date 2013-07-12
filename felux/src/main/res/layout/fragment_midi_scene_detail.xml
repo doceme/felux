@@ -3,6 +3,20 @@
         android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/midi_scene_detail_banner"
+        android:id="@+id/midi_scene_detail_banner"
+        android:layout_gravity="left|center_vertical"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

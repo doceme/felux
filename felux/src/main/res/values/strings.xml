@@ -46,6 +46,11 @@
     <string name="midi_scene_detail_velocity_label">Velocity:</string>
     <string name="midi_scene_detail_event_label">Event:</string>
     <string name="scene_detail_preview_label">Preview</string><string name="cue_hold_label">Hold</string><string name="cue_fade_label">Fade</string><string name="cue_detail_scenes_label">Scenes:</string>
+    <string name="light_scene_detail_banner">Light Scene</string>
+    <string name="midi_scene_detail_banner">MIDI Scene</string>
+    <string name="basic_light_detail_banner">Basic Light</string>
+    <string name="group_light_detail_banner">Group Light</string>
+    <string name="color_light_detail_banner">Color Light</string>
     <string-array name="scene_types">
         <item>@string/scene_type_light</item>
         <item>@string/scene_type_midi</item>

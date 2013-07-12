@@ -2,6 +2,21 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/color_light_detail_banner"
+        android:id="@+id/color_light_detail_banner"
+        android:layout_gravity="left|center_vertical"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"/>
+
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,22 +38,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical">
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:text="@string/light_detail_type_label" android:id="@+id/light_detail_type_label"
-                      android:layout_column="0" android:layout_marginRight="5dp"
-                      android:textAlignment="center"
-                      android:layout_marginTop="10dp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/light_detail_type_text"
-                android:layout_column="3"
-                android:paddingLeft="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:text="@string/light_type_color"/>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                           android:layout_width="wrap_content"
