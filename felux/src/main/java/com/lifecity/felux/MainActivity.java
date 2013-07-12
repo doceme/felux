@@ -175,7 +175,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 FtdiUartFileDescriptor.FtdiUartOutputStream ftdiOutputStream = new FtdiUartFileDescriptor.FtdiUartOutputStream(uartFileDescriptor);
                 if (getIntent().getParcelableExtra(UsbManager.EXTRA_ACCESSORY) != null) {
                     Log.d(TAG, "setConfig");
-                    ftdiOutputStream.setConfig(115200,
+                    ftdiOutputStream.setConfig(921600,
                             FtdiUartFileDescriptor.DATA_BITS_8,
                             FtdiUartFileDescriptor.STOP_BITS_1,
                             FtdiUartFileDescriptor.PARITY_NONE,
