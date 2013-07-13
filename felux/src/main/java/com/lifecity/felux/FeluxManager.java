@@ -308,6 +308,7 @@ public class FeluxManager {
     public void showLightScene(LightScene scene) {
         if (feluxWriter != null) {
             boolean shouldFade = (scene.getFade() >= 0.002);
+            stopFade();
             for (Light light: scene.getLights()) {
                 DmxLight baseLight = (DmxLight)getBaseLight(light);
                 if (baseLight != null) {
