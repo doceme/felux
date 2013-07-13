@@ -243,6 +243,21 @@ public class FeluxManager {
         }
     }
 
+    public void showHouseLight(DmxLight light) {
+        if (feluxWriter != null) {
+            byte[] data = {
+                    CMD_HOUSE_LIGHTS,
+                    (byte)light.getUniverse(),
+                    (byte)light.getValue()
+            };
+            try {
+                feluxWriter.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void startFade(int fadeDuration) {
         if (feluxWriter != null) {
             byte[] data = {
@@ -290,7 +305,12 @@ public class FeluxManager {
                 } else if (light instanceof DmxGroupLight) {
                     showGroupLight((DmxGroupLight)light, shouldFade);
                 } else if (light instanceof DmxLight) {
-                    showLight((DmxLight)light, shouldFade);
+                    DmxLight dmxLight = (DmxLight)light;
+                    if (dmxLight.getUniverse() == 2 && dmxLight.getAddress() == 1) {
+                        showHouseLight(dmxLight);
+                    } else {
+                        showBasicLight(dmxLight, shouldFade);
+                    }
                 }
             }
 
