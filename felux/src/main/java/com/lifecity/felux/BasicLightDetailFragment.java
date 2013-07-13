@@ -154,10 +154,12 @@ public class BasicLightDetailFragment extends ItemDetailFragment<Light> implemen
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        item.setValue(progress);
-        valueLabel.setText(String.valueOf(item.getPercent()) + "%");
-        if (manager != null) {
-            manager.showLight((DmxLight) item);
+        if (isResumed() && item.getValue() != progress) {
+            item.setValue(progress);
+            valueLabel.setText(String.valueOf(item.getPercent()) + "%");
+            if (manager != null) {
+                manager.showLight((DmxLight) item);
+            }
         }
     }
 

@@ -38,10 +38,12 @@ public abstract class Light extends Item {
     }
 
     public Light setValue(int value) {
-        if (value < MIN_VALUE) {
-            value = MIN_VALUE;
-        } else if (value > MAX_VALUE) {
-            value = MAX_VALUE;
+        if (!(this instanceof DmxColorLight)) {
+            if (value < MIN_VALUE) {
+                value = MIN_VALUE;
+            } else if (value > MAX_VALUE) {
+                value = MAX_VALUE;
+            }
         }
 
         this.value = value;

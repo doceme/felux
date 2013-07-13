@@ -95,6 +95,10 @@ public class FeluxManager {
             lights.clear();
         } else {
             lights = gson.fromJson(lightsJson, lightListType);
+            for (Light light : lights) {
+                showLight((DmxLight)light, true);
+            }
+            startFade(0);
         }
     }
 
@@ -168,8 +172,13 @@ public class FeluxManager {
             showColorLight((DmxColorLight)light, fade);
         } else if (light instanceof DmxGroupLight) {
             showGroupLight((DmxGroupLight)light, fade);
-        } else {
-            showBasicLight(light, fade);
+        } else if (light instanceof DmxLight) {
+            DmxLight dmxLight = (DmxLight)light;
+            if (dmxLight.getUniverse() == 2 && dmxLight.getAddress() == 1) {
+                showHouseLight(dmxLight);
+            } else {
+                showBasicLight(dmxLight, fade);
+            }
         }
     }
 
@@ -300,17 +309,10 @@ public class FeluxManager {
         if (feluxWriter != null) {
             boolean shouldFade = (scene.getFade() >= 0.002);
             for (Light light: scene.getLights()) {
-                if (light instanceof DmxColorLight) {
-                    showColorLight((DmxColorLight)light, shouldFade);
-                } else if (light instanceof DmxGroupLight) {
-                    showGroupLight((DmxGroupLight)light, shouldFade);
-                } else if (light instanceof DmxLight) {
-                    DmxLight dmxLight = (DmxLight)light;
-                    if (dmxLight.getUniverse() == 2 && dmxLight.getAddress() == 1) {
-                        showHouseLight(dmxLight);
-                    } else {
-                        showBasicLight(dmxLight, shouldFade);
-                    }
+                DmxLight baseLight = (DmxLight)getBaseLight(light);
+                if (baseLight != null) {
+                    baseLight.setValue(light.getValue());
+                    showLight(baseLight, shouldFade);
                 }
             }
 
