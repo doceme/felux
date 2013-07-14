@@ -15,6 +15,7 @@ public class DmxLight extends Light {
 
     public DmxLight(DmxLight light) {
         super(light);
+        universe = light.universe;
         address = light.address;
     }
 

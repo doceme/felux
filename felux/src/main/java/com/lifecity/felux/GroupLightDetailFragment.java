@@ -171,7 +171,7 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
             item.setValue(progress);
             valueLabel.setText(String.valueOf(item.getPercent()) + "%");
             if (manager != null) {
-                manager.showLight((DmxLight) item);
+                manager.showBaseLight((DmxLight) item, progress);
             }
         }
     }

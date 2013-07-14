@@ -167,6 +167,23 @@ public class FeluxManager {
         return null;
     }
 
+    public void showBaseLight(DmxLight light, int value) {
+        if (light instanceof DmxColorLight) {
+            showColorLight((DmxColorLight)light, value, false);
+        } else if (light instanceof DmxGroupLight) {
+            showGroupLight((DmxGroupLight)light, value, false);
+        } else if (light instanceof DmxLight) {
+            DmxLight dmxLight = (DmxLight)light;
+            if (dmxLight.getUniverse() == 2 &&
+                    dmxLight.getAddress() == 1 &&
+                    (light.getValue() == DmxLight.MIN_VALUE || light.getValue() == DmxLight.MAX_VALUE)) {
+                showHouseLight(dmxLight, value);
+            } else {
+                showBasicLight(dmxLight, value, false);
+            }
+        }
+    }
+
     public void showLight(DmxLight light, boolean fade) {
         if (light instanceof DmxColorLight) {
             showColorLight((DmxColorLight)light, fade);
@@ -174,7 +191,9 @@ public class FeluxManager {
             showGroupLight((DmxGroupLight)light, fade);
         } else if (light instanceof DmxLight) {
             DmxLight dmxLight = (DmxLight)light;
-            if (dmxLight.getUniverse() == 2 && dmxLight.getAddress() == 1) {
+            if (dmxLight.getUniverse() == 2 &&
+                    dmxLight.getAddress() == 1 &&
+                    (light.getValue() == DmxLight.MIN_VALUE || light.getValue() == DmxLight.MAX_VALUE)) {
                 showHouseLight(dmxLight);
             } else {
                 showBasicLight(dmxLight, fade);
@@ -189,19 +208,44 @@ public class FeluxManager {
     public void showLight(DmxLight light, int value) {
         DmxLight baseLight = (DmxLight)getBaseLight(light);
         if (baseLight != null) {
-            baseLight.setValue(value);
-            showLight(baseLight);
+            if (baseLight.getValue() != value) {
+                baseLight.setValue(value);
+                showLight(baseLight);
+            }
         }
     }
 
-    public void showBasicLight(DmxLight light, boolean fade) {
+    public void showBasicLight(DmxLight light, int value, boolean fade) {
         if (feluxWriter != null) {
             int address = light.getAddress();
             byte[] data = {
                     fade ? CMD_DMX_FADE_SET_VALUE : CMD_DMX_SET_VALUE,
                     (byte)light.getUniverse(),
                     (byte)(address << 16), (byte)(address & 0xff),
-                    (byte)light.getValue()
+                    (byte)value
+            };
+            try {
+                feluxWriter.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void showBasicLight(DmxLight light, boolean fade) {
+        showBasicLight(light, light.getValue(), fade);
+    }
+
+    public void showGroupLight(DmxGroupLight light, int value, boolean fade) {
+        if (feluxWriter != null) {
+            int startAddress = light.getStartAddress();
+            int endAddress = light.getEndAddress();
+            byte[] data = {
+                    fade ? CMD_DMX_FADE_SET_GROUP : CMD_DMX_SET_GROUP,
+                    (byte)light.getUniverse(),
+                    (byte)(startAddress << 16), (byte)(startAddress & 0xff),
+                    (byte)(endAddress - startAddress + 1),
+                    (byte)value
             };
             try {
                 feluxWriter.write(data);
@@ -212,28 +256,12 @@ public class FeluxManager {
     }
 
     public void showGroupLight(DmxGroupLight light, boolean fade) {
-        if (feluxWriter != null) {
-            int startAddress = light.getStartAddress();
-            int endAddress = light.getEndAddress();
-            byte[] data = {
-                    fade ? CMD_DMX_FADE_SET_GROUP : CMD_DMX_SET_GROUP,
-                    (byte)light.getUniverse(),
-                    (byte)(startAddress << 16), (byte)(startAddress & 0xff),
-                    (byte)(endAddress - startAddress + 1),
-                    (byte)(light.getValue())
-            };
-            try {
-                feluxWriter.write(data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        showGroupLight(light, light.getValue(), fade);
     }
 
-    public void showColorLight(DmxColorLight light, boolean fade) {
+    public void showColorLight(DmxColorLight light, int color, boolean fade) {
         if (feluxWriter != null) {
             int address = light.getAddress();
-            int color = light.getColor();
             byte[] data = {
                     fade ? CMD_DMX_FADE_SET_RANGE : CMD_DMX_SET_RANGE,
                     (byte)light.getUniverse(),
@@ -252,12 +280,15 @@ public class FeluxManager {
         }
     }
 
-    public void showHouseLight(DmxLight light) {
+    public void showColorLight(DmxColorLight light, boolean fade) {
+        showColorLight(light, light.getColor(), fade);
+    }
+
+    public void showHouseLight(DmxLight light, int value) {
         if (feluxWriter != null) {
             byte[] data = {
                     CMD_HOUSE_LIGHTS,
-                    (byte)light.getUniverse(),
-                    (byte)light.getValue()
+                    (byte)value
             };
             try {
                 feluxWriter.write(data);
@@ -265,6 +296,10 @@ public class FeluxManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void showHouseLight(DmxLight light) {
+        showHouseLight(light, light.getValue());
     }
 
     public void startFade(int fadeDuration) {
@@ -312,8 +347,10 @@ public class FeluxManager {
             for (Light light: scene.getLights()) {
                 DmxLight baseLight = (DmxLight)getBaseLight(light);
                 if (baseLight != null) {
-                    baseLight.setValue(light.getValue());
-                    showLight(baseLight, shouldFade);
+                    if (baseLight.getValue() != light.getValue()) {
+                        baseLight.setValue(light.getValue());
+                        showLight(baseLight, shouldFade);
+                    }
                 }
             }
 
