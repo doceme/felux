@@ -4,7 +4,8 @@ public interface ItemDetailCallbacks<T> {
     /**
      * Callback for when an item has been selected.
      */
-    public void onItemStartUpdate(T item);
-    public void onItemEndUpdate(T item);
-    public void onItemDetailAdded(T item);
+    public void onDetailItemStartUpdate(T item);
+    public void onDetailItemEndUpdate(T item);
+    public void onDetailItemUpdated(T item);
+    public void onDetailItemAdded(T item);
 }

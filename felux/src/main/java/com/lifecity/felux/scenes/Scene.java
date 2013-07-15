@@ -37,4 +37,12 @@ public abstract class Scene extends Item {
             super.update(item);
         }
     }
+
+    @Override
+    public void updateProperties(Item item) {
+        if (item instanceof Scene) {
+            Scene that = (Scene)item;
+            super.updateProperties(item);
+        }
+    }
 }

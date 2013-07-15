@@ -90,4 +90,14 @@ public class DmxLight extends Light {
             super.update(item);
         }
     }
+
+    @Override
+    public void updateProperties(Item item) {
+        if (item instanceof DmxLight) {
+            DmxLight that = (DmxLight)item;
+            this.universe = that.universe;
+            this.address = that.address;
+            super.updateProperties(item);
+        }
+    }
 }

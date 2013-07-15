@@ -57,7 +57,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
         if (itemAdded) {
             itemAdded = false;
             startActionMode();
-            detailCallbacks.onItemDetailAdded(item);
+            detailCallbacks.onDetailItemAdded(item);
         }
     }
 
@@ -104,7 +104,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     @Override
     @SuppressWarnings("unchecked")
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        detailCallbacks.onItemStartUpdate(item);
+        detailCallbacks.onDetailItemStartUpdate(item);
         T temp = item;
         itemBeforeEdit = item;
         temp = (T)((Item)item).copy();
@@ -131,8 +131,9 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
             temp.update((Item)item);
             item = itemBeforeEdit;
             itemBeforeEdit = null;
+            detailCallbacks.onDetailItemUpdated(item);
         }
-        detailCallbacks.onItemEndUpdate(item);
+        detailCallbacks.onDetailItemEndUpdate(item);
         this.actionMode = null;
     }
 
@@ -149,7 +150,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     public void onItemAdded(T item) {
         if (this.item != null && this.item.getClass().equals(item.getClass())) {
             startActionMode();
-            detailCallbacks.onItemDetailAdded(item);
+            detailCallbacks.onDetailItemAdded(item);
         } else {
                 itemAdded = true;
         }

@@ -86,4 +86,12 @@ public abstract class Light extends Item {
             super.update(item);
         }
     }
+
+    @Override
+    public void updateProperties(Item item) {
+        if (item instanceof Light) {
+            Light that = (Light)item;
+            super.updateProperties(item);
+        }
+    }
 }

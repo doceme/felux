@@ -38,18 +38,24 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
 
     protected static class EmptyItemListCallbacks implements ItemListCallbacks<Item> {
         @Override
-        public void onItemSelected(int position, Item item) {
+        public void onListItemSelected(int position, Item item) {
         }
 
         @Override
-        public void onItemAdded(Item item) {
+        public void onListItemAdded(Item item) {
         }
 
         @Override
-        public void onItemUpdated(Item item) {
-
+        public void onListItemUpdated(Item item) {
         }
 
+        @Override
+        public void onListItemEndUpdate(Item item) {
+        }
+
+        @Override
+        public void onListItemRemoved(Item item) {
+        }
     }
 
     public void setFeluxManager(FeluxManager manager) {
@@ -101,7 +107,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
             listView.setItemChecked(position, true);
         }
 
-        itemListCallbacks.onItemSelected(position, position < 0 ? null : items.get(position));
+        itemListCallbacks.onListItemSelected(position, position < 0 ? null : items.get(position));
 
         getActivity().invalidateOptionsMenu();
     }
@@ -139,7 +145,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         super.onListItemClick(listView, view, position, id);
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        itemListCallbacks.onItemSelected(0, items.get(position));
+        itemListCallbacks.onListItemSelected(0, items.get(position));
         getActivity().invalidateOptionsMenu();
     }
 
@@ -147,10 +153,10 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
     public void setActivatedPosition(int position) {
         if (position == ListView.INVALID_POSITION) {
             getListView().setItemChecked(mActivatedPosition, false);
-            itemListCallbacks.onItemSelected(-1, null);
+            itemListCallbacks.onListItemSelected(-1, null);
         } else {
             getListView().setItemChecked(position, true);
-            itemListCallbacks.onItemSelected(position, items.get(position));
+            itemListCallbacks.onListItemSelected(position, items.get(position));
         }
 
         getActivity().invalidateOptionsMenu();
@@ -162,13 +168,13 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         items.add(item);
         adapter.notifyDataSetChanged();
         setActivatedPosition(items.size() - 1);
-        itemListCallbacks.onItemAdded(item);
+        itemListCallbacks.onListItemAdded(item);
     }
 
-    public void removeItem(T item) {
-        int oldPosition = selectedPosition();
-        int newPosition = oldPosition == 0 ? 0 : oldPosition - 1;
-        items.remove(oldPosition);
+    public void removeItem(int position) {
+        int newPosition = position == 0 ? 0 : position - 1;
+        itemListCallbacks.onListItemRemoved(items.get(position));
+        items.remove(position);
         adapter.notifyDataSetChanged();
         if (items.size() == 0) {
             newPosition = -1;
@@ -259,7 +265,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
             ConfirmDialogFragment dialog = new ConfirmDialogFragment("Delete", "Are you sure you want to delete this?", new ConfirmDialogFragment.ConfirmDialogListener() {
                 @Override
                 public void onConfirm() {
-                    removeItem(selectedItem());
+                    removeItem(selectedPosition());
                     getActivity().invalidateOptionsMenu();
                 }
             });
@@ -275,20 +281,26 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemStartUpdate(Item item) {
+    public void onDetailItemStartUpdate(Item item) {
         getListView().setEnabled(false);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemEndUpdate(Item item) {
+    public void onDetailItemUpdated(Item item) {
+        itemListCallbacks.onListItemUpdated(item);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onDetailItemEndUpdate(Item item) {
         adapter.notifyDataSetChanged();
-        itemListCallbacks.onItemUpdated(item);
+        itemListCallbacks.onListItemEndUpdate(item);
         getListView().setEnabled(true);
     }
 
     @Override
-    public void onItemDetailAdded(Item item) {
+    public void onDetailItemAdded(Item item) {
         setActivatedPosition(items.size() - 1);
     }
 

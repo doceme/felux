@@ -4,7 +4,9 @@ public interface ItemListCallbacks<T> {
     /**
      * Callback for when an item has been selected.
      */
-    public void onItemSelected(int position, T item);
-    public void onItemAdded(T item);
-    public void onItemUpdated(T item);
+    public void onListItemSelected(int position, T item);
+    public void onListItemAdded(T item);
+    public void onListItemEndUpdate(T item);
+    public void onListItemUpdated(T item);
+    public void onListItemRemoved(T item);
 }

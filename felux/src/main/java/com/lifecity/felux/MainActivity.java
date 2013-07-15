@@ -25,6 +25,7 @@ import com.lifecity.felux.scenes.Scene;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 
@@ -312,7 +313,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemSelected(int position, Item item) {
+    public void onListItemSelected(int position, Item item) {
         ItemDetailFragment detailFragment = getItemDetailFragment(item);
         if (detailFragment != null) {
             detailFragment.setItem(item);
@@ -321,7 +322,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemAdded(Item item) {
+    public void onListItemAdded(Item item) {
         ItemDetailFragment detailFragment = getItemDetailFragment(item);
         if (detailFragment != null) {
             detailFragment.onItemAdded(item);
@@ -330,13 +331,144 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemUpdated(Item item) {
-        ItemDetailFragment detailFragment = getItemDetailFragment(item);
+    public void onListItemUpdated(Item item) {
+        if (item instanceof Light) {
+            Light updatedLight = (Light)item;
+
+            /* Update lights in scenes */
+            for (Scene scene: feluxManager.getScenes()) {
+                if (scene instanceof LightScene) {
+                    for (Light light: ((LightScene)scene).getLights()) {
+                        if (light.getUuid().equals(updatedLight.getUuid())) {
+                            light.updateProperties(updatedLight);
+                        }
+                    }
+                }
+            }
+
+            /* Update lights in scenes that are part of cues */
+            for (Cue cue: feluxManager.getCues()) {
+                for (Scene scene: cue.getScenes()) {
+                    if (scene instanceof LightScene) {
+                        for (Light light: ((LightScene)scene).getLights()) {
+                            if (light.getUuid().equals(updatedLight.getUuid())) {
+                                light.updateProperties(updatedLight);
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (item instanceof LightScene) {
+            LightScene updatedLightScene = (LightScene)item;
+
+            for (Cue cue: feluxManager.getCues()) {
+                for (Scene scene: cue.getScenes()) {
+                    if (scene instanceof LightScene) {
+                        if (scene.getUuid().equals(updatedLightScene.getUuid())) {
+                            scene.updateProperties(updatedLightScene);
+                        }
+                    }
+                }
+            }
+        } else if (item instanceof MidiScene) {
+            MidiScene updatedMidiScene = (MidiScene)item;
+
+            for (Cue cue: feluxManager.getCues()) {
+                for (Scene scene: cue.getScenes()) {
+                    if (scene instanceof MidiScene) {
+                        if (scene.getUuid().equals(updatedMidiScene.getUuid())) {
+                            scene.updateProperties(updatedMidiScene);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (item instanceof Light) {
+            feluxManager.saveLights();
+            feluxManager.saveScenes();
+            feluxManager.saveCues();
+        } else if (item instanceof Scene) {
+            feluxManager.saveScenes();
+            feluxManager.saveCues();
+        } else if (item instanceof Cue) {
+            feluxManager.saveCues();
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onListItemRemoved(Item item) {
+        if (item instanceof Light) {
+            Light updatedLight = (Light)item;
+
+            /* Update lights in scenes */
+            for (Scene scene: feluxManager.getScenes()) {
+                if (scene instanceof LightScene) {
+                    ListIterator<Light> lightIterator = ((LightScene)scene).getLights().listIterator();
+                    while (lightIterator.hasNext()) {
+                        if (lightIterator.next().getUuid().equals(updatedLight.getUuid())) {
+                            lightIterator.remove();
+                        }
+                    }
+                }
+            }
+
+            /* Update lights in scenes that are part of cues */
+            for (Cue cue: feluxManager.getCues()) {
+                for (Scene scene: cue.getScenes()) {
+                    if (scene instanceof LightScene) {
+                        ListIterator<Light> lightIterator = ((LightScene)scene).getLights().listIterator();
+                        while (lightIterator.hasNext()) {
+                            if (lightIterator.next().getUuid().equals(updatedLight.getUuid())) {
+                                lightIterator.remove();
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (item instanceof LightScene) {
+            LightScene updatedLightScene = (LightScene)item;
+
+            for (Cue cue: feluxManager.getCues()) {
+                ListIterator<Scene> sceneIterator = cue.getScenes().listIterator();
+                while (sceneIterator.hasNext()) {
+                    if (sceneIterator.next() instanceof LightScene) {
+                        if (sceneIterator.next().getUuid().equals(updatedLightScene.getUuid())) {
+                            sceneIterator.remove();
+                        }
+                    }
+                }
+            }
+        } else if (item instanceof MidiScene) {
+            MidiScene updatedMidiScene = (MidiScene)item;
+
+            for (Cue cue: feluxManager.getCues()) {
+                ListIterator<Scene> sceneIterator = cue.getScenes().listIterator();
+                while (sceneIterator.hasNext()) {
+                    if (sceneIterator.next() instanceof MidiScene) {
+                        if (sceneIterator.next().getUuid().equals(updatedMidiScene.getUuid())) {
+                            sceneIterator.remove();
+                        }
+                    }
+                }
+            }
+        }
+
         if (item instanceof Light) {
             feluxManager.saveLights();
         } else if (item instanceof Scene) {
             feluxManager.saveScenes();
+        } else if (item instanceof Cue) {
+            feluxManager.saveCues();
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onListItemEndUpdate(Item item) {
+        //ItemDetailFragment detailFragment = getItemDetailFragment(item);
+        ItemDetailFragment detailFragment = (ItemDetailFragment)fragmentManager.findFragmentById(R.id.fragment_secondary);
         if (detailFragment != null) {
             detailFragment.onItemUpdated(item);
         }
