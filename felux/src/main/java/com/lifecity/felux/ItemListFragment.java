@@ -275,9 +275,16 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemDetailUpdated(Item item) {
+    public void onItemStartUpdate(Item item) {
+        getListView().setEnabled(false);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onItemEndUpdate(Item item) {
         adapter.notifyDataSetChanged();
         itemListCallbacks.onItemUpdated(item);
+        getListView().setEnabled(true);
     }
 
     @Override

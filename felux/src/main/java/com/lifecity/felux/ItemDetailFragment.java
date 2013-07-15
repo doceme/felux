@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import com.lifecity.felux.items.Item;
@@ -105,6 +104,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     @Override
     @SuppressWarnings("unchecked")
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        detailCallbacks.onItemStartUpdate(item);
         T temp = item;
         itemBeforeEdit = item;
         temp = (T)((Item)item).copy();
@@ -132,7 +132,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
             item = itemBeforeEdit;
             itemBeforeEdit = null;
         }
-        detailCallbacks.onItemDetailUpdated(item);
+        detailCallbacks.onItemEndUpdate(item);
         this.actionMode = null;
     }
 
