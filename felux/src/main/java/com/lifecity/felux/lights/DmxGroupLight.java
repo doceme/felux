@@ -25,9 +25,8 @@ public class DmxGroupLight extends DmxLight {
         return new DmxGroupLight(this);
     }
 
-    public DmxGroupLight(String name, int startAddress, int endAddress) {
-        super(name);
-        this.address = startAddress;
+    public DmxGroupLight(String name, int universe, int startAddress, int endAddress) {
+        super(name, universe, startAddress);
         this.endAddress = endAddress;
     }
 

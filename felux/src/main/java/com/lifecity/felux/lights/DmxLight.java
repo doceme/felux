@@ -23,8 +23,9 @@ public class DmxLight extends Light {
         super(name);
     }
 
-    public DmxLight(String name, int address) {
+    public DmxLight(String name, int universe, int address) {
         super(name);
+        this.universe = universe;
         this.address = address;
     }
 

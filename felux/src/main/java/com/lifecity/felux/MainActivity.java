@@ -218,10 +218,11 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
         List<Light> lights = feluxManager.getLights();
         if (lights.size() == 0) {
-            lights.add(new DmxColorLight("Screen", 1, Color.RED));
-            lights.add(new DmxColorLight("Side", 5, Color.BLUE));
-            lights.add(new DmxColorLight("Ceiling", 9, Color.GREEN));
-            lights.add(new DmxGroupLight("Stage", 13, 16));
+            lights.add(new DmxColorLight("Screen", 0, 1, Color.RED));
+            lights.add(new DmxColorLight("Side", 0, 5, Color.BLUE));
+            lights.add(new DmxColorLight("Ceiling", 0, 9, Color.GREEN));
+            lights.add(new DmxGroupLight("Stage", 1, 13, 16));
+            lights.add(new DmxLight("House", 2, 1));
         }
 
         List<Scene> scenes = feluxManager.getScenes();
@@ -230,10 +231,13 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             lightScene.addLight((Light)lights.get(0).copy());
             lightScene.addLight((Light)lights.get(1).copy());
             lightScene.addLight((Light) lights.get(2).copy());
+            MidiScene firstSlideScene = new MidiScene("First Slide", 0, 19, 1);
+            MidiScene logoScene = new MidiScene("Logo", 0, 5, 127);
             scenes.add(lightScene);
+            scenes.add(firstSlideScene);
+            scenes.add(logoScene);
         }
 
-        //ItemListFragment listFragment = (ItemListFragment)fragmentManager.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
         ItemListFragment listFragment = getItemListFragment();
         if (listFragment != null) {
             listFragment.onItemsLoaded(feluxManager);
@@ -242,7 +246,6 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        //outState.putInt(ACTIVE_TAB, getActionBar().getSelectedNavigationIndex());
         super.onSaveInstanceState(outState);
     }
 
@@ -280,12 +283,10 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             }
             if (itemDetailFragment == null) {
                 try {
-                    //ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
                     ItemListFragment listFragment = getItemListFragment();
                     itemDetailFragment = (ItemDetailFragment)Class.forName(tag).newInstance();
                     itemDetailFragment.setItemDetailCallbacks(listFragment);
                     itemDetailFragment.setFeluxManager(feluxManager);
-                    //ft.add(R.id.fragment_secondary, itemDetailFragment, tag);
                     ft.replace(R.id.fragment_secondary, itemDetailFragment, tag);
                 } catch (Exception ex) {
                     throw new IllegalStateException("Invalid item");
@@ -472,7 +473,6 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
     @Override
     @SuppressWarnings("unchecked")
     public void onListItemEndUpdate(Item item) {
-        //ItemDetailFragment detailFragment = getItemDetailFragment(item);
         ItemDetailFragment detailFragment = (ItemDetailFragment)fragmentManager.findFragmentById(R.id.fragment_secondary);
         if (detailFragment != null) {
             detailFragment.onItemUpdated(item);
@@ -498,7 +498,6 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                 try {
                     listFragment = (ItemListFragment)Class.forName(listTag).newInstance();
                     listFragment.setFeluxManager(feluxManager);
-                    //ft.add(R.id.fragment_primary, listFragment, listTag);
                     ft.replace(R.id.fragment_primary, listFragment, listTag);
                 } catch (Exception ex) {
                     throw new IllegalStateException("Invalid tab");

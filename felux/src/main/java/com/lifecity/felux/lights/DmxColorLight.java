@@ -21,13 +21,13 @@ public class DmxColorLight extends DmxLight {
         this.value = Color.WHITE;
     }
 
-    public DmxColorLight(String name, int address) {
-        super(name, address);
+    public DmxColorLight(String name, int universe, int address) {
+        super(name, universe, address);
         this.value = Color.WHITE;
     }
 
-    public DmxColorLight(String name, int address, int color) {
-        super(name, address);
+    public DmxColorLight(String name, int universe, int address, int color) {
+        super(name, universe, address);
         this.value = color;
     }
 
