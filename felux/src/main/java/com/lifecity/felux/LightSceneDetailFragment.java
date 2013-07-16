@@ -92,7 +92,9 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         nameEdit = (EditText)view.findViewById(R.id.light_scene_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
         holdEdit = (EditText)view.findViewById(R.id.light_scene_detail_hold_edit);
+        holdEdit.setOnFocusChangeListener(this);
         fadeEdit = (EditText)view.findViewById(R.id.light_scene_detail_fade_edit);
+        fadeEdit.setOnFocusChangeListener(this);
         previewButton = (Button)view.findViewById(R.id.light_scene_detail_preview_button);
         List<Light> adapterLights = new ArrayList<Light>(item.getLights().size());
         for (Light light: item.getLights()) {

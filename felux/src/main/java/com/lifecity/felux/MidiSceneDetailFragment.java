@@ -78,6 +78,7 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         nameEdit = (EditText)view.findViewById(R.id.midi_scene_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
         holdEdit = (EditText)view.findViewById(R.id.midi_scene_detail_hold_edit);
+        holdEdit.setOnFocusChangeListener(this);
         channelEdit = (EditText)view.findViewById(R.id.midi_scene_detail_channel_edit);
         channelEdit.setOnFocusChangeListener(this);
         noteEdit = (EditText)view.findViewById(R.id.midi_scene_detail_note_edit);
