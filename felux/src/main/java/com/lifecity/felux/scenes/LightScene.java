@@ -19,6 +19,7 @@ public class LightScene extends Scene {
 
     public LightScene(LightScene scene) {
         super(scene);
+        this.fade = scene.getFade();
         lights = new ArrayList<Light>(scene.getLights().size());
         for (Light light : scene.getLights()) {
             addLight((Light)light.copy());
@@ -93,15 +94,6 @@ public class LightScene extends Scene {
             for (Light thatLight: that.getLights()) {
                 addLight((Light)thatLight.copy());
             }
-            /*
-            //for (Light thisLight: lights) {
-                for (Light thatLight: that.getLights()) {
-                    if (thisLight.getUuid().equals(thatLight.getUuid())) {
-                        thisLight.updateProperties(thatLight);
-                    }
-                }
-            }
-            */
             super.update(item);
         }
     }

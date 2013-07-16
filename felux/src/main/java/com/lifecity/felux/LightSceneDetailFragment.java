@@ -32,6 +32,8 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     private MenuItem moveDownScene;
     private ListView lightListView;
     private EditText nameEdit;
+    private EditText holdEdit;
+    private EditText fadeEdit;
     private Button previewButton;
 
     /**
@@ -51,8 +53,10 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void updateItemView() {
-        if (nameEdit != null && adapter != null && item != null) {
+        if (nameEdit != null && holdEdit != null && fadeEdit != null && adapter != null && item != null) {
             nameEdit.setText(item.getName());
+            holdEdit.setText(String.valueOf(item.getHold()));
+            fadeEdit.setText(String.valueOf(item.getFade()));
             updateLights();
             adapter.notifyDataSetChanged();
         }
@@ -62,11 +66,19 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         if (!enabled) {
             if (nameEdit.hasFocus()) {
                 nameEdit.clearFocus();
+            } else if (holdEdit.hasFocus()) {
+                holdEdit.clearFocus();
+            } else if (fadeEdit.hasFocus()) {
+                fadeEdit.clearFocus();
             }
         }
 
         nameEdit.setFocusable(enabled);
         nameEdit.setFocusableInTouchMode(enabled);
+        holdEdit.setFocusable(enabled);
+        holdEdit.setFocusableInTouchMode(enabled);
+        fadeEdit.setFocusable(enabled);
+        fadeEdit.setFocusableInTouchMode(enabled);
         lightListView.setEnabled(enabled);
     }
 
@@ -79,6 +91,8 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     public void onViewCreated(View view, Bundle savedInstanceState) {
         nameEdit = (EditText)view.findViewById(R.id.light_scene_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
+        holdEdit = (EditText)view.findViewById(R.id.light_scene_detail_hold_edit);
+        fadeEdit = (EditText)view.findViewById(R.id.light_scene_detail_fade_edit);
         previewButton = (Button)view.findViewById(R.id.light_scene_detail_preview_button);
         List<Light> adapterLights = new ArrayList<Light>(item.getLights().size());
         for (Light light: item.getLights()) {
@@ -274,6 +288,12 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
+            }
+            if (!holdEdit.getText().toString().isEmpty()) {
+                item.setHold(Float.valueOf(holdEdit.getText().toString()));
+            }
+            if (!fadeEdit.getText().toString().isEmpty()) {
+                item.setFade(Float.valueOf(fadeEdit.getText().toString()));
             }
         }
         adapter.stopEditMode();

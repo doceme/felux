@@ -15,11 +15,9 @@ import java.util.ListIterator;
 public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> implements View.OnFocusChangeListener, View.OnClickListener {
     private Button previewButton;
     private EditText nameEdit;
-    private TextView channelLabel;
+    private EditText holdEdit;
     private EditText channelEdit;
-    private TextView noteLabel;
     private EditText noteEdit;
-    private TextView velocityLabel;
     private EditText velocityEdit;
     private Switch eventSwitch;
 
@@ -33,8 +31,9 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
 
     @Override
     public void updateItemView() {
-        if (nameEdit != null && item != null) {
+        if (nameEdit != null && holdEdit != null && item != null) {
             nameEdit.setText(item.getName());
+            holdEdit.setText(String.valueOf(item.getHold()));
 
             channelEdit.setText(String.valueOf(item.getChannel()));
             noteEdit.setText(String.valueOf(item.getNote()));
@@ -47,11 +46,15 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         if (!enabled) {
             if (nameEdit.hasFocus()) {
                 nameEdit.clearFocus();
+            } else if (holdEdit.hasFocus()) {
+                holdEdit.clearFocus();
             }
         }
 
         nameEdit.setFocusable(enabled);
         nameEdit.setFocusableInTouchMode(enabled);
+        holdEdit.setFocusable(enabled);
+        holdEdit.setFocusableInTouchMode(enabled);
         channelEdit.setFocusable(enabled);
         channelEdit.setFocusableInTouchMode(enabled);
         noteEdit.setFocusable(enabled);
@@ -74,16 +77,13 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         previewButton.setOnClickListener(this);
         nameEdit = (EditText)view.findViewById(R.id.midi_scene_detail_name_edit);
         nameEdit.setOnFocusChangeListener(this);
+        holdEdit = (EditText)view.findViewById(R.id.midi_scene_detail_hold_edit);
         channelEdit = (EditText)view.findViewById(R.id.midi_scene_detail_channel_edit);
         channelEdit.setOnFocusChangeListener(this);
         noteEdit = (EditText)view.findViewById(R.id.midi_scene_detail_note_edit);
         noteEdit.setOnFocusChangeListener(this);
         velocityEdit = (EditText)view.findViewById(R.id.midi_scene_detail_velocity_edit);
         velocityEdit.setOnFocusChangeListener(this);
-
-        channelLabel = (TextView)view.findViewById(R.id.midi_scene_detail_channel_label);
-        noteLabel = (TextView)view.findViewById(R.id.midi_scene_detail_note_label);
-        velocityLabel = (TextView)view.findViewById(R.id.midi_scene_detail_velocity_label);
 
         eventSwitch = (Switch)view.findViewById(R.id.midi_scene_detail_event_switch);
 
@@ -102,7 +102,6 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        ListIterator<Light> iterator;
         switch (menuItem.getItemId()) {
             case R.id.action_item_cancel:
                 actionMode.setTag("cancelled");
@@ -119,6 +118,9 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
+            }
+            if (!holdEdit.getText().toString().isEmpty()) {
+                item.setHold(Float.valueOf(holdEdit.getText().toString()));
             }
             if (!channelEdit.getText().toString().isEmpty()) {
                 item.setChannel(Integer.valueOf(channelEdit.getText().toString()));

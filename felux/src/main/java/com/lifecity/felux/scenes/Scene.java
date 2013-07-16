@@ -14,6 +14,7 @@ public abstract class Scene extends Item {
 
     public Scene(Scene scene) {
         super(scene);
+        this.hold = scene.hold;
     }
 
     public Scene(String name) {

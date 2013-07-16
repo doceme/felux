@@ -19,6 +19,24 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="vertical"
                   android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:gravity="center_vertical">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cue_scene_list_row_name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="13dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:singleLine="false"
+                android:layout_gravity="center_vertical"
+                />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
         >
         <TextView
@@ -68,25 +86,6 @@
             android:focusableInTouchMode="false"
             android:textColor="@android:color/white"
             android:layout_gravity="bottom"
-            />
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:orientation="vertical"
-                  android:layout_width="0dp"
-                  android:layout_height="match_parent"
-                  android:layout_weight="1"
-                  android:gravity="center_vertical">
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/cue_scene_list_row_name"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginLeft="13dp"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:singleLine="false"
-                android:layout_gravity="center_vertical"
             />
     </LinearLayout>
 
