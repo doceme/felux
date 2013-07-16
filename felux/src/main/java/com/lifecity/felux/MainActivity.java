@@ -233,8 +233,10 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             lightScene.addLight((Light) lights.get(2).copy());
             MidiScene firstSlideScene = new MidiScene("First Slide", 0, 19, 1);
             MidiScene logoScene = new MidiScene("Logo", 0, 5, 127);
+            MidiScene playListScene = new MidiScene("Playlist", 0, 18, 1);
             scenes.add(lightScene);
             scenes.add(firstSlideScene);
+            scenes.add(playListScene);
             scenes.add(logoScene);
         }
 
