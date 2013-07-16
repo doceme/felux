@@ -80,6 +80,23 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
         notifyDataSetChanged();
     }
 
+    public int getSingleCheckedItemPosition() {
+        int result = -1;
+        boolean checked = false;
+        for (int i = 0; i < lights.size(); i++) {
+            if (lights.get(i).getChecked()) {
+                if (checked) {
+                    return -1;
+                } else {
+                    checked = true;
+                    result = i;
+                }
+            }
+        }
+
+        return result;
+    }
+
     public boolean areAnyItemsChecked() {
         for (Light light: lights) {
             if (light.getChecked()) {

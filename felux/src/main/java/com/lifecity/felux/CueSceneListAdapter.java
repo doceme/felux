@@ -91,23 +91,6 @@ public class CueSceneListAdapter extends ArrayAdapter<Scene> implements View.OnC
         return result;
     }
 
-    /*
-    public boolean isOnlyOneItemChecked() {
-        boolean result = false;
-        for (Scene scene: scenes) {
-            if (scene.getChecked()) {
-                if (result) {
-                    return false;
-                } else {
-                    result = true;
-                }
-            }
-        }
-
-        return result;
-    }
-    */
-
     public boolean areAnyItemsChecked() {
         for (Scene scene: scenes) {
             if (scene.getChecked()) {

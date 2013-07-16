@@ -144,6 +144,7 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
         inflater.inflate(R.menu.fragment_add_remove_move_menu, menu);
+        menu.findItem(R.id.action_item_add).setTitle(R.string.action_item_add_scene_label);
         removeScene = menu.findItem(R.id.action_item_remove);
         moveUpScene = menu.findItem(R.id.action_item_moveup);
         moveDownScene = menu.findItem(R.id.action_item_movedown);
@@ -254,27 +255,6 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
         }
     }
 
-    /*
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int position = adapter.getSingleCheckedItemPosition();
-            if (position >= 0) {
-            switch (item.getItemId()) {
-                case R.id.action_item_moveup:
-                    moveScene(this.item.getScenes().get(position), false);
-                    return true;
-                case R.id.action_item_movedown:
-                    moveScene(this.item.getScenes().get(position), true);
-                    return true;
-                default:
-                    break;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
-
     private void updateMoveIcons() {
         int position = adapter.getSingleCheckedItemPosition();
         if (position >= 0) {
@@ -292,6 +272,7 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
             moveDownScene.setVisible(false);
         }
     }
+
     @Override
     public void onItemCheckedChanged(Item item) {
         updateMoveIcons();

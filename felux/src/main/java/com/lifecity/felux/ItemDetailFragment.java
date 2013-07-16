@@ -14,7 +14,7 @@ import com.lifecity.felux.items.Item;
  */
 abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Callback {
     protected int layout;
-    protected ItemDetailCallbacks<T> detailCallbacks;
+    protected ItemDetailCallbacks<T> itemDetailCallbacks;
     protected ActionMode actionMode;
     protected FeluxManager manager;
     protected boolean itemAdded;
@@ -30,8 +30,8 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
         this.layout = layout;
     }
 
-    public void setDetailCallbacks(ItemDetailCallbacks<T> callbacks) {
-        this.detailCallbacks = callbacks;
+    public void setItemDetailCallbacks(ItemDetailCallbacks<T> callbacks) {
+        this.itemDetailCallbacks = callbacks;
     }
 
     public void setFeluxManager(FeluxManager manager) {
@@ -57,7 +57,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
         if (itemAdded) {
             itemAdded = false;
             startActionMode();
-            detailCallbacks.onDetailItemAdded(item);
+            itemDetailCallbacks.onDetailItemAdded(item);
         }
     }
 
@@ -104,7 +104,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     @Override
     @SuppressWarnings("unchecked")
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        detailCallbacks.onDetailItemStartUpdate(item);
+        itemDetailCallbacks.onDetailItemStartUpdate(item);
         T temp = item;
         itemBeforeEdit = item;
         temp = (T)((Item)item).copy();
@@ -131,9 +131,9 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
             temp.update((Item)item);
             item = itemBeforeEdit;
             itemBeforeEdit = null;
-            detailCallbacks.onDetailItemUpdated(item);
+            itemDetailCallbacks.onDetailItemUpdated(item);
         }
-        detailCallbacks.onDetailItemEndUpdate(item);
+        itemDetailCallbacks.onDetailItemEndUpdate(item);
         this.actionMode = null;
     }
 
@@ -150,7 +150,7 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
     public void onItemAdded(T item) {
         if (this.item != null && this.item.getClass().equals(item.getClass())) {
             startActionMode();
-            detailCallbacks.onDetailItemAdded(item);
+            itemDetailCallbacks.onDetailItemAdded(item);
         } else {
                 itemAdded = true;
         }

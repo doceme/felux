@@ -283,7 +283,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
                     //ItemListFragment listFragment = (ItemListFragment)fm.findFragmentByTag(getActionBar().getSelectedTab().getTag().toString());
                     ItemListFragment listFragment = getItemListFragment();
                     itemDetailFragment = (ItemDetailFragment)Class.forName(tag).newInstance();
-                    itemDetailFragment.setDetailCallbacks(listFragment);
+                    itemDetailFragment.setItemDetailCallbacks(listFragment);
                     itemDetailFragment.setFeluxManager(feluxManager);
                     //ft.add(R.id.fragment_secondary, itemDetailFragment, tag);
                     ft.replace(R.id.fragment_secondary, itemDetailFragment, tag);
@@ -433,8 +433,9 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             for (Cue cue: feluxManager.getCues()) {
                 ListIterator<Scene> sceneIterator = cue.getScenes().listIterator();
                 while (sceneIterator.hasNext()) {
-                    if (sceneIterator.next() instanceof LightScene) {
-                        if (sceneIterator.next().getUuid().equals(updatedLightScene.getUuid())) {
+                    Scene scene = sceneIterator.next();
+                    if (scene instanceof LightScene) {
+                        if (scene.getUuid().equals(updatedLightScene.getUuid())) {
                             sceneIterator.remove();
                         }
                     }
@@ -446,8 +447,9 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             for (Cue cue: feluxManager.getCues()) {
                 ListIterator<Scene> sceneIterator = cue.getScenes().listIterator();
                 while (sceneIterator.hasNext()) {
-                    if (sceneIterator.next() instanceof MidiScene) {
-                        if (sceneIterator.next().getUuid().equals(updatedMidiScene.getUuid())) {
+                    Scene scene = sceneIterator.next();
+                    if (scene instanceof MidiScene) {
+                        if (scene.getUuid().equals(updatedMidiScene.getUuid())) {
                             sceneIterator.remove();
                         }
                     }
@@ -457,8 +459,11 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
 
         if (item instanceof Light) {
             feluxManager.saveLights();
+            feluxManager.saveScenes();
+            feluxManager.saveCues();
         } else if (item instanceof Scene) {
             feluxManager.saveScenes();
+            feluxManager.saveCues();
         } else if (item instanceof Cue) {
             feluxManager.saveCues();
         }

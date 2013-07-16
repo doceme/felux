@@ -88,14 +88,20 @@ public class LightScene extends Scene {
     public void updateProperties(Item item) {
         if (item instanceof LightScene) {
             LightScene that = (LightScene)item;
-            this.lights = that.getLights();
-            for (Light thisLight: lights) {
+            //this.lights = that.getLights();
+            lights.clear();
+            for (Light thatLight: that.getLights()) {
+                addLight((Light)thatLight.copy());
+            }
+            /*
+            //for (Light thisLight: lights) {
                 for (Light thatLight: that.getLights()) {
                     if (thisLight.getUuid().equals(thatLight.getUuid())) {
                         thisLight.updateProperties(thatLight);
                     }
                 }
             }
+            */
             super.update(item);
         }
     }

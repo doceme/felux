@@ -28,6 +28,8 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     private Light currentLight;
     private CheckBox selectAll;
     private MenuItem removeLight;
+    private MenuItem moveUpScene;
+    private MenuItem moveDownScene;
     private ListView lightListView;
     private EditText nameEdit;
     private Button previewButton;
@@ -151,6 +153,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
             item.addLight(light);
             adapter.add(light);
         }
+        //itemDetailCallbacks.onDetailItemUpdated(item);
         selectAll.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
     }
@@ -163,22 +166,56 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     @Override
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         MenuInflater inflater = actionMode.getMenuInflater();
-        inflater.inflate(R.menu.fragment_add_remove_menu, menu);
-        removeLight = (MenuItem)menu.findItem(R.id.action_item_remove);
+        inflater.inflate(R.menu.fragment_add_remove_move_menu, menu);
+        menu.findItem(R.id.action_item_add).setTitle(R.string.action_item_add_light_label);
+        moveUpScene = menu.findItem(R.id.action_item_moveup);
+        moveDownScene = menu.findItem(R.id.action_item_movedown);
+        removeLight = menu.findItem(R.id.action_item_remove);
         removeLight.setVisible(adapter.areAnyItemsChecked());
         setControlsEnabled(true);
         boolean result = super.onCreateActionMode(actionMode, menu);
-        updateLights();
+        //updateLights();
         adapter.startEditMode();
         if (adapter.getCount() > 0) {
             selectAll.setVisibility(View.VISIBLE);
         }
+        updateMoveIcons();
         return result;
+    }
+
+    public void moveLight(Light light, boolean down) {
+        int oldPosition = adapter.getSingleCheckedItemPosition();
+        int newPosition;
+
+        if (oldPosition >= 0) {
+            if (down) {
+                if (oldPosition < (lightListView.getCount() - 1)) {
+                    newPosition = oldPosition + 1;
+                }  else {
+                    return;
+                }
+            } else {
+                if (oldPosition > 0) {
+                    newPosition = oldPosition - 1;
+                } else {
+                    return;
+                }
+            }
+
+            List<Light> lights = item.getLights();
+            Light temp = lights.get(newPosition);
+            lights.set(newPosition, light);
+            lights.set(oldPosition, temp);
+            updateLights();
+            updateMoveIcons();
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
         ListIterator<Light> iterator;
+        int position = adapter.getSingleCheckedItemPosition();
         switch (menuItem.getItemId()) {
             case R.id.action_item_add:
                 List<Light> newLights = new ArrayList<Light>(manager.getLights().size());
@@ -202,6 +239,12 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
                     .show();
                 }
                 break;
+            case R.id.action_item_moveup:
+                moveLight(this.item.getLights().get(position), false);
+                return true;
+            case R.id.action_item_movedown:
+                moveLight(this.item.getLights().get(position), true);
+                return true;
             case R.id.action_item_remove:
                 adapter.removeChecked();
                 iterator = item.getLights().listIterator();
@@ -210,6 +253,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
                         iterator.remove();
                     }
                 }
+                itemDetailCallbacks.onDetailItemUpdated(item);
                 if (adapter.getCount() == 0) {
                     selectAll.setVisibility(View.GONE);
                 }
@@ -238,6 +282,24 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         super.onDestroyActionMode(actionMode);
     }
 
+    private void updateMoveIcons() {
+        int position = adapter.getSingleCheckedItemPosition();
+        if (position >= 0) {
+            int size = lightListView.getCount();
+
+            if (position >= 0 && size > 0) {
+                moveUpScene.setVisible(position > 0);
+                moveDownScene.setVisible(position < (size - 1));
+            } else {
+                moveUpScene.setVisible(false);
+                moveDownScene.setVisible(false);
+            }
+        } else {
+            moveUpScene.setVisible(false);
+            moveDownScene.setVisible(false);
+        }
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         adapter.selectAll(checked);
@@ -246,6 +308,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void onItemCheckedChanged(Item item) {
+        updateMoveIcons();
         removeLight.setVisible(adapter.areAnyItemsChecked());
     }
 

@@ -52,6 +52,8 @@
     <string name="basic_light_detail_banner">Basic Light</string>
     <string name="group_light_detail_banner">Group Light</string>
     <string name="color_light_detail_banner">Color Light</string>
+    <string name="action_item_add_light_label">Add Light</string>
+    <string name="action_item_add_scene_label">Add Scene</string>
     <string-array name="scene_types">
         <item>@string/scene_type_light</item>
         <item>@string/scene_type_midi</item>
