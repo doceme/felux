@@ -91,6 +91,7 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
         sceneListView = (ListView)view.findViewById(R.id.cue_detail_scene_list);
         selectAll =(CheckBox)view.findViewById(R.id.cue_detail_scenes_select_all);
         selectAll.setOnCheckedChangeListener(this);
+        selectAll.setVisibility(view.GONE);
         nameEdit.setText(item.getName());
         sceneListView.setAdapter(adapter);
         sceneListView.setItemsCanFocus(false);

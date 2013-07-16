@@ -3,48 +3,66 @@
         android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/scene_detail_preview_label"
-        android:id="@+id/cue_detail_preview_button"
-        android:layout_gravity="left|center_vertical"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="15dp"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal">
 
-    <TextView
-            android:layout_width="match_parent"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/detail_name_label"
-            android:id="@+id/cue_detail_name_label"
-            android:layout_marginRight="5dp"/>
-    <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/cue_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
-            android:editable="false"
-            android:layout_marginLeft="5dp"
-            android:selectAllOnFocus="true"/>
-    <TextView
-            android:layout_width="match_parent"
+            android:text="@string/scene_detail_preview_label"
+            android:id="@+id/cue_detail_preview_button"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+        <LinearLayout
+            android:layout_width="500dp"
+            android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_name_label"
+                android:id="@+id/cue_detail_name_label"
+                />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cue_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
+                android:editable="false"
+                android:selectAllOnFocus="true"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_marginLeft="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/cue_detail_scenes_label"
             android:id="@+id/cue_detail_scenes_label"
-            android:singleLine="false"/>
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/detail_select_all"
-        android:id="@+id/cue_detail_scenes_select_all"
-        android:layout_gravity="left|center_vertical"
-        android:visibility="gone"/>
+            android:singleLine="false"
+            android:layout_gravity="center_vertical"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_select_all"
+            android:id="@+id/cue_detail_scenes_select_all"
+            android:layout_gravity="left|center_vertical"
+            />
+    </LinearLayout>
 
     <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/cue_detail_scene_list"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cue_detail_scene_list"/>
 
 </LinearLayout>

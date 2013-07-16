@@ -36,6 +36,7 @@ public class FeluxManager {
     private static final Type sceneListType = new TypeToken<List<Scene>>() {}.getType();
     private static final Type cueListType = new TypeToken<List<Cue>>() {}.getType();
     private SimpleHdlcOutputStreamWriter feluxWriter;
+    private int houseSwitchValue = -1;
 
     private final byte CMD_DMX_SET_VALUE = (byte)0x80;
     private final byte CMD_DMX_SET_GROUP = (byte)0x81;
@@ -172,15 +173,15 @@ public class FeluxManager {
             showColorLight((DmxColorLight)light, value, false);
         } else if (light instanceof DmxGroupLight) {
             showGroupLight((DmxGroupLight)light, value, false);
-        } else if (light instanceof DmxLight) {
-            DmxLight dmxLight = (DmxLight)light;
-            if (dmxLight.getUniverse() == 2 &&
-                    dmxLight.getAddress() == 1 &&
-                    (light.getValue() == DmxLight.MIN_VALUE || light.getValue() == DmxLight.MAX_VALUE)) {
-                showHouseLight(dmxLight, value);
+        } else if (light instanceof DmxSwitchLight) {
+            DmxSwitchLight dmxSwitchLight = (DmxSwitchLight)light;
+            if (dmxSwitchLight.getUniverse() == 2 && dmxSwitchLight.getAddress() == 1) {
+                showHouseLight(value);
             } else {
-                showBasicLight(dmxLight, value, false);
+                showSwitchLight(dmxSwitchLight, value, false);
             }
+        } else if (light instanceof DmxLight) {
+            showBasicLight(light, value, false);
         }
     }
 
@@ -189,15 +190,15 @@ public class FeluxManager {
             showColorLight((DmxColorLight)light, fade);
         } else if (light instanceof DmxGroupLight) {
             showGroupLight((DmxGroupLight)light, fade);
-        } else if (light instanceof DmxLight) {
-            DmxLight dmxLight = (DmxLight)light;
-            if (dmxLight.getUniverse() == 2 &&
-                    dmxLight.getAddress() == 1 &&
-                    (light.getValue() == DmxLight.MIN_VALUE || light.getValue() == DmxLight.MAX_VALUE)) {
-                showHouseLight(dmxLight);
+        } else if (light instanceof DmxSwitchLight) {
+            DmxSwitchLight dmxSwitchLight = (DmxSwitchLight)light;
+            if (dmxSwitchLight.getUniverse() == 2 && dmxSwitchLight.getAddress() == 1) {
+                showHouseLight(dmxSwitchLight);
             } else {
-                showBasicLight(dmxLight, fade);
+                showSwitchLight(dmxSwitchLight, fade);
             }
+        } else if (light instanceof DmxLight) {
+            showBasicLight(light, fade);
         }
     }
 
@@ -216,6 +217,7 @@ public class FeluxManager {
     }
 
     public void showBasicLight(DmxLight light, int value, boolean fade) {
+        Log.e(TAG, "showBasicLight: value=0x" + Integer.toHexString(value));
         if (feluxWriter != null) {
             int address = light.getAddress();
             byte[] data = {
@@ -236,7 +238,16 @@ public class FeluxManager {
         showBasicLight(light, light.getValue(), fade);
     }
 
+    public void showSwitchLight(DmxSwitchLight light, boolean fade) {
+        showBasicLight(light, light.getValue(), fade);
+    }
+
+    public void showSwitchLight(DmxSwitchLight light, int value, boolean fade) {
+        showBasicLight(light, value, fade);
+    }
+
     public void showGroupLight(DmxGroupLight light, int value, boolean fade) {
+        Log.e(TAG, "showGroupLight: value=0x" + Integer.toHexString(value));
         if (feluxWriter != null) {
             int startAddress = light.getStartAddress();
             int endAddress = light.getEndAddress();
@@ -260,6 +271,7 @@ public class FeluxManager {
     }
 
     public void showColorLight(DmxColorLight light, int color, boolean fade) {
+        Log.e(TAG, "showBasicLight: color=0x" + Integer.toHexString(color));
         if (feluxWriter != null) {
             int address = light.getAddress();
             byte[] data = {
@@ -284,22 +296,26 @@ public class FeluxManager {
         showColorLight(light, light.getColor(), fade);
     }
 
-    public void showHouseLight(DmxLight light, int value) {
-        if (feluxWriter != null) {
-            byte[] data = {
-                    CMD_HOUSE_LIGHTS,
-                    (byte)value
-            };
-            try {
-                feluxWriter.write(data);
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void showHouseLight(int value) {
+        if (value != houseSwitchValue) {
+            houseSwitchValue = value;
+            Log.e(TAG, "showHouseLight: value=" + (value == DmxLight.MIN_VALUE ? "Off" : "On"));
+            if (feluxWriter != null) {
+                byte[] data = {
+                        CMD_HOUSE_LIGHTS,
+                        (byte)value
+                };
+                try {
+                    feluxWriter.write(data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     public void showHouseLight(DmxLight light) {
-        showHouseLight(light, light.getValue());
+        showHouseLight(light.getValue());
     }
 
     public void startFade(int fadeDuration) {
@@ -341,7 +357,7 @@ public class FeluxManager {
     }
 
     public void showLightScene(LightScene scene) {
-        if (feluxWriter != null) {
+        //if (feluxWriter != null) {
             boolean shouldFade = (scene.getFade() >= 0.002);
             stopFade();
             for (Light light: scene.getLights()) {
@@ -357,7 +373,7 @@ public class FeluxManager {
             if (shouldFade) {
                 startFade((int)(scene.getFade() * MILLIS_PER_SECONDS));
             }
-        }
+        //}
     }
 
     public void showMidiScene(int channel, int note, int velocity, boolean isEventOn) {
@@ -380,9 +396,9 @@ public class FeluxManager {
     }
 
     public void showCue(Cue cue) {
-        if (feluxWriter != null) {
+        //if (feluxWriter != null) {
             new CueThread(cue).start();
-        }
+        //}
     }
 
     private class CueThread extends Thread {

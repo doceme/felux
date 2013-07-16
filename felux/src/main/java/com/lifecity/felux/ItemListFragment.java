@@ -171,6 +171,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
         itemListCallbacks.onListItemAdded(item);
     }
 
+    @SuppressWarnings("unchecked")
     public void removeItem(int position) {
         int newPosition = position == 0 ? 0 : position - 1;
         itemListCallbacks.onListItemRemoved(items.get(position));

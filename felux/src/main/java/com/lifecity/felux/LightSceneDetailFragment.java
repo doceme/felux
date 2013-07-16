@@ -12,6 +12,7 @@ import android.widget.*;
 import com.lifecity.felux.items.Item;
 import com.lifecity.felux.lights.DmxColorLight;
 import com.lifecity.felux.lights.DmxLight;
+import com.lifecity.felux.lights.DmxSwitchLight;
 import com.lifecity.felux.lights.Light;
 import com.lifecity.felux.scenes.LightScene;
 
@@ -23,7 +24,7 @@ import java.util.ListIterator;
  * A fragment representing a single Scene detail screen.
  * on handsets.
  */
-public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, LightDialogFragment.LightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener, View.OnFocusChangeListener, AddLightSceneDialogFragment.AddLightSceneDialogListener, View.OnClickListener {
+public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> implements ColorLightDialogFragment.ColorLightDialogListener, LightDialogFragment.LightDialogListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ItemChangedListener, View.OnFocusChangeListener, AddLightSceneDialogFragment.AddLightSceneDialogListener, View.OnClickListener, SwitchLightDialogFragment.SwitchLightDialogListener {
     private LightSceneLightListAdapter adapter;
     private Light currentLight;
     private CheckBox selectAll;
@@ -115,6 +116,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         TextView nameTextView = (TextView)view.findViewById(R.id.light_scene_detail_name_edit);
         selectAll =(CheckBox)view.findViewById(R.id.light_scene_detail_lights_select_all);
         selectAll.setOnCheckedChangeListener(this);
+        selectAll.setVisibility(View.GONE);
         nameTextView.setText(item.getName());
         lightListView.setAdapter(adapter);
         lightListView.setItemsCanFocus(false);
@@ -134,7 +136,14 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
             dialog.setColor(dmxColorLight.getColor());
             dialog.setLight(dmxColorLight);
             dialog.setFeluxManager(manager);
-            dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
+            dialog.show(getActivity().getSupportFragmentManager(), "add_color_light_dialog_tag");
+        } else if (currentLight instanceof DmxSwitchLight) {
+            DmxSwitchLight dmxSwitchLight = (DmxSwitchLight)currentLight;
+            SwitchLightDialogFragment dialog = new SwitchLightDialogFragment(this);
+            dialog.setState(dmxSwitchLight.getValue() != DmxLight.MIN_VALUE);
+            dialog.setLight(dmxSwitchLight);
+            dialog.setFeluxManager(manager);
+            dialog.show(getActivity().getSupportFragmentManager(), "add_switch_light_dialog_tag");
         } else if (currentLight instanceof DmxLight) {
             DmxLight dmxLight = (DmxLight)currentLight;
             LightDialogFragment dialog = new LightDialogFragment(this);
@@ -169,9 +178,17 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
             item.addLight(light);
             adapter.add(light);
         }
-        //itemDetailCallbacks.onDetailItemUpdated(item);
         selectAll.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSwitchSelected(boolean state) {
+        if (currentLight != null) {
+            currentLight.setValue(state ? DmxLight.MAX_VALUE : DmxLight.MIN_VALUE);
+            manager.showLight((DmxLight)currentLight);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -190,7 +207,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
         removeLight.setVisible(adapter.areAnyItemsChecked());
         setControlsEnabled(true);
         boolean result = super.onCreateActionMode(actionMode, menu);
-        //updateLights();
+        updateLights();
         adapter.startEditMode();
         if (adapter.getCount() > 0) {
             selectAll.setVisibility(View.VISIBLE);
@@ -246,7 +263,7 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
                 }
                 if (newLights.size() > 0) {
                     AddLightSceneDialogFragment dialog = new AddLightSceneDialogFragment(this, newLights);
-                    dialog.show(getActivity().getSupportFragmentManager(), "add_light_dialog_tag");
+                    dialog.show(getActivity().getSupportFragmentManager(), "add_light_scene_dialog_tag");
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage(R.string.light_scene_detail_light_already_added)

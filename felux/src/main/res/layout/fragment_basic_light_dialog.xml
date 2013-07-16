@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Preview"
         android:id="@+id/basic_light_preview"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
         android:checked="true"
         android:layout_marginBottom="10dp"/>
 
@@ -26,7 +26,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/basic_light_dialog_value"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:max="255"

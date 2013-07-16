@@ -74,8 +74,13 @@ public class MidiScene extends Scene {
     }
 
     @Override
+    public boolean canEqual(Object object) {
+        return (object instanceof MidiScene);
+    }
+
+    @Override
     public void update(Item item) {
-        if (item instanceof MidiScene) {
+        if (canEqual(item)) {
             MidiScene that = (MidiScene)item;
             this.channel = that.getChannel();
             this.note = that.getNote();
@@ -86,7 +91,7 @@ public class MidiScene extends Scene {
 
     @Override
     public void updateProperties(Item item) {
-        if (item instanceof MidiScene) {
+        if (canEqual(item)) {
             MidiScene that = (MidiScene)item;
             this.channel = that.getChannel();
             this.note = that.getNote();

@@ -63,10 +63,10 @@ public class DmxGroupLight extends DmxLight {
     }
 
     @Override public int hashCode() {
-        final int prime = 17;
+        final int prime = 31;
         int result = 1;
-        result = 31 * result + endAddress;
-        result = 31 * result + super.hashCode();
+        result = prime * result + endAddress;
+        result = prime * result + super.hashCode();
         return result;
     }
 
@@ -77,10 +77,19 @@ public class DmxGroupLight extends DmxLight {
 
     @Override
     public void update(Item item) {
-        if (item instanceof DmxGroupLight) {
+        if (canEqual(item)) {
             DmxGroupLight that = (DmxGroupLight)item;
             this.endAddress = that.endAddress;
             super.update(item);
+        }
+    }
+
+    @Override
+    public void updateProperties(Item item) {
+        if (canEqual(item)) {
+            DmxGroupLight that = (DmxGroupLight)item;
+            this.endAddress = that.endAddress;
+            super.updateProperties(item);
         }
     }
 }

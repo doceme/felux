@@ -80,7 +80,7 @@ public abstract class Light extends Item {
 
     @Override
     public void update(Item item) {
-        if (item instanceof Light) {
+        if (canEqual(item)) {
             Light that = (Light)item;
             this.value = that.value;
             super.update(item);
@@ -89,8 +89,7 @@ public abstract class Light extends Item {
 
     @Override
     public void updateProperties(Item item) {
-        if (item instanceof Light) {
-            Light that = (Light)item;
+        if (canEqual(item)) {
             super.updateProperties(item);
         }
     }

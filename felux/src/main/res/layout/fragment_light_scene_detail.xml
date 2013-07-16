@@ -17,98 +17,101 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/scene_detail_preview_label"
-        android:id="@+id/light_scene_detail_preview_button"
-        android:layout_gravity="left|center_vertical"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="15dp"/>
-
     <LinearLayout
-            android:layout_width="fill_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scene_detail_preview_label"
+            android:id="@+id/light_scene_detail_preview_button"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+        <LinearLayout
+            android:layout_width="400dp"
             android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="horizontal">
-        <LinearLayout
-                android:layout_width="520dp"
-                android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
             <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/detail_name_label"
-                    android:id="@+id/light_scene_detail_name_label"
-                    android:layout_marginRight="5dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_name_label"
+                android:id="@+id/light_scene_detail_name_label"/>
             <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/light_scene_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
-                    android:editable="false"
-                    android:layout_marginLeft="5dp"
-                    android:selectAllOnFocus="true"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/light_scene_detail_name_edit" android:inputType="text" android:singleLine="true" android:textIsSelectable="true"
+                android:editable="false"
+                android:selectAllOnFocus="true"/>
         </LinearLayout>
-
         <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical">
+            android:layout_width="100dp"
+            android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
             <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/scene_detail_hold_label"
-                    android:id="@+id/light_scene_detail_hold_label"
-                    android:layout_marginRight="5dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/scene_detail_hold_label"
+                android:id="@+id/light_scene_detail_hold_label"/>
             <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/light_scene_detail_hold_edit" android:inputType="numberDecimal" android:singleLine="true" android:textIsSelectable="true"
-                    android:editable="false"
-                    android:layout_marginLeft="5dp"
-                    android:selectAllOnFocus="true"
-                    android:numeric="decimal"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/light_scene_detail_hold_edit" android:inputType="numberDecimal" android:singleLine="true" android:textIsSelectable="true"
+                android:editable="false"
+                android:selectAllOnFocus="true"
+                android:numeric="decimal"/>
         </LinearLayout>
-
-
         <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical">
+            android:layout_width="100dp"
+            android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
             <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/light_scene_detail_fade_label"
-                    android:id="@+id/light_scene_detail_fade_label"
-                    android:layout_marginRight="5dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/light_scene_detail_fade_label"
+                android:id="@+id/light_scene_detail_fade_label"/>
             <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/light_scene_detail_fade_edit" android:inputType="numberDecimal" android:singleLine="true" android:textIsSelectable="true"
-                    android:editable="false"
-                    android:layout_marginLeft="5dp"
-                    android:selectAllOnFocus="true"
-                    android:numeric="decimal"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/light_scene_detail_fade_edit" android:inputType="numberDecimal" android:singleLine="true" android:textIsSelectable="true"
+                android:editable="false"
+                android:selectAllOnFocus="true"
+                android:numeric="decimal"/>
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/light_scene_detail_lights_label"
-            android:id="@+id/light_scene_detail_lights_label"/>
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/detail_select_all"
-        android:id="@+id/light_scene_detail_lights_select_all"
-        android:layout_gravity="left|center_vertical"
-        android:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_marginLeft="5dp">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/light_scene_detail_lights_label"
+                android:id="@+id/light_scene_detail_lights_label"
+                android:layout_gravity="center_vertical"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_select_all"
+            android:id="@+id/light_scene_detail_lights_select_all"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
 
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/light_scene_detail_light_list" />
+            android:id="@+id/light_scene_detail_light_list"
+            android:clickable="true"/>
 
 </LinearLayout>

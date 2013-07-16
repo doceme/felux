@@ -2,32 +2,27 @@ package com.lifecity.felux;
 
 import android.os.Bundle;
 import android.view.*;
-import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import com.lifecity.felux.lights.DmxGroupLight;
+import android.widget.*;
 import com.lifecity.felux.lights.DmxLight;
+import com.lifecity.felux.lights.DmxSwitchLight;
 import com.lifecity.felux.lights.Light;
 
 /**
  * A fragment representing a single Light detail screen.
  * on handsets.
  */
-public class GroupLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, SeekBar.OnSeekBarChangeListener {
+public class SwitchLightDetailFragment extends ItemDetailFragment<Light> implements View.OnFocusChangeListener, CompoundButton.OnCheckedChangeListener {
     private EditText nameEdit;
     private NumberPicker univEdit;
-    private NumberPicker startAddrEdit;
-    private NumberPicker endAddrEdit;
-    private TextView valueLabel;
-    private SeekBar valueSeekBar;
+    private NumberPicker addrEdit;
+    private ToggleButton stateToggle;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public GroupLightDetailFragment() {
-        super(R.layout.fragment_group_light_detail);
+    public SwitchLightDetailFragment() {
+        super(R.layout.fragment_switch_light_detail);
     }
 
     private void setControlsEnabled(boolean enabled) {
@@ -36,10 +31,8 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
                 nameEdit.clearFocus();
             } else if (univEdit.hasFocus()) {
                 univEdit.clearFocus();
-            } else if (startAddrEdit.hasFocus()) {
-                startAddrEdit.clearFocus();
-            } else if (endAddrEdit.hasFocus()) {
-                endAddrEdit.clearFocus();
+            } else if (addrEdit.hasFocus()) {
+                addrEdit.clearFocus();
             }
         }
 
@@ -48,22 +41,19 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         univEdit.setEnabled(enabled);
         univEdit.setFocusable(enabled);
         univEdit.setFocusableInTouchMode(enabled);
-        startAddrEdit.setEnabled(enabled);
-        startAddrEdit.setFocusable(enabled);
-        startAddrEdit.setFocusableInTouchMode(enabled);
-        endAddrEdit.setEnabled(enabled);
-        endAddrEdit.setFocusable(enabled);
-        endAddrEdit.setFocusableInTouchMode(enabled);
-        valueSeekBar.setEnabled(enabled);
-        valueSeekBar.setFocusable(enabled);
-        valueSeekBar.setFocusableInTouchMode(enabled);
+        addrEdit.setEnabled(enabled);
+        addrEdit.setFocusable(enabled);
+        addrEdit.setFocusableInTouchMode(enabled);
+        stateToggle.setEnabled(enabled);
     }
 
     @Override
     public void onItemAdded(Light light) {
         super.onItemAdded(light);
-        nameEdit.setText(light.getName());
-        setControlsEnabled(true);
+        if (nameEdit != null) {
+            nameEdit.setText(light.getName());
+            setControlsEnabled(true);
+        }
         updateItemView(false);
     }
 
@@ -78,25 +68,18 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
         nameEdit.setOnFocusChangeListener(this);
 
         univEdit = (NumberPicker)getView().findViewById(R.id.light_detail_universe_picker);
-        startAddrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_addr_picker);
-        endAddrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_end_addr_picker);
-        valueLabel = (TextView)getView().findViewById(R.id.light_detail_light_value_label);
-        valueSeekBar = (SeekBar)getView().findViewById(R.id.light_detail_light_value);
+        addrEdit = (NumberPicker)getView().findViewById(R.id.light_detail_addr_picker);
+        stateToggle = (ToggleButton)getView().findViewById(R.id.light_detail_light_switch);
 
         univEdit.setOnFocusChangeListener(this);
         univEdit.setMinValue(0);
         univEdit.setMaxValue(2);
 
-        startAddrEdit.setOnFocusChangeListener(this);
-        startAddrEdit.setMinValue(1);
-        startAddrEdit.setMaxValue(512);
+        addrEdit.setOnFocusChangeListener(this);
+        addrEdit.setMinValue(1);
+        addrEdit.setMaxValue(512);
 
-        endAddrEdit.setOnFocusChangeListener(this);
-        endAddrEdit.setMinValue(1);
-        endAddrEdit.setMaxValue(512);
-
-        valueSeekBar.setMax(255);
-        valueSeekBar.setOnSeekBarChangeListener(this);
+        stateToggle.setOnCheckedChangeListener(this);
 
         setControlsEnabled(false);
 
@@ -136,11 +119,10 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
                 item.setName(nameEdit.getText().toString());
             }
 
-            DmxGroupLight light = (DmxGroupLight)item;
+            DmxSwitchLight light = (DmxSwitchLight)item;
             light.setUniverse(univEdit.getValue());
-            light.setAddress(startAddrEdit.getValue());
-            light.setEndAddress(endAddrEdit.getValue());
-            light.setValue(valueSeekBar.getProgress());
+            light.setAddress(addrEdit.getValue());
+            light.set(stateToggle.isChecked());
         }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);
@@ -152,38 +134,28 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
                 nameEdit.setText(item != null ? item.getName() : "");
             }
 
-            if (univEdit != null && startAddrEdit != null && endAddrEdit != null && item != null) {
-                DmxGroupLight light = (DmxGroupLight)item;
+            if (univEdit != null && addrEdit != null && item != null) {
+                DmxSwitchLight light = (DmxSwitchLight)item;
+                int address = light.getAddress();
                 int universe = light.getUniverse();
-                int startAddress = light.getAddress();
-                int endAddress = light.getEndAddress();
                 univEdit.setValue(universe < 0 ? 0 : universe);
-                startAddrEdit.setValue(startAddress > 0 ? startAddress : 1);
-                endAddrEdit.setValue(endAddress > 0 ? endAddress : 1);
-                valueLabel.setText(String.valueOf(light.getPercent()) + "%");
-                valueSeekBar.setProgress(light.getValue());
+                addrEdit.setValue(address > 0 ? address : 1);
+                stateToggle.setChecked(light.isOn());
             }
         }
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         if (isResumed()) {
-            item.setValue(progress);
-            valueLabel.setText(String.valueOf(item.getPercent()) + "%");
-            if (manager != null) {
-                manager.showBaseLight((DmxLight) item, progress);
+            int value = checked ? DmxLight.MAX_VALUE : DmxLight.MIN_VALUE;
+                if (item.getValue() != value) {
+                item.setValue(value);
+                if (manager != null) {
+                    manager.showBaseLight((DmxSwitchLight) item, value);
+                }
             }
         }
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
     }
 }
+

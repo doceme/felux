@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="@string/detail_name_label"
             android:id="@+id/light_detail_name_label"
-            android:layout_marginRight="5dp"/>
+            android:layout_marginLeft="5dp"/>
     <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -20,13 +20,16 @@
     <string name="light_detail_addr_label">Address:</string>
     <string name="light_detail_start_addr_label">Start Address:</string>
     <string name="light_detail_end_addr_label">End Address:</string>
+    <string name="light_detail_state_label">State:</string>
     <string name="light_type_basic">Basic</string>
     <string name="light_type_group">Group</string>
     <string name="light_type_color">Color</string>
+    <string name="light_type_switch">Switch</string>
     <string-array name="light_types">
         <item>@string/light_type_basic</item>
         <item>@string/light_type_group</item>
         <item>@string/light_type_color</item>
+        <item>@string/light_type_switch</item>
     </string-array>
     <string name="scene_types_label">Select a scene type</string>
     <string name="scene_lights_select_prompt">Select the lights for this scene</string>
@@ -54,8 +57,11 @@
     <string name="basic_light_detail_banner">Basic Light</string>
     <string name="group_light_detail_banner">Group Light</string>
     <string name="color_light_detail_banner">Color Light</string>
+    <string name="switch_light_detail_banner">Switch Light</string>
     <string name="action_item_add_light_label">Add Light</string>
     <string name="action_item_add_scene_label">Add Scene</string>
+    <string name="switch_light_dialog_state_label">State</string>
+    <string name="dialog_preview_label">Preview</string>
     <string-array name="scene_types">
         <item>@string/scene_type_light</item>
         <item>@string/scene_type_midi</item>

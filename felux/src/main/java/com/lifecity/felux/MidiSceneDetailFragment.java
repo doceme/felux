@@ -62,8 +62,6 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
         velocityEdit.setFocusable(enabled);
         velocityEdit.setFocusableInTouchMode(enabled);
         eventSwitch.setEnabled(enabled);
-        eventSwitch.setFocusable(enabled);
-        eventSwitch.setFocusableInTouchMode(enabled);
     }
 
     @Override

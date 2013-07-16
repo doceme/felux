@@ -69,11 +69,11 @@ public class DmxLight extends Light {
     }
 
     @Override public int hashCode() {
-        final int prime = 17;
+        final int prime = 31;
         int result = 1;
-        result = 31 * result + universe;
-        result = 31 * result + address;
-        result = 31 * result + super.hashCode();
+        result = prime * result + universe;
+        result = prime * result + address;
+        result = prime * result + super.hashCode();
         return result;
     }
 
@@ -84,7 +84,7 @@ public class DmxLight extends Light {
 
     @Override
     public void update(Item item) {
-        if (item instanceof DmxLight) {
+        if (canEqual(item)) {
             DmxLight that = (DmxLight)item;
             this.universe = that.universe;
             this.address = that.address;
@@ -94,7 +94,7 @@ public class DmxLight extends Light {
 
     @Override
     public void updateProperties(Item item) {
-        if (item instanceof DmxLight) {
+        if (canEqual(item)) {
             DmxLight that = (DmxLight)item;
             this.universe = that.universe;
             this.address = that.address;

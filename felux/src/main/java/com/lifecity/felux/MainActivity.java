@@ -14,10 +14,7 @@ import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import com.lifecity.felux.cues.Cue;
 import com.lifecity.felux.items.Item;
-import com.lifecity.felux.lights.DmxColorLight;
-import com.lifecity.felux.lights.DmxGroupLight;
-import com.lifecity.felux.lights.DmxLight;
-import com.lifecity.felux.lights.Light;
+import com.lifecity.felux.lights.*;
 import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.MidiScene;
 import com.lifecity.felux.scenes.Scene;
@@ -52,9 +49,10 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
         itemToDetailFragment.put(Cue.class.getCanonicalName(), CueDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(LightScene.class.getCanonicalName(), LightSceneDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(MidiScene.class.getCanonicalName(), MidiSceneDetailFragment.class.getCanonicalName());
-        itemToDetailFragment.put(DmxLight.class.getCanonicalName(), BasicLightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxGroupLight.class.getCanonicalName(), GroupLightDetailFragment.class.getCanonicalName());
         itemToDetailFragment.put(DmxColorLight.class.getCanonicalName(), ColorLightDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DmxSwitchLight.class.getCanonicalName(), SwitchLightDetailFragment.class.getCanonicalName());
+        itemToDetailFragment.put(DmxLight.class.getCanonicalName(), BasicLightDetailFragment.class.getCanonicalName());
     }
 
     /**
@@ -222,7 +220,7 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             lights.add(new DmxColorLight("Side", 0, 5, Color.BLUE));
             lights.add(new DmxColorLight("Ceiling", 0, 9, Color.GREEN));
             lights.add(new DmxGroupLight("Stage", 1, 13, 16));
-            lights.add(new DmxLight("House", 2, 1));
+            lights.add(new DmxSwitchLight("House", 2, 1));
         }
 
         List<Scene> scenes = feluxManager.getScenes();
@@ -242,6 +240,10 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             scenes.add(firstSlideScene);
             scenes.add(playListScene);
             scenes.add(logoScene);
+
+            feluxManager.saveLights();
+            feluxManager.saveScenes();
+            feluxManager.saveCues();
         }
 
         ItemListFragment listFragment = getItemListFragment();

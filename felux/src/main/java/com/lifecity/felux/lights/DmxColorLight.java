@@ -61,7 +61,7 @@ public class DmxColorLight extends DmxLight {
     @Override public int hashCode() {
         final int prime = 7;
         int result = 1;
-        result = 31 * result + super.hashCode();
+        result = prime * result + super.hashCode();
         return result;
     }
 
@@ -72,8 +72,15 @@ public class DmxColorLight extends DmxLight {
 
     @Override
     public void update(Item item) {
-        if (item instanceof DmxColorLight) {
+        if (canEqual(item)) {
             super.update(item);
+        }
+    }
+
+    @Override
+    public void updateProperties(Item item) {
+        if (canEqual(item)) {
+            super.updateProperties(item);
         }
     }
 }

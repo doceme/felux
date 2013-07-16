@@ -3,13 +3,17 @@ package com.lifecity.felux;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
 import com.lifecity.felux.lights.DmxColorLight;
+import com.lifecity.felux.lights.DmxLight;
+import com.lifecity.felux.lights.DmxSwitchLight;
 import com.lifecity.felux.lights.Light;
 
 import java.util.ArrayList;
@@ -19,13 +23,13 @@ import java.util.ListIterator;
 /**
  * Created by doceme on 6/6/13.
  */
-//public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements CompoundButton.OnCheckedChangeListener {
 public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements View.OnClickListener {
     private Context context;
     private int layoutResourceId;
     private List<Light> lights;
     private boolean editMode;
     private ItemChangedListener itemChangedListener;
+    private int minValueWidth;
 
     @Override
     public void onClick(View view) {
@@ -42,12 +46,14 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
         CheckBox enable;
         ImageView color;
         TextView value;
+        LinearLayout valueLayout;
         TextView name;
     }
 
     public LightSceneLightListAdapter(Context context, int layoutResourceId, List<Light> lights) {
         super(context, layoutResourceId, lights);
         this.context = context;
+        minValueWidth = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 35, context.getResources().getDisplayMetrics());
         this.layoutResourceId = layoutResourceId;
         this.lights = lights;
         /*
@@ -131,8 +137,8 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
             holder.enable = (CheckBox)row.findViewById(R.id.light_scene_light_list_row_checkbox);
             holder.color = (ImageView)row.findViewById(R.id.light_scene_light_list_row_color);
             holder.value = (TextView)row.findViewById(R.id.light_scene_light_list_row_value);
+            holder.valueLayout = (LinearLayout)row.findViewById(R.id.light_scene_light_list_row_value_layout);
             holder.name = (TextView)row.findViewById(R.id.light_scene_light_list_row_name);
-            //holder.enable.setOnCheckedChangeListener(this);
             holder.enable.setOnClickListener(this);
 
             row.setTag(holder);
@@ -151,15 +157,25 @@ public class LightSceneLightListAdapter extends ArrayAdapter<Light> implements V
             GradientDrawable gd = new GradientDrawable();
             gd.setShape(GradientDrawable.RECTANGLE);
             gd.setColor(dmxColorLight.getColor());
-            //gd.setStroke(3, Color.WHITE);
             gd.setCornerRadius(5.0f);
+            holder.valueLayout.setMinimumWidth(0);
             holder.value.setVisibility(View.GONE);
             holder.color.setVisibility(View.VISIBLE);
             holder.color.setBackground(gd);
         } else {
+            GradientDrawable gd = new GradientDrawable();
+            gd.setShape(GradientDrawable.RECTANGLE);
+            gd.setColor(Color.DKGRAY);
+            gd.setCornerRadius(5.0f);
             holder.color.setVisibility(View.GONE);
+            holder.valueLayout.setMinimumWidth(minValueWidth);
+            holder.valueLayout.setBackground(gd);
             holder.value.setVisibility(View.VISIBLE);
-            holder.value.setText(String.valueOf(light.getPercent()) + "%");
+            if (light instanceof DmxSwitchLight) {
+                holder.value.setText(light.getValue() == DmxLight.MIN_VALUE ? "Off" : "On");
+            } else {
+                holder.value.setText(String.valueOf(light.getPercent()) + "%");
+            }
         }
 
         return row;

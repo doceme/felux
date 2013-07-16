@@ -31,8 +31,13 @@ public abstract class Scene extends Item {
     }
 
     @Override
+    public boolean canEqual(Object object) {
+        return (object instanceof Scene);
+    }
+
+    @Override
     public void update(Item item) {
-        if (item instanceof Scene) {
+        if (canEqual(item)) {
             Scene that = (Scene)item;
             hold = that.getHold();
             super.update(item);
@@ -41,8 +46,7 @@ public abstract class Scene extends Item {
 
     @Override
     public void updateProperties(Item item) {
-        if (item instanceof Scene) {
-            Scene that = (Scene)item;
+        if (canEqual(item)) {
             super.updateProperties(item);
         }
     }

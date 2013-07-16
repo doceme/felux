@@ -129,6 +129,7 @@ public class BasicLightDetailFragment extends ItemDetailFragment<Light> implemen
             DmxLight light = (DmxLight)item;
             light.setUniverse(univEdit.getValue());
             light.setAddress(addrEdit.getValue());
+            light.setValue(valueSeekBar.getProgress());
         }
         setControlsEnabled(false);
         super.onDestroyActionMode(actionMode);

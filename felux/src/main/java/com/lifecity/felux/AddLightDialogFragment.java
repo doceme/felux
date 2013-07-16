@@ -5,10 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import com.lifecity.felux.lights.DmxColorLight;
-import com.lifecity.felux.lights.DmxGroupLight;
-import com.lifecity.felux.lights.DmxLight;
-import com.lifecity.felux.lights.Light;
+import com.lifecity.felux.lights.*;
 
 public class AddLightDialogFragment extends DialogFragment {
     private Light light;
@@ -35,6 +32,8 @@ public class AddLightDialogFragment extends DialogFragment {
                             light = new DmxGroupLight();
                         } else if (which == 2) {
                             light = new DmxColorLight();
+                        } else if (which == 3) {
+                            light = new DmxSwitchLight();
                         }
                         listener.onTypeSelected(light);
                     }
