@@ -99,27 +99,15 @@ public class SwitchLightDetailFragment extends ItemDetailFragment<Light> impleme
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.action_item_cancel:
-                actionMode.setTag("cancelled");
-                actionMode.finish();
-                return true;
-            default:
-                break;
-        }
-        return super.onActionItemClicked(actionMode, menuItem);
-    }
-
-    @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
+        Object tag = actionMode.getTag();
+        boolean cancelled = tag != null && tag.equals(R.string.cancelled);
+        DmxSwitchLight light = (DmxSwitchLight)item;
         if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
             }
 
-            DmxSwitchLight light = (DmxSwitchLight)item;
             light.setUniverse(univEdit.getValue());
             light.setAddress(addrEdit.getValue());
             light.set(stateToggle.isChecked());
@@ -149,11 +137,9 @@ public class SwitchLightDetailFragment extends ItemDetailFragment<Light> impleme
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         if (isResumed()) {
             int value = checked ? DmxLight.MAX_VALUE : DmxLight.MIN_VALUE;
-                if (item.getValue() != value) {
-                item.setValue(value);
-                if (manager != null) {
-                    manager.showBaseLight((DmxSwitchLight) item, value);
-                }
+            item.setValue(value);
+            if (manager != null) {
+                manager.showBaseLight((DmxSwitchLight) item, value);
             }
         }
     }

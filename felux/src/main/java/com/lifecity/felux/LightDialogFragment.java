@@ -25,7 +25,7 @@ public class LightDialogFragment extends DialogFragment implements SeekBar.OnSee
     private TextView valueLabel;
 
     public interface LightDialogListener {
-        public void onValueSelected(int value);
+        public void onValueSelected(int value, boolean preview);
         public void onCanceled();
     }
 
@@ -67,7 +67,7 @@ public class LightDialogFragment extends DialogFragment implements SeekBar.OnSee
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 if (listener != null) {
-                    listener.onValueSelected(value);
+                    listener.onValueSelected(value, previewSwitch.isChecked());
                     if (previewSwitch.isChecked() && manager != null && light != null) {
                         manager.showLight(light, value);
                     }

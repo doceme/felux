@@ -198,9 +198,6 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
             case R.id.action_item_movedown:
                 moveScene(this.item.getScenes().get(position), true);
                 return true;
-            case R.id.action_item_cancel:
-                actionMode.setTag("cancelled");
-                actionMode.finish();
             default:
                 break;
         }
@@ -209,7 +206,8 @@ public class CueDetailFragment extends ItemDetailFragment<Cue> implements Adapte
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
+        Object tag = actionMode.getTag();
+        boolean cancelled = tag != null && tag.equals(R.string.cancelled);
         if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());

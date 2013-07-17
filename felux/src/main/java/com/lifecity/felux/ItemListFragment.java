@@ -260,7 +260,7 @@ public abstract class ItemListFragment<T> extends ListFragment implements ItemDe
             moveItem(selectedItem(), true);
             return true;
         case R.id.item_copy:
-            addItem((T)((Item)selectedItem()).copy());
+            addItem((T)((Item)selectedItem()).copy().newUuid());
             return true;
         case R.id.item_remove:
             ConfirmDialogFragment dialog = new ConfirmDialogFragment("Delete", "Are you sure you want to delete this?", new ConfirmDialogFragment.ConfirmDialogListener() {

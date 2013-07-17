@@ -32,7 +32,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
     }
 
     public interface ColorLightDialogListener {
-        public void onColorSelected(int color);
+        public void onColorSelected(int color, boolean preview);
         public void onCanceled();
     }
 
@@ -73,7 +73,7 @@ public class ColorLightDialogFragment extends DialogFragment implements ColorPic
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 if (listener != null) {
-                    listener.onColorSelected(color);
+                    listener.onColorSelected(color, previewSwitch.isChecked());
                     if (previewSwitch.isChecked() && manager != null && light != null) {
                         manager.showLight(light, color);
                     }

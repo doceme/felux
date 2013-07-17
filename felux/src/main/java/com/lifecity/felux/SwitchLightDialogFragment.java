@@ -23,7 +23,7 @@ public class SwitchLightDialogFragment extends DialogFragment implements Compoun
     private FeluxManager manager;
 
     public interface SwitchLightDialogListener {
-        public void onSwitchSelected(boolean state);
+        public void onSwitchSelected(boolean state, boolean preview);
         public void onCanceled();
     }
 
@@ -62,7 +62,7 @@ public class SwitchLightDialogFragment extends DialogFragment implements Compoun
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 if (listener != null) {
-                    listener.onSwitchSelected(state);
+                    listener.onSwitchSelected(state, previewSwitch.isChecked());
                     if (previewSwitch.isChecked() && manager != null && light != null) {
                         manager.showLight(light, state ? DmxLight.MAX_VALUE : DmxLight.MIN_VALUE);
                     }

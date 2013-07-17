@@ -119,12 +119,21 @@ abstract class ItemDetailFragment<T> extends Fragment implements ActionMode.Call
 
     @Override
     public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_item_cancel:
+                actionMode.setTag(R.string.cancelled);
+                actionMode.finish();
+                return true;
+            default:
+                break;
+        }
         return false;
     }
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        if (actionMode.getTag() == "cancelled") {
+        Object tag = actionMode.getTag();
+        if (tag != null && tag.equals(R.string.cancelled)) {
             item = itemBeforeEdit;
         } else {
             Item temp = (Item)itemBeforeEdit;

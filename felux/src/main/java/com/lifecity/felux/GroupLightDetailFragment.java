@@ -116,27 +116,15 @@ public class GroupLightDetailFragment extends ItemDetailFragment<Light> implemen
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.action_item_cancel:
-                actionMode.setTag("cancelled");
-                actionMode.finish();
-                return true;
-            default:
-                break;
-        }
-        return super.onActionItemClicked(actionMode, menuItem);
-    }
-
-    @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
+        Object tag = actionMode.getTag();
+        boolean cancelled = tag != null && tag.equals(R.string.cancelled);
+        DmxGroupLight light = (DmxGroupLight)item;
         if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
             }
 
-            DmxGroupLight light = (DmxGroupLight)item;
             light.setUniverse(univEdit.getValue());
             light.setAddress(startAddrEdit.getValue());
             light.setEndAddress(endAddrEdit.getValue());

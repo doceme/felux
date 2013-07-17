@@ -37,6 +37,11 @@ public abstract class Item {
         return this.uuid;
     }
 
+    public Item newUuid() {
+        uuid = UUID.randomUUID();
+        return this;
+    }
+
     public String getName() {
         return this.name;
     }

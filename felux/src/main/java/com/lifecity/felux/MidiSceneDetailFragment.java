@@ -100,20 +100,9 @@ public class MidiSceneDetailFragment extends ItemDetailFragment<MidiScene> imple
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.action_item_cancel:
-                actionMode.setTag("cancelled");
-                actionMode.finish();
-            default:
-                break;
-        }
-        return super.onActionItemClicked(actionMode, menuItem);
-    }
-
-    @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
+        Object tag = actionMode.getTag();
+        boolean cancelled = tag != null && tag.equals(R.string.cancelled);
         if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());

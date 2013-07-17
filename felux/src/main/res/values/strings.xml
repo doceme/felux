@@ -62,6 +62,7 @@
     <string name="action_item_add_scene_label">Add Scene</string>
     <string name="switch_light_dialog_state_label">State</string>
     <string name="dialog_preview_label">Preview</string>
+    <string name="cancelled">cancelled</string>
     <string-array name="scene_types">
         <item>@string/scene_type_light</item>
         <item>@string/scene_type_midi</item>

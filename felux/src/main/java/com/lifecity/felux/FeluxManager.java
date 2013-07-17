@@ -185,6 +185,10 @@ public class FeluxManager {
         }
     }
 
+    public void showBaseLight(DmxLight light) {
+        showBaseLight(light, light.getValue());
+    }
+
     public void showLight(DmxLight light, boolean fade) {
         if (light instanceof DmxColorLight) {
             showColorLight((DmxColorLight)light, fade);
@@ -217,7 +221,10 @@ public class FeluxManager {
     }
 
     public void showBasicLight(DmxLight light, int value, boolean fade) {
-        Log.e(TAG, "showBasicLight: value=0x" + Integer.toHexString(value));
+        Log.e(TAG, "showBasicLight[" +
+                light.getName() +
+                "] value=0x" +
+                Integer.toHexString(value));
         if (feluxWriter != null) {
             int address = light.getAddress();
             byte[] data = {
@@ -247,7 +254,10 @@ public class FeluxManager {
     }
 
     public void showGroupLight(DmxGroupLight light, int value, boolean fade) {
-        Log.e(TAG, "showGroupLight: value=0x" + Integer.toHexString(value));
+        Log.e(TAG, "showGroupLight[" +
+                light.getName() +
+                "] value=0x" +
+                Integer.toHexString(value));
         if (feluxWriter != null) {
             int startAddress = light.getStartAddress();
             int endAddress = light.getEndAddress();
@@ -271,7 +281,10 @@ public class FeluxManager {
     }
 
     public void showColorLight(DmxColorLight light, int color, boolean fade) {
-        Log.e(TAG, "showBasicLight: color=0x" + Integer.toHexString(color));
+        Log.e(TAG, "showColorLight[" +
+                light.getName() +
+                "] color=0x" +
+                Integer.toHexString(color));
         if (feluxWriter != null) {
             int address = light.getAddress();
             byte[] data = {
@@ -299,7 +312,8 @@ public class FeluxManager {
     public void showHouseLight(int value) {
         if (value != houseSwitchValue) {
             houseSwitchValue = value;
-            Log.e(TAG, "showHouseLight: value=" + (value == DmxLight.MIN_VALUE ? "Off" : "On"));
+            Log.e(TAG, "showHouseLight: value=" +
+                    (value == DmxLight.MIN_VALUE ? "Off" : "On"));
             if (feluxWriter != null) {
                 byte[] data = {
                         CMD_HOUSE_LIGHTS,
@@ -349,6 +363,11 @@ public class FeluxManager {
     }
 
     public void showScene(Scene scene) {
+        Log.e(TAG, "showScene[" +
+                scene.getName() +
+                "]{" + scene.getUuid() +
+                "} hold=" + scene.getHold());
+
         if (scene instanceof LightScene) {
             showLightScene((LightScene)scene);
         } else if (scene instanceof MidiScene) {

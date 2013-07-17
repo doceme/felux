@@ -155,19 +155,23 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     }
 
     @Override
-    public void onColorSelected(int color) {
+    public void onColorSelected(int color, boolean preview) {
         if (currentLight != null) {
             ((DmxColorLight) currentLight).setColor(color);
-            manager.showLight((DmxLight)currentLight);
+            if (preview) {
+                manager.showLight((DmxLight)currentLight);
+            }
             adapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onValueSelected(int value) {
+    public void onValueSelected(int value, boolean preview) {
         if (currentLight != null) {
             currentLight.setValue(value);
-            manager.showLight((DmxLight)currentLight);
+            if (preview) {
+                manager.showLight((DmxLight)currentLight);
+            }
             adapter.notifyDataSetChanged();
         }
     }
@@ -183,10 +187,12 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
     }
 
     @Override
-    public void onSwitchSelected(boolean state) {
+    public void onSwitchSelected(boolean state, boolean preview) {
         if (currentLight != null) {
             currentLight.setValue(state ? DmxLight.MAX_VALUE : DmxLight.MIN_VALUE);
-            manager.showLight((DmxLight)currentLight);
+            if (preview) {
+                manager.showLight((DmxLight)currentLight);
+            }
             adapter.notifyDataSetChanged();
         }
     }
@@ -292,9 +298,6 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
                 }
                 removeLight.setVisible(adapter.areAnyItemsChecked());
                 return true;
-            case R.id.action_item_cancel:
-                actionMode.setTag("cancelled");
-                actionMode.finish();
             default:
                 break;
         }
@@ -303,7 +306,8 @@ public class LightSceneDetailFragment extends ItemDetailFragment<LightScene> imp
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        boolean cancelled = actionMode.getTag() != null && actionMode.equals("cancelled");
+        Object tag = actionMode.getTag();
+        boolean cancelled = tag != null && tag.equals(R.string.cancelled);
         if (!cancelled) {
             if (!nameEdit.getText().toString().isEmpty()) {
                 item.setName(nameEdit.getText().toString());
