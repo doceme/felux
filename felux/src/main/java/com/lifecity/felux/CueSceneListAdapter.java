@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.lifecity.felux.scenes.LightScene;
 import com.lifecity.felux.scenes.Scene;
@@ -43,7 +44,7 @@ public class CueSceneListAdapter extends ArrayAdapter<Scene> implements View.OnC
         TextView name;
         TextView hold;
         TextView fade;
-        TextView fadeLabel;
+        LinearLayout fadeLayout;
     }
 
     public CueSceneListAdapter(Context context, int layoutResourceId, List<Scene> scenes) {
@@ -125,7 +126,7 @@ public class CueSceneListAdapter extends ArrayAdapter<Scene> implements View.OnC
             holder.enable = (CheckBox)row.findViewById(R.id.cue_scene_list_row_checkbox);
             holder.hold = (TextView)row.findViewById(R.id.cue_scene_list_row_hold);
             holder.fade = (TextView)row.findViewById(R.id.cue_scene_list_row_fade);
-            holder.fadeLabel = (TextView)row.findViewById(R.id.cue_scene_list_row_fade_label);
+            holder.fadeLayout = (LinearLayout)row.findViewById(R.id.cue_scene_list_row_fade_layout);
             holder.name = (TextView)row.findViewById(R.id.cue_scene_list_row_name);
 
             holder.enable.setOnClickListener(this);
@@ -145,11 +146,11 @@ public class CueSceneListAdapter extends ArrayAdapter<Scene> implements View.OnC
         if (scene instanceof LightScene) {
             LightScene lightScene = (LightScene)scene;
             holder.fade.setText(String.valueOf(lightScene.getFade()));
-            holder.fade.setVisibility(View.VISIBLE);
-            holder.fadeLabel.setVisibility(View.VISIBLE);
+            //holder.fade.setVisibility(View.VISIBLE);
+            holder.fadeLayout.setVisibility(View.VISIBLE);
         } else {
-            holder.fade.setVisibility(View.GONE);
-            holder.fadeLabel.setVisibility(View.GONE);
+            //holder.fade.setVisibility(View.GONE);
+            holder.fadeLayout.setVisibility(View.INVISIBLE);
         }
 
         return row;

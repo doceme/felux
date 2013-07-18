@@ -29,7 +29,6 @@
             android:id="@+id/light_scene_light_list_row_value"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:text="100%"
             android:gravity="center"
             android:layout_gravity="center_vertical"/>
 
@@ -53,6 +52,6 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:layout_weight="1"
-            android:text="Light 1"/>
+            />
 
 </LinearLayout>
