@@ -232,14 +232,14 @@ public class MainActivity extends FragmentActivity implements ItemListCallbacks<
             lightScene.addLight((Light) lights.get(3).copy());
             lightScene.addLight((Light) lights.get(4).copy());
             lightScene.setFade(0.5f);
+            scenes.add(new MidiScene("Logo", 0, 5, 127));
             MidiScene firstSlideScene = new MidiScene("First Slide", 0, 19, 1);
             firstSlideScene.setHold(2.0f);
-            MidiScene logoScene = new MidiScene("Logo", 0, 5, 127);
-            MidiScene playListScene = new MidiScene("Playlist", 0, 18, 1);
-            scenes.add(lightScene);
             scenes.add(firstSlideScene);
-            scenes.add(playListScene);
-            scenes.add(logoScene);
+            for (int i = 0; i < 20; i++) {
+                scenes.add(new MidiScene("Playlist " + String.valueOf(i + 1), 0, 18, i + 1));
+            }
+            scenes.add(lightScene);
 
             feluxManager.saveLights();
             feluxManager.saveScenes();
